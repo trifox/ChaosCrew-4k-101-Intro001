@@ -1,0 +1,5243 @@
+{
+  "explicitkeyframes": [
+    {
+      "id": 1,
+      "name": "first entry",
+      "location": [
+        -1,
+        0.025000000000000022
+      ],
+      "zoomStartEnd": [
+        0.25
+      ],
+      "seedShift": [
+        null,
+        null
+      ],
+      "sinFactStartEnd": [
+        null,
+        null
+      ],
+      "startEndIterationA": [
+        null,
+        null
+      ],
+      "angleStartEnd": [
+        272
+      ],
+      "description": "some entry",
+      "sineWaves2": [
+        {
+          "": "",
+          "x": {
+            "phase": null,
+            "amplitude": null,
+            "speed": null
+          },
+          "y": {
+            "phase": null,
+            "amplitude": null,
+            "speed": null
+          },
+          "iteration": 1,
+          "iterationRadius": 1,
+          "pertubation": [
+            111,
+            111
+          ]
+        },
+        {
+          "iteration": 2,
+          "iterationRadius": 1,
+          "pertubation": [
+            1,
+            1
+          ]
+        }
+      ],
+      "pertubations": [
+        {
+          "iteration": 100,
+          "iterationRadius": 49,
+          "pertubation": [
+            -0.1949999999999999,
+            -0.09000000000000007
+          ]
+        },
+        {
+          "iteration": 20,
+          "iterationRadius": 11,
+          "pertubation": [
+            1.3,
+            -0.07250000000000001
+          ]
+        }
+      ]
+    },
+    {
+      "name": "first entry",
+      "location": [
+        -1,
+        0.025000000000000022
+      ],
+      "zoomStartEnd": [
+        0.25,
+        null
+      ],
+      "seedShift": [
+        null,
+        null
+      ],
+      "sinFactStartEnd": [
+        null,
+        null
+      ],
+      "startEndIterationA": [
+        1,
+        null
+      ],
+      "angleStartEnd": [
+        272,
+        null
+      ],
+      "description": "some entry",
+      "sineWaves2": [
+        {
+          "": "",
+          "x": {
+            "phase": null,
+            "amplitude": null,
+            "speed": null
+          },
+          "y": {
+            "phase": null,
+            "amplitude": null,
+            "speed": null
+          },
+          "iteration": 1,
+          "iterationRadius": 1,
+          "pertubation": [
+            111,
+            111
+          ]
+        },
+        {
+          "iteration": 2,
+          "iterationRadius": 1,
+          "pertubation": [
+            1,
+            1
+          ]
+        }
+      ],
+      "pertubations": [
+        {
+          "iteration": 100,
+          "iterationRadius": 49,
+          "pertubation": [
+            -0.1949999999999999,
+            -0.09000000000000007
+          ]
+        },
+        {
+          "iteration": 20,
+          "iterationRadius": 11,
+          "pertubation": [
+            1.3,
+            -0.07250000000000001
+          ]
+        }
+      ],
+      "startEndIterationB": [
+        null,
+        null
+      ],
+      "id": 2
+    },
+    {
+      "name": "Elephant",
+      "description": "",
+      "seedShift": [
+        0,
+        0
+      ],
+      "location": [
+        0,
+        0
+      ],
+      "zoomStartEnd": [
+        0,
+        0
+      ],
+      "sinFactStartEnd": [
+        0,
+        0
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        0,
+        0
+      ],
+      "id": 3,
+      "pertubations": [
+        {
+          "iteration": "",
+          "iterationRadius": "",
+          "pertubation": [
+            1,
+            1
+          ]
+        }
+      ]
+    }
+  ],
+  "sinewaves": [
+    {
+      "name": "Hugi Testi",
+      "description": "123",
+      "sineWaves": [
+        {
+          "x": {
+            "phase": 0,
+            "amplitude": 1,
+            "frequency": 0.5,
+            "speed": 0.001
+          },
+          "y": {
+            "phase": 0,
+            "amplitude": 1,
+            "frequency": 2,
+            "speed": 0.002
+          },
+          "iterationStart": 0,
+          "iterationEnd": 10
+        },
+        {
+          "iterationStart": 0,
+          "iterationEnd": 400,
+          "x": {
+            "phase": 0,
+            "amplitude": 1,
+            "frequency": 2,
+            "speed": 0.001
+          },
+          "y": {
+            "phase": 0,
+            "amplitude": 1,
+            "frequency": 11,
+            "speed": 0.033
+          }
+        }
+      ],
+      "id": 1,
+      "phase": 142,
+      "amplitude": 25,
+      "frequency": 36
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Minibrots",
+      "description": "Category for minibrots"
+    },
+    {
+      "name": "Elephant Valley",
+      "description": "",
+      "id": 2
+    },
+    {
+      "name": "Seahorse Valley",
+      "description": "",
+      "id": 3
+    },
+    {
+      "name": "Seahorse",
+      "description": "",
+      "id": 4
+    },
+    {
+      "name": "Needle",
+      "description": "",
+      "id": 5
+    },
+    {
+      "name": "Double Spiral",
+      "description": "",
+      "id": 6
+    }
+  ],
+  "demos": [
+    {
+      "id": "super-id",
+      "keyframes": [
+        {
+          "frame": "0",
+          "keyframeId": "W_fgAvZ"
+        },
+        {
+          "frame": "2",
+          "keyframeId": "5Z3p38y"
+        },
+        {
+          "frame": "11",
+          "keyframeId": "haNfloO"
+        }
+      ]
+    }
+  ],
+  "demokeyframes": [
+    {
+      "id": "willi",
+      "frame": 1,
+      "zoomStartEnd": [
+        0.015625,
+        0.5
+      ],
+      "location": [
+        0.265625,
+        0
+      ],
+      "sinSpeed": [
+        1,
+        2
+      ],
+      "startEndIterationA": [
+        "0",
+        "400"
+      ],
+      "sinFactStartEnd": [
+        ".1",
+        ".01"
+      ],
+      "sinInitSpeed": [
+        "0.3",
+        ".2"
+      ],
+      "startEndIterationB": [
+        "200",
+        "400"
+      ],
+      "angleStartEnd": [
+        0,
+        "0"
+      ],
+      "description": "Complex 3 part sin",
+      "seedShift": [
+        "0",
+        "0"
+      ],
+      "sineWaves": [
+        {
+          "x": {
+            "phase": 1,
+            "amplitude": 2,
+            "frequency": 3
+          },
+          "y": {
+            "phase": 4,
+            "amplitude": 5,
+            "frequency": 6
+          }
+        }
+      ],
+      "sineWaves2": [
+        {
+          "x": {
+            "phase": 0,
+            "amplitude": 2,
+            "frequency": 8.3,
+            "speed": 1
+          },
+          "y": {
+            "phase": 0,
+            "amplitude": 3,
+            "frequency": 7.1,
+            "speed": 2
+          }
+        },
+        {
+          "x": {
+            "phase": 1,
+            "amplitude": 1,
+            "frequency": 2.7,
+            "speed": 31
+          },
+          "y": {
+            "phase": 1,
+            "amplitude": 0.5,
+            "frequency": 3.2,
+            "speed": 33
+          }
+        },
+        {
+          "x": {
+            "phase": 0,
+            "amplitude": 0.5,
+            "frequency": 1,
+            "speed": 11.1
+          },
+          "y": {
+            "phase": 1,
+            "amplitude": 0.25,
+            "frequency": 1,
+            "speed": 1.3
+          }
+        }
+      ]
+    },
+    {
+      "frame": 1,
+      "zoomStartEnd": [
+        "1",
+        ".1"
+      ],
+      "location": [
+        "-1",
+        "0.1"
+      ],
+      "sinSpeed": [
+        ".001",
+        "0.3"
+      ],
+      "startEndIterationA": [
+        "100",
+        "300"
+      ],
+      "sinFactStartEnd": [
+        "0.3",
+        ".5"
+      ],
+      "startEndIterationB": [
+        "100",
+        "300"
+      ],
+      "angleStartEnd": [
+        "90",
+        "0"
+      ],
+      "id": "W_fgAvZ",
+      "description": "Schubidu",
+      "sinInitSpeed": [
+        null,
+        null
+      ],
+      "seedShift": [
+        0,
+        0
+      ],
+      "name": ""
+    },
+    {
+      "frame": 1,
+      "zoomStartEnd": [
+        "12",
+        ".1"
+      ],
+      "location": [
+        "-0.81",
+        "0.1"
+      ],
+      "sinSpeed": [
+        ".1",
+        ".03"
+      ],
+      "startEndIterationA": [
+        "100",
+        "300"
+      ],
+      "sinFactStartEnd": [
+        "0.3",
+        ".5"
+      ],
+      "startEndIterationB": [
+        "100",
+        "300"
+      ],
+      "angleStartEnd": [
+        "90",
+        "0"
+      ],
+      "id": "5Z3p38y",
+      "sinInitSpeed": [
+        null,
+        null
+      ],
+      "description": "Zoom Mandelbrot"
+    },
+    {
+      "frame": 12,
+      "zoomStartEnd": [
+        0.4,
+        ".1"
+      ],
+      "location": [
+        -0.18500000000000003,
+        -0.6250000000000002
+      ],
+      "sinSpeed": [
+        ".1",
+        "11"
+      ],
+      "startEndIterationA": [
+        "100",
+        "300"
+      ],
+      "sinFactStartEnd": [
+        "0.3",
+        "0.05"
+      ],
+      "startEndIterationB": [
+        "100",
+        "300"
+      ],
+      "angleStartEnd": [
+        "90",
+        "0"
+      ],
+      "id": "zHQe6jF",
+      "sinInitSpeed": [
+        "1",
+        "2"
+      ],
+      "description": "Default"
+    },
+    {
+      "frame": 12,
+      "zoomStartEnd": [
+        "0.0002",
+        "0.0002"
+      ],
+      "location": [
+        -0.800753173828125,
+        0.17082871093750007
+      ],
+      "sinSpeed": [
+        ".5",
+        ".34"
+      ],
+      "startEndIterationA": [
+        "300",
+        "800"
+      ],
+      "sinFactStartEnd": [
+        "0.00004",
+        "0.00008"
+      ],
+      "startEndIterationB": [
+        "300",
+        "800"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "1",
+        "22"
+      ],
+      "description": "Minibrot 1",
+      "id": "K-xvPtQ"
+    },
+    {
+      "frame": 121,
+      "zoomStartEnd": [
+        0.0000125,
+        0.0000125
+      ],
+      "location": [
+        -0.8004375488281258,
+        0.17032871093750013
+      ],
+      "sinSpeed": [
+        ".5",
+        ".34"
+      ],
+      "startEndIterationA": [
+        "10",
+        "800"
+      ],
+      "sinFactStartEnd": [
+        "0.00006",
+        "0.0002"
+      ],
+      "startEndIterationB": [
+        "10",
+        "800"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Minibrot 2",
+      "id": "mVucDdK"
+    },
+    {
+      "frame": 1211,
+      "zoomStartEnd": [
+        0.000025,
+        "0.000025"
+      ],
+      "location": [
+        -0.8002031738281251,
+        0.17382871093749996
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "600",
+        "1000"
+      ],
+      "sinFactStartEnd": [
+        "0.00004",
+        ".000051"
+      ],
+      "startEndIterationB": [
+        "600",
+        "1000"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "something",
+      "id": "2KvILYc"
+    },
+    {
+      "frame": 121,
+      "zoomStartEnd": [
+        0.05,
+        ".1"
+      ],
+      "location": [
+        -0.12249999999999998,
+        -0.6500000000000001
+      ],
+      "sinSpeed": [
+        ".1",
+        ".011"
+      ],
+      "startEndIterationA": [
+        "100",
+        "300"
+      ],
+      "sinFactStartEnd": [
+        "0.3",
+        "0.05"
+      ],
+      "startEndIterationB": [
+        "100",
+        "300"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "1",
+        "2"
+      ],
+      "description": "Mandelbrot Unten",
+      "id": "haNfloO"
+    },
+    {
+      "frame": 12111,
+      "zoomStartEnd": [
+        0.1024,
+        "0.1024"
+      ],
+      "location": [
+        -0.7490031738281252,
+        0.09703496093749997
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "600",
+        "1000"
+      ],
+      "sinFactStartEnd": [
+        "0.0004",
+        ".11"
+      ],
+      "startEndIterationB": [
+        "600",
+        "1000"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Left Bulb",
+      "id": "9DNCBMw"
+    },
+    {
+      "frame": 121111,
+      "zoomStartEnd": [
+        0.0256,
+        "0.0256"
+      ],
+      "location": [
+        -1.2610031738281255,
+        0.020234960937499973
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "600",
+        "1000"
+      ],
+      "sinFactStartEnd": [
+        "0.1",
+        ".021"
+      ],
+      "startEndIterationB": [
+        "600",
+        "1000"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Left Second Bulb",
+      "id": "MfGJfLk",
+      "seedShift": [
+        null,
+        null
+      ],
+      "sineWaves2": [
+        {
+          "x": {
+            "phase": 1,
+            "amplitude": 1,
+            "frequency": 1,
+            "speed": 1
+          },
+          "y": {
+            "phase": 1,
+            "amplitude": 1,
+            "frequency": 1,
+            "speed": 1
+          }
+        }
+      ]
+    },
+    {
+      "frame": 121111,
+      "zoomStartEnd": [
+        0.0016,
+        "0.0016"
+      ],
+      "location": [
+        -1.3698031738281249,
+        "0.0054349609374999735"
+      ],
+      "sinSpeed": [
+        ".05",
+        ".034"
+      ],
+      "startEndIterationA": [
+        "200",
+        "1000"
+      ],
+      "sinFactStartEnd": [
+        "0.01",
+        ".0021"
+      ],
+      "startEndIterationB": [
+        "200",
+        "1000"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Left Third Bulb",
+      "id": "frl23Ay"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        2,
+        "1"
+      ],
+      "location": [
+        -0.5,
+        "0"
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "0",
+        "0"
+      ],
+      "sinFactStartEnd": [
+        "0",
+        "0"
+      ],
+      "startEndIterationB": [
+        "1024",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "000 Mandelbrot Default",
+      "id": "fAJTuec",
+      "category_ids": [
+        1
+      ],
+      "seedShift": [
+        null,
+        null
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.003125,
+        "0.00009765625"
+      ],
+      "location": [
+        "0.253806250.0125781250000000020.0050468750.00240625000000000040.006078125-0.0027343750000000003-0.003843750.000375-0.0001250.0006250000000000001-0.0047812500000000010.005343750.001031250.0015937500000000001-0.00046875-0.000312500000000000060.0054375000000000005",
+        0.004640624999999999
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        100,
+        300
+      ],
+      "sinFactStartEnd": [
+        0.01,
+        0.002
+      ],
+      "startEndIterationB": [
+        "1024",
+        "1024"
+      ],
+      "angleStartEnd": [
+        214,
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Mandelbrot Elephant Valley Fadein",
+      "id": "64ezy8-",
+      "name": "some elephanties",
+      "seedShift": [
+        0.026514648437499996,
+        0.009057617187500002
+      ],
+      "sineWaves2": [
+        {
+          "": "",
+          "x": {
+            "frequency": 311,
+            "phase": 1,
+            "amplitude": 11,
+            "speed": 3
+          },
+          "y": {
+            "frequency": 31,
+            "phase": 1,
+            "amplitude": 11,
+            "speed": 2
+          }
+        },
+        {
+          "": "",
+          "x": {
+            "frequency": 4,
+            "phase": 3,
+            "amplitude": 11,
+            "speed": 5
+          },
+          "y": {
+            "frequency": 6,
+            "phase": 5,
+            "amplitude": 11,
+            "speed": 3
+          }
+        }
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.025,
+        "0.00009765625"
+      ],
+      "location": [
+        0.26664804687500016,
+        -0.0004863281249999985
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        10,
+        111
+      ],
+      "sinFactStartEnd": [
+        0.3,
+        2
+      ],
+      "startEndIterationB": [
+        "300",
+        "1024"
+      ],
+      "angleStartEnd": [
+        87,
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Mandelbrot Elephant Valley",
+      "id": "ENlZsE8",
+      "seedShift": [
+        -1.2560000000000002,
+        0.003999999999999983
+      ],
+      "sineWaves2": [
+        {
+          "x": {
+            "frequency": 11,
+            "phase": 2,
+            "amplitude": 0.2,
+            "speed": 11
+          },
+          "y": {
+            "frequency": 21,
+            "phase": 2,
+            "amplitude": 0.2,
+            "speed": 33
+          }
+        },
+        {
+          "": "",
+          "x": {
+            "frequency": 3,
+            "phase": 1,
+            "amplitude": 0.02,
+            "speed": 41
+          },
+          "y": {
+            "frequency": 7,
+            "phase": 5,
+            "amplitude": 0.06,
+            "speed": 81
+          }
+        }
+      ],
+      "name": ""
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "0.01",
+        "0.01"
+      ],
+      "location": [
+        "-0.74",
+        -0.1875
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "0",
+        "0"
+      ],
+      "sinFactStartEnd": [
+        "0",
+        "0"
+      ],
+      "startEndIterationB": [
+        "1024",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Seahorse Valley",
+      "id": "q6Tqi-A"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "0.01",
+        "0.01"
+      ],
+      "location": [
+        "-0.74",
+        -0.1875
+      ],
+      "sinSpeed": [
+        ".005",
+        ".00034"
+      ],
+      "startEndIterationA": [
+        "0",
+        "1024"
+      ],
+      "sinFactStartEnd": [
+        "001",
+        "0.01"
+      ],
+      "startEndIterationB": [
+        "1024",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Seahorse Valley 2 Iter Zoom",
+      "id": "TdWCzEZ",
+      "name": "",
+      "seedShift": [
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.01,
+        "0.01"
+      ],
+      "location": [
+        "-0.74",
+        -0.1875
+      ],
+      "sinSpeed": [
+        ".0005",
+        ".000034"
+      ],
+      "startEndIterationA": [
+        "20",
+        "1024"
+      ],
+      "sinFactStartEnd": [
+        "1",
+        ".001"
+      ],
+      "startEndIterationB": [
+        "0",
+        "1024"
+      ],
+      "angleStartEnd": [
+        0,
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Seahorse Valley 3 Funny ZOomin",
+      "id": "zTg-dyO",
+      "seedShift": [
+        "0",
+        "0"
+      ],
+      "sineWaves2": [
+        {
+          "x": {
+            "phase": 1,
+            "amplitude": 0.1,
+            "frequency": 4,
+            "speed": 1
+          },
+          "y": {
+            "phase": 1,
+            "amplitude": 0.1,
+            "frequency": 3,
+            "speed": 3
+          }
+        },
+        {
+          "x": {
+            "phase": 1,
+            "amplitude": 0.01,
+            "frequency": 66,
+            "speed": 4
+          },
+          "y": {
+            "phase": 1,
+            "amplitude": 0.01,
+            "frequency": 77,
+            "speed": 7
+          }
+        }
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.00390625,
+        "0.00390625"
+      ],
+      "location": [
+        -0.7752734375,
+        -0.1173828125
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        110,
+        200
+      ],
+      "sinFactStartEnd": [
+        0.01,
+        0.1
+      ],
+      "startEndIterationB": [
+        "1024",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Doppelspirale 1",
+      "id": "DdTQxCS",
+      "name": "",
+      "seedShift": [
+        0,
+        0
+      ],
+      "sineWaves2": [
+        {
+          "": "",
+          "x": {
+            "frequency": 1,
+            "phase": 1,
+            "amplitude": 1,
+            "speed": 1
+          },
+          "y": {
+            "frequency": 2,
+            "phase": 2,
+            "amplitude": 1,
+            "speed": 1
+          }
+        }
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.00390625,
+        "0.00390625"
+      ],
+      "location": [
+        -0.7734375,
+        -0.125
+      ],
+      "sinSpeed": [
+        "1",
+        "1"
+      ],
+      "startEndIterationA": [
+        "75",
+        "1024"
+      ],
+      "sinFactStartEnd": [
+        ".2",
+        ".1"
+      ],
+      "startEndIterationB": [
+        "75",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Doppelspirale 2",
+      "id": "bO8nmAF"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.0000019073486328125,
+        "0.00390625"
+      ],
+      "location": [
+        -0.12871194839477537,
+        0.9882884788513184
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "0",
+        "1024"
+      ],
+      "sinFactStartEnd": [
+        "1",
+        "1"
+      ],
+      "startEndIterationB": [
+        "1024",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Minibrot Oben 1 Fade In",
+      "id": "Je4wsfJ",
+      "name": "",
+      "seedShift": [
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.00048828125,
+        "0.00390625"
+      ],
+      "location": [
+        -0.12890625,
+        0.98828125
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "500",
+        "1024"
+      ],
+      "sinFactStartEnd": [
+        ".001",
+        ".000101"
+      ],
+      "startEndIterationB": [
+        "500",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Minibrot Oben 1",
+      "id": "JR0wPPq"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.0000244140625,
+        "0.0000244140625"
+      ],
+      "location": [
+        0.25378183593750003,
+        -0.0004638671875
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "100",
+        "1024"
+      ],
+      "sinFactStartEnd": [
+        ".00001",
+        ".000211"
+      ],
+      "startEndIterationB": [
+        "300",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "180",
+        "0180"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Mandelbrot Elephant Valley Zoom 1",
+      "id": "WfdCyhV"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "0.000005",
+        "0.000005"
+      ],
+      "location": [
+        0.25377874999999983,
+        -0.0004638671875000001
+      ],
+      "sinSpeed": [
+        "11",
+        "34"
+      ],
+      "startEndIterationA": [
+        "100",
+        "1024"
+      ],
+      "sinFactStartEnd": [
+        "0.0001",
+        ".00211"
+      ],
+      "startEndIterationB": [
+        "300",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "90",
+        "90"
+      ],
+      "sinInitSpeed": [
+        "01",
+        "01"
+      ],
+      "description": "Mandelbrot Elephant Valley Fun",
+      "id": "w30VEzE",
+      "seedShift": [
+        "0",
+        "0"
+      ],
+      "sineWaves": [
+        {
+          "sineWaves": ""
+        }
+      ],
+      "phase": 1,
+      "amplitude": 2,
+      "frequency": 3,
+      "sineWaves2": [
+        {
+          "x": {
+            "phase": 1,
+            "amplitude": 2,
+            "frequency": 1,
+            "speed": 1
+          },
+          "y": {
+            "phase": 1,
+            "amplitude": 1,
+            "frequency": 1,
+            "speed": 1
+          }
+        }
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "0.01",
+        "0.01"
+      ],
+      "location": [
+        "-0.74",
+        -0.1875
+      ],
+      "sinSpeed": [
+        ".005",
+        ".00034"
+      ],
+      "startEndIterationA": [
+        "0",
+        "1024"
+      ],
+      "sinFactStartEnd": [
+        "001",
+        "0.01"
+      ],
+      "startEndIterationB": [
+        "1024",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Seahorse",
+      "id": "4uZiijm",
+      "name": "",
+      "seedShift": [
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "0.01",
+        "0.01"
+      ],
+      "location": [
+        "-0.74",
+        -0.1875
+      ],
+      "sinSpeed": [
+        ".005",
+        ".00034"
+      ],
+      "startEndIterationA": [
+        "0",
+        "1024"
+      ],
+      "sinFactStartEnd": [
+        "00.000001",
+        ".2"
+      ],
+      "startEndIterationB": [
+        "0",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "1.3",
+        "3.1"
+      ],
+      "description": "Seahorse Fun",
+      "id": "EVjz5CI",
+      "name": "",
+      "seedShift": [
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "0.002",
+        "0.001"
+      ],
+      "location": [
+        "-0.7406",
+        "-0.1835"
+      ],
+      "sinSpeed": [
+        "222.5",
+        ".34"
+      ],
+      "startEndIterationA": [
+        "10",
+        "500"
+      ],
+      "sinFactStartEnd": [
+        ".00001",
+        "0.15"
+      ],
+      "startEndIterationB": [
+        "10",
+        "500"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Seahorse Dancing",
+      "id": "_2xFYeg",
+      "name": "",
+      "seedShift": [
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.032,
+        0.016
+      ],
+      "location": [
+        0.3238,
+        -0.06518
+      ],
+      "sinSpeed": [
+        "2.5",
+        "2.34"
+      ],
+      "startEndIterationA": [
+        "10",
+        "1500"
+      ],
+      "sinFactStartEnd": [
+        ".0005",
+        "0.25"
+      ],
+      "startEndIterationB": [
+        "10",
+        "500"
+      ],
+      "angleStartEnd": [
+        90,
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Elephants Dancing 2",
+      "id": "8f3oPMn",
+      "seedShift": [
+        "0",
+        "0"
+      ],
+      "sineWaves2": [
+        {
+          "x": {
+            "phase": 1,
+            "amplitude": 1,
+            "frequency": 15,
+            "speed": -0.01
+          },
+          "y": {
+            "phase": 1,
+            "amplitude": 2,
+            "frequency": -14,
+            "speed": 0.01
+          },
+          "iterationStart": 0,
+          "iterationEnd": 0
+        },
+        {
+          "x": {
+            "phase": 1,
+            "amplitude": 1,
+            "frequency": -15,
+            "speed": 0.02
+          },
+          "y": {
+            "phase": 6,
+            "amplitude": 1,
+            "frequency": 4,
+            "speed": 0.01
+          },
+          "iterationStart": 0,
+          "iterationEnd": 0
+        }
+      ],
+      "KEYFRAMES": {
+        "location": {
+          "frames": [
+            {
+              "frame": 0,
+              "value": [
+                0.39388,
+                -0.14357999999999999
+              ],
+              "easingIn": "",
+              "easingOut": "",
+              "isExponential": false
+            },
+            {
+              "frame": 288,
+              "value": [
+                0.36635999999999996,
+                -0.09878
+              ],
+              "easingIn": "",
+              "easingOut": "",
+              "isExponential": false
+            }
+          ]
+        },
+        "sinFactStartEnd": {
+          "frames": []
+        },
+        "startEndIterationA": {
+          "frames": []
+        },
+        "KEYFRAMES": {
+          "location": {
+            "frames": [
+              {
+                "value": {
+                  "frames": []
+                }
+              },
+              {
+                "value": {
+                  "frames": []
+                }
+              },
+              {
+                "value": {
+                  "frames": []
+                }
+              }
+            ]
+          }
+        }
+      },
+      "name": ""
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.064,
+        0.064
+      ],
+      "location": [
+        -0.7525999999999999,
+        -0.041499999999999995
+      ],
+      "sinSpeed": [
+        "0.05",
+        ".074"
+      ],
+      "startEndIterationA": [
+        "10",
+        "500"
+      ],
+      "sinFactStartEnd": [
+        ".05",
+        "0.1"
+      ],
+      "startEndIterationB": [
+        "10",
+        "500"
+      ],
+      "angleStartEnd": [
+        "-90",
+        "-90"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Searse Dancing 2",
+      "id": "jmpGfrI"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.016,
+        0.016
+      ],
+      "location": [
+        -0.7565999999999999,
+        0.026500000000000017
+      ],
+      "sinSpeed": [
+        "3.5",
+        ".34"
+      ],
+      "startEndIterationA": [
+        "10",
+        "500"
+      ],
+      "sinFactStartEnd": [
+        ".1",
+        "0.1"
+      ],
+      "startEndIterationB": [
+        "10",
+        "500"
+      ],
+      "angleStartEnd": [
+        "-90",
+        "-90"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Searse Dancing 2 Left",
+      "id": "MNJjIth",
+      "name": "",
+      "seedShift": [
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.064,
+        0.064
+      ],
+      "location": [
+        -0.11059999999999995,
+        -0.6239999999999997
+      ],
+      "sinSpeed": [
+        ".005",
+        ".003"
+      ],
+      "startEndIterationA": [
+        "10",
+        "1500"
+      ],
+      "sinFactStartEnd": [
+        ".050",
+        "0.1"
+      ],
+      "startEndIterationB": [
+        "10",
+        "1500"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "1.3",
+        ".7"
+      ],
+      "description": "Lower Bulb Dancing  Left",
+      "id": "07mfrrb"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        ".1",
+        ".1"
+      ],
+      "location": [
+        -0.7799999999999991,
+        -0.0724999999999999
+      ],
+      "sinSpeed": [
+        ".005",
+        ".00034"
+      ],
+      "startEndIterationA": [
+        "0",
+        "1024"
+      ],
+      "sinFactStartEnd": [
+        "00.123",
+        ".321"
+      ],
+      "startEndIterationB": [
+        "0",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "90",
+        "90"
+      ],
+      "sinInitSpeed": [
+        "1.3",
+        "3.1"
+      ],
+      "description": "Seahorse Fun2",
+      "id": "TrDgl_f"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.0009765625,
+        "0.0009765625"
+      ],
+      "location": [
+        -1.75,
+        0.00048828125
+      ],
+      "sinSpeed": [
+        ".005",
+        ".0011"
+      ],
+      "startEndIterationA": [
+        "0300",
+        "01024"
+      ],
+      "sinFactStartEnd": [
+        "0.001",
+        "0.00001"
+      ],
+      "startEndIterationB": [
+        "0300",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "000 Minibrot Spike 1",
+      "id": "Lk4x6xU"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.00006103515625,
+        0.00006103515625
+      ],
+      "location": [
+        -0.737030029296875,
+        -0.18998336791992188
+      ],
+      "sinSpeed": [
+        ".05",
+        ".031"
+      ],
+      "startEndIterationA": [
+        "0300",
+        "800"
+      ],
+      "sinFactStartEnd": [
+        "0.00001",
+        "0.00005"
+      ],
+      "startEndIterationB": [
+        "300",
+        "800"
+      ],
+      "angleStartEnd": [
+        "-140",
+        "-140"
+      ],
+      "sinInitSpeed": [
+        "55",
+        "7"
+      ],
+      "description": "000 Seahorse Minibrot",
+      "id": "TiD7oY1"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.00006103515625,
+        "0.00006103515625"
+      ],
+      "location": [
+        -0.7370223999023438,
+        -0.18996047973632812
+      ],
+      "sinSpeed": [
+        "0.001",
+        "0.001"
+      ],
+      "startEndIterationA": [
+        "0300",
+        "800"
+      ],
+      "sinFactStartEnd": [
+        "0.000001",
+        "0.00005"
+      ],
+      "startEndIterationB": [
+        "300",
+        "800"
+      ],
+      "angleStartEnd": [
+        "-140",
+        "-140"
+      ],
+      "sinInitSpeed": [
+        "5",
+        "3"
+      ],
+      "description": "000 Seahorse Minibrot2",
+      "id": "kcQZNsy"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        1,
+        "1"
+      ],
+      "location": [
+        -0.60265625,
+        0.028281249999999994
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        50,
+        221
+      ],
+      "sinFactStartEnd": [
+        1,
+        1
+      ],
+      "startEndIterationB": [
+        "0",
+        "0"
+      ],
+      "angleStartEnd": [
+        90,
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "000 Mandelbrot Null",
+      "id": "Fw8gzjv",
+      "category_ids": [
+        1
+      ],
+      "seedShift": [
+        -1.08,
+        0.009999999999999995
+      ],
+      "sineWaves2": [
+        {
+          "x": {
+            "frequency": 0.001,
+            "phase": 1,
+            "amplitude": 2,
+            "speed": 1
+          },
+          "y": {
+            "frequency": 0.001,
+            "phase": 1,
+            "amplitude": 1,
+            "speed": 2
+          }
+        },
+        {
+          "x": {
+            "frequency": 3,
+            "phase": 1,
+            "amplitude": 2,
+            "speed": 4
+          },
+          "y": {
+            "frequency": 6,
+            "phase": 8,
+            "amplitude": 7,
+            "speed": 5
+          }
+        }
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "1",
+        "1"
+      ],
+      "location": [
+        -0.5,
+        "0"
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "0",
+        "0"
+      ],
+      "sinFactStartEnd": [
+        "0",
+        "0"
+      ],
+      "startEndIterationB": [
+        "0",
+        "0"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "000 Mandelbrot Test Minibrots",
+      "id": "va_KAnY"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "0.0001",
+        0.0001
+      ],
+      "location": [
+        0.3600092247580069,
+        0.6414387371385427
+      ],
+      "sinSpeed": [
+        "-0.31",
+        "-0.51"
+      ],
+      "startEndIterationA": [
+        "15",
+        "290"
+      ],
+      "sinFactStartEnd": [
+        "0.00001",
+        ".002"
+      ],
+      "startEndIterationB": [
+        "15",
+        "290"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "5",
+        "3"
+      ],
+      "description": "000 Minibrot Topright",
+      "id": "Q10oMwe",
+      "Hybrid Add": [
+        0.3600092247580069,
+        0.6414387371385427
+      ],
+      "seedShift": [
+        "0.0001",
+        0.0001
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "11",
+        "1"
+      ],
+      "location": [
+        -0.5,
+        "0"
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "0",
+        "0"
+      ],
+      "sinFactStartEnd": [
+        "0",
+        "0"
+      ],
+      "startEndIterationB": [
+        "0",
+        "0"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "000 Mandelbrot Test Minibrots",
+      "id": "ANCtVq_"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "11",
+        "1"
+      ],
+      "location": [
+        -0.5,
+        "0"
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "0",
+        "0"
+      ],
+      "sinFactStartEnd": [
+        "0",
+        "0"
+      ],
+      "startEndIterationB": [
+        "0",
+        "0"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "000 Mandelbrot Test Minibrots11",
+      "id": "a4r6XKZ"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "1",
+        "1"
+      ],
+      "location": [
+        -0.5,
+        "0"
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "0",
+        "0"
+      ],
+      "sinFactStartEnd": [
+        "0",
+        "0"
+      ],
+      "startEndIterationB": [
+        "0",
+        "0"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "000 Mandelbrot Test Minibrots2",
+      "id": "tkn6fUA"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "1",
+        "1"
+      ],
+      "location": [
+        -0.5,
+        "0"
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "0",
+        "0"
+      ],
+      "sinFactStartEnd": [
+        "0",
+        "0"
+      ],
+      "startEndIterationB": [
+        "0",
+        "0"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "000 Mandelbrot Null",
+      "category_ids": [
+        1
+      ],
+      "seedShift": [
+        null,
+        null
+      ],
+      "name": "Minibrot Fun 22",
+      "id": "TaLVWUW"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.5,
+        "1"
+      ],
+      "location": [
+        -0.7625976562500001,
+        0.077548828125
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        100,
+        500
+      ],
+      "sinFactStartEnd": [
+        0.1,
+        0.41
+      ],
+      "startEndIterationB": [
+        "0",
+        "0"
+      ],
+      "angleStartEnd": [
+        272,
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "000 Mandelbrot Null2",
+      "category_ids": [
+        1
+      ],
+      "seedShift": [
+        null,
+        null
+      ],
+      "name": "Minibrot Fun 22",
+      "id": "-sc3QbY",
+      "pertubations": [
+        {
+          "iteration": 10,
+          "iterationRadius": 10,
+          "pertubation": [
+            0.9899999999999998,
+            0.11499999999999998
+          ]
+        },
+        {
+          "iteration": 20,
+          "iterationRadius": 1,
+          "pertubation": [
+            1.40375,
+            -0.046074218750000034
+          ]
+        },
+        {
+          "iteration": 99,
+          "iterationRadius": 1,
+          "pertubation": [
+            -0.08509765624999999,
+            -0.1571289062500001
+          ]
+        }
+      ],
+      "sineWaves2": [
+        {
+          "": "",
+          "x": {
+            "frequency": 1,
+            "phase": 1,
+            "amplitude": 1,
+            "speed": 3
+          },
+          "y": {
+            "frequency": 1,
+            "phase": 1,
+            "amplitude": 1,
+            "speed": 2
+          }
+        }
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.000025,
+        "0.0001"
+      ],
+      "location": [
+        -1.256817930068179,
+        -0.379720963472722
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "0",
+        "0"
+      ],
+      "sinFactStartEnd": [
+        "0",
+        "0"
+      ],
+      "startEndIterationB": [
+        "0",
+        "0"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "000 Mandelbrot Null3",
+      "category_ids": [
+        1
+      ],
+      "seedShift": [
+        "1",
+        "1"
+      ],
+      "name": "Minibrot Fun 22",
+      "id": "ZH8n1iB"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.00005,
+        "0.0002"
+      ],
+      "location": [
+        -1.2568514300681801,
+        -0.37970346347272205
+      ],
+      "sinSpeed": [
+        "-.2",
+        "-.21"
+      ],
+      "startEndIterationA": [
+        "100",
+        "524"
+      ],
+      "sinFactStartEnd": [
+        0.00001,
+        0.00015
+      ],
+      "startEndIterationB": [
+        "100",
+        "524"
+      ],
+      "angleStartEnd": [
+        "120",
+        "120"
+      ],
+      "sinInitSpeed": [
+        "-1",
+        "-2"
+      ],
+      "description": "Mandelbrot Elephant Valley Minbrot",
+      "name": "",
+      "seedShift": [
+        "0.000034",
+        "0.00004"
+      ],
+      "id": "ZMncSld",
+      "sineWaves2": [
+        {
+          "": "",
+          "x": {
+            "frequency": 11,
+            "phase": 1,
+            "amplitude": 1,
+            "speed": -11
+          },
+          "y": {
+            "frequency": 3,
+            "phase": 1,
+            "amplitude": 3,
+            "speed": -12
+          }
+        },
+        {
+          "": "",
+          "x": {
+            "frequency": 111,
+            "phase": 1,
+            "amplitude": 0.1,
+            "speed": 221
+          },
+          "y": {
+            "frequency": 11,
+            "phase": 1,
+            "amplitude": 0.1,
+            "speed": 331
+          }
+        }
+      ],
+      "color1": "#331fa8",
+      "pertubations": [
+        {
+          "iteration": 100,
+          "iterationRadius": 10,
+          "pertubation": [
+            0.00032910000000000003,
+            0.00022800000000000007
+          ]
+        }
+      ]
+    },
+    {
+      "frame": 1,
+      "zoomStartEnd": [
+        0.03125,
+        0.5
+      ],
+      "location": [
+        -0.08283203125,
+        -0.617001953125
+      ],
+      "sinSpeed": [
+        1,
+        2
+      ],
+      "startEndIterationA": [
+        "100",
+        "900"
+      ],
+      "sinFactStartEnd": [
+        "0.001",
+        "0.1"
+      ],
+      "sinInitSpeed": [
+        "0.3",
+        ".2"
+      ],
+      "startEndIterationB": [
+        "200",
+        "400"
+      ],
+      "angleStartEnd": [
+        0,
+        "0"
+      ],
+      "description": "Fun with Elephants",
+      "seedShift": [
+        "0-0.0130078125-0.0032421875-0.000859375",
+        "00.00156250.0008593750.00265625"
+      ],
+      "sineWaves": [
+        {
+          "x": {
+            "phase": 1,
+            "amplitude": 31,
+            "frequency": 55,
+            "speed": 1
+          },
+          "y": {
+            "phase": 1,
+            "amplitude": 0.5,
+            "frequency": 22,
+            "speed": 1.3
+          }
+        },
+        {
+          "x": {
+            "phase": 0,
+            "amplitude": 1,
+            "frequency": 1,
+            "speed": 11
+          },
+          "y": {
+            "phase": 0,
+            "amplitude": 1,
+            "frequency": 1,
+            "speed": 11
+          }
+        }
+      ],
+      "name": "Mandelbrot Elephant Area",
+      "id": "NJ_txaL",
+      "sineWaves2": [
+        {
+          "x": {
+            "phase": 0,
+            "amplitude": 1,
+            "frequency": 1,
+            "speed": 1
+          },
+          "y": {
+            "phase": 0,
+            "amplitude": 2,
+            "frequency": 6,
+            "speed": 1
+          }
+        },
+        {
+          "x": {
+            "phase": 0,
+            "amplitude": 3,
+            "frequency": 5,
+            "speed": 2
+          },
+          "y": {
+            "phase": 0,
+            "amplitude": 4,
+            "frequency": 4,
+            "speed": 3
+          }
+        }
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.032,
+        0.016
+      ],
+      "location": [
+        0.2454,
+        -0.0014999999999999927
+      ],
+      "sinSpeed": [
+        "2.5",
+        "2.34"
+      ],
+      "startEndIterationA": [
+        "10",
+        "1500"
+      ],
+      "sinFactStartEnd": [
+        ".0005",
+        "0.25"
+      ],
+      "startEndIterationB": [
+        "10",
+        "500"
+      ],
+      "angleStartEnd": [
+        90,
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Helena Approved Temple Elephants Dancing 2",
+      "seedShift": [
+        "0",
+        "0"
+      ],
+      "sineWaves2": [
+        {
+          "x": {
+            "phase": 1,
+            "amplitude": 1,
+            "frequency": 15,
+            "speed": -0.1
+          },
+          "y": {
+            "phase": 1,
+            "amplitude": 2,
+            "frequency": -14,
+            "speed": -3.1
+          }
+        },
+        {
+          "x": {
+            "phase": 1,
+            "amplitude": 1,
+            "frequency": -15,
+            "speed": 12.2
+          },
+          "y": {
+            "phase": 6,
+            "amplitude": 1,
+            "frequency": 4,
+            "speed": 3.1
+          }
+        }
+      ],
+      "name": "",
+      "id": "iE1TniB"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.008,
+        0.016
+      ],
+      "location": [
+        0.23289999999999994,
+        0.0005000000000001869
+      ],
+      "sinSpeed": [
+        "2.5",
+        "2.34"
+      ],
+      "startEndIterationA": [
+        "50",
+        "450"
+      ],
+      "sinFactStartEnd": [
+        ".002",
+        "0.002"
+      ],
+      "startEndIterationB": [
+        "10",
+        "500"
+      ],
+      "angleStartEnd": [
+        57,
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Elephants Dancing 2",
+      "seedShift": [
+        "0.02",
+        "0"
+      ],
+      "sineWaves2": [
+        {
+          "x": {
+            "phase": 2,
+            "amplitude": 21,
+            "frequency": 17,
+            "speed": 3
+          },
+          "y": {
+            "phase": 33,
+            "amplitude": 42,
+            "frequency": -13,
+            "speed": 2
+          }
+        },
+        {
+          "x": {
+            "phase": 2,
+            "amplitude": 73,
+            "frequency": 33,
+            "speed": 4
+          },
+          "y": {
+            "phase": 33,
+            "amplitude": 111,
+            "frequency": -1.74,
+            "speed": 7
+          }
+        }
+      ],
+      "name": "123",
+      "id": "r2nVg9K"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.0001,
+        "0.0002"
+      ],
+      "location": [
+        -1.25688893006818,
+        -0.37972496347272205
+      ],
+      "sinSpeed": [
+        "-.2",
+        "-.21"
+      ],
+      "startEndIterationA": [
+        500,
+        724
+      ],
+      "sinFactStartEnd": [
+        0.0001,
+        0.00001
+      ],
+      "startEndIterationB": [
+        "100",
+        "524"
+      ],
+      "angleStartEnd": [
+        "120",
+        "120"
+      ],
+      "sinInitSpeed": [
+        "-1",
+        "-2"
+      ],
+      "description": "Mandelbrot Elephant Valley Minbrot",
+      "name": "Funky Elephants Yummz thing",
+      "seedShift": [
+        "0.000034",
+        "0.00004"
+      ],
+      "sineWaves2": [
+        {
+          "": "",
+          "x": {
+            "frequency": 5,
+            "phase": 1,
+            "amplitude": 2,
+            "speed": -3
+          },
+          "y": {
+            "frequency": 3,
+            "phase": 2,
+            "amplitude": 3,
+            "speed": -5
+          }
+        }
+      ],
+      "id": "p1rnN7c"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "1",
+        "1"
+      ],
+      "location": [
+        -0.5,
+        "0"
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        "0",
+        100
+      ],
+      "sinFactStartEnd": [
+        0.1,
+        0.1
+      ],
+      "startEndIterationB": [
+        "0",
+        "0"
+      ],
+      "angleStartEnd": [
+        270,
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "000 Mandelbrot Null2",
+      "category_ids": [
+        1
+      ],
+      "seedShift": [
+        null,
+        null
+      ],
+      "name": "Minibrot Fun 223",
+      "id": "lAeJ0GP",
+      "pertubations": [
+        {
+          "iteration": 10,
+          "iterationRadius": 10,
+          "pertubation": [
+            -0.41000000000000003,
+            0.04999999999999999
+          ]
+        },
+        {
+          "iteration": 60,
+          "iterationRadius": 10,
+          "pertubation": [
+            0.8099999999999999,
+            -0.010000000000000231
+          ]
+        },
+        {
+          "iteration": "",
+          "iterationRadius": "",
+          "pertubation": [
+            null,
+            null
+          ]
+        }
+      ],
+      "sineWaves2": [
+        {
+          "": "",
+          "x": {
+            "frequency": 133,
+            "phase": 1,
+            "amplitude": 1,
+            "speed": 5
+          },
+          "y": {
+            "frequency": 122,
+            "phase": 1,
+            "amplitude": 1,
+            "speed": 3
+          }
+        }
+      ]
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.0003,
+        "1"
+      ],
+      "location": [
+        0.25752546484375005,
+        0.0010726210937499995
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        20,
+        30
+      ],
+      "sinFactStartEnd": [
+        "0",
+        0.1
+      ],
+      "startEndIterationB": [
+        "0",
+        "0"
+      ],
+      "angleStartEnd": [
+        195,
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "000 Mandelbrot Null2",
+      "category_ids": [
+        1
+      ],
+      "seedShift": [
+        null,
+        null
+      ],
+      "name": "Minibrot Fun Neu Elephants",
+      "id": "LpKuEoZ",
+      "sineWaves2": [
+        {
+          "": "",
+          "x": {
+            "frequency": 5,
+            "phase": 1,
+            "amplitude": 1,
+            "speed": 22
+          },
+          "y": {
+            "frequency": 3,
+            "phase": 1,
+            "amplitude": 0.4,
+            "speed": 32
+          },
+          "iterationStart": 10,
+          "iterationEnd": 20
+        },
+        {
+          "": "",
+          "iterationStart": 20,
+          "iterationEnd": 30,
+          "x": {
+            "frequency": 2,
+            "phase": 3,
+            "amplitude": 1,
+            "speed": 3
+          },
+          "y": {
+            "frequency": 3,
+            "phase": 1,
+            "amplitude": 1,
+            "speed": 2
+          }
+        },
+        {
+          "": "",
+          "iterationStart": 30,
+          "iterationEnd": 40,
+          "x": {
+            "frequency": 14,
+            "phase": 1,
+            "amplitude": 3,
+            "speed": 11
+          },
+          "y": {
+            "frequency": 3,
+            "phase": 1,
+            "amplitude": 4,
+            "speed": 1
+          }
+        }
+      ],
+      "pertubations": [
+        {
+          "iteration": 50,
+          "iterationRadius": 5,
+          "pertubation": [
+            0,
+            0
+          ]
+        }
+      ],
+      "iterationStart": 1,
+      "iterationEnd": 1
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.00015,
+        "1"
+      ],
+      "location": [
+        0.25827096484375,
+        -0.0014998789062500002
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        15,
+        20
+      ],
+      "sinFactStartEnd": [
+        "0",
+        0.1
+      ],
+      "startEndIterationB": [
+        "0",
+        "0"
+      ],
+      "angleStartEnd": [
+        337,
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "000 Mandelbrot Null2",
+      "category_ids": [
+        1
+      ],
+      "seedShift": [
+        null,
+        null
+      ],
+      "name": "Elephants Gallop",
+      "sineWaves2": [
+        {
+          "": "",
+          "x": {
+            "frequency": 1,
+            "phase": 1,
+            "amplitude": 1,
+            "speed": 21
+          },
+          "y": {
+            "frequency": 1,
+            "phase": 1,
+            "amplitude": 1,
+            "speed": 11
+          }
+        }
+      ],
+      "pertubations": [
+        {
+          "iteration": 15,
+          "iterationRadius": 5,
+          "pertubation": [
+            -0.001344,
+            0.000006000000000000037
+          ]
+        },
+        {
+          "iteration": 100,
+          "iterationRadius": 10,
+          "pertubation": [
+            0.010308,
+            -0.0027839999999999996
+          ]
+        }
+      ],
+      "id": "eVbc-WW"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "0.01",
+        "0.01"
+      ],
+      "location": [
+        "-0.74",
+        -0.1875
+      ],
+      "sinSpeed": [
+        ".005",
+        ".00034"
+      ],
+      "startEndIterationA": [
+        "0",
+        "1024"
+      ],
+      "sinFactStartEnd": [
+        "001",
+        "0.01"
+      ],
+      "startEndIterationB": [
+        "1024",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Seahorse Valley Anim 1",
+      "name": "",
+      "seedShift": [
+        0,
+        0
+      ],
+      "id": "Jbw3stW"
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        0.0012,
+        "1"
+      ],
+      "location": [
+        {
+          "frames": []
+        },
+        {
+          "frames": []
+        }
+      ],
+      "sinSpeed": [
+        ".5",
+        "11.34"
+      ],
+      "startEndIterationA": [
+        {
+          "frames": []
+        },
+        {
+          "frames": []
+        }
+      ],
+      "sinFactStartEnd": [
+        {
+          "0": "0",
+          "frames": []
+        },
+        {
+          "frames": []
+        }
+      ],
+      "startEndIterationB": [
+        "0",
+        "0"
+      ],
+      "angleStartEnd": [
+        195,
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "000 Mandelbrot Null2",
+      "category_ids": [
+        1
+      ],
+      "seedShift": [
+        0,
+        0
+      ],
+      "name": "Jumping Elephants",
+      "sineWaves2": [
+        {
+          "": "",
+          "x": {
+            "frequency": 5,
+            "phase": 1,
+            "amplitude": 111,
+            "speed": 3
+          },
+          "y": {
+            "frequency": 3,
+            "phase": 1,
+            "amplitude": 0.4,
+            "speed": 32
+          },
+          "iterationStart": 10,
+          "iterationEnd": 20
+        },
+        {
+          "": "",
+          "iterationStart": 20,
+          "iterationEnd": 30,
+          "x": {
+            "frequency": 2,
+            "phase": 3,
+            "amplitude": 1,
+            "speed": 3
+          },
+          "y": {
+            "frequency": 3,
+            "phase": 1,
+            "amplitude": 1,
+            "speed": 2
+          }
+        },
+        {
+          "": "",
+          "iterationStart": 30,
+          "iterationEnd": 40,
+          "x": {
+            "frequency": 14,
+            "phase": 1,
+            "amplitude": 3,
+            "speed": 11
+          },
+          "y": {
+            "frequency": 3,
+            "phase": 1,
+            "amplitude": 4,
+            "speed": 1
+          }
+        }
+      ],
+      "pertubations": [
+        {
+          "iteration": 50,
+          "iterationRadius": 5,
+          "pertubation": [
+            {
+              "frames": []
+            },
+            {
+              "frames": []
+            }
+          ]
+        },
+        {
+          "iteration": 10,
+          "iterationRadius": 1,
+          "pertubation": [
+            {
+              "frames": []
+            },
+            {
+              "frames": []
+            }
+          ]
+        },
+        {
+          "iteration": 10,
+          "iterationRadius": 1,
+          "pertubation": [
+            {
+              "frames": []
+            },
+            {
+              "frames": [
+                {
+                  "frame": 1,
+                  "value": 12
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "iterationStart": 1,
+      "iterationEnd": 1,
+      "id": "QqBBeKJ",
+      "KEYFRAMES": {
+        "pertubations": [
+          {
+            "pertubation": [
+              {
+                "frames": []
+              },
+              {
+                "frames": []
+              }
+            ]
+          },
+          {
+            "pertubation": [
+              {
+                "frames": []
+              },
+              {
+                "frames": []
+              }
+            ]
+          },
+          {
+            "pertubation": [
+              {
+                "frames": []
+              },
+              {
+                "frames": [
+                  {
+                    "frame": 12,
+                    "value": 32
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "location": [
+          {
+            "frames": []
+          },
+          {
+            "frames": []
+          }
+        ],
+        "sinFactStartEnd": [
+          {
+            "frames": []
+          },
+          {
+            "frames": []
+          }
+        ],
+        "startEndIterationA": [
+          {
+            "frames": []
+          },
+          {
+            "frames": []
+          }
+        ]
+      }
+    },
+    {
+      "frame": 0,
+      "zoomStartEnd": [
+        "0.01",
+        "0.01"
+      ],
+      "location": [
+        "-0.74",
+        -0.1875
+      ],
+      "sinSpeed": [
+        ".005",
+        ".00034"
+      ],
+      "startEndIterationA": [
+        "0",
+        "1024"
+      ],
+      "sinFactStartEnd": [
+        "001",
+        "0.01"
+      ],
+      "startEndIterationB": [
+        "1024",
+        "1024"
+      ],
+      "angleStartEnd": [
+        "0",
+        "0"
+      ],
+      "sinInitSpeed": [
+        "3",
+        "7"
+      ],
+      "description": "Seahorse",
+      "name": "Seahorse ANimride",
+      "seedShift": [
+        0,
+        0
+      ],
+      "id": "qYUi-Kd"
+    },
+    {
+      "name": "NEW Anim",
+      "description": "",
+      "seedShift": [
+        0,
+        0
+      ],
+      "KEYFRAMES": {
+        "seedShift": {
+          "frames": [],
+          "frames194": {
+            "frame": 0,
+            "value": [
+              0,
+              0
+            ]
+          }
+        },
+        "location": {
+          "frames": [],
+          "frames194": {
+            "frame": 0,
+            "value": [
+              0,
+              0
+            ]
+          }
+        },
+        "zoomStartEnd": {
+          "frames": [],
+          "frames194": {
+            "frame": 0,
+            "value": [
+              0,
+              0
+            ]
+          }
+        },
+        "sinFactStartEnd": {
+          "frames": [],
+          "frames194": {
+            "frame": 0,
+            "value": [
+              0,
+              0
+            ]
+          }
+        },
+        "startEndIterationA": {
+          "frames": [],
+          "frames194": {
+            "frame": 0,
+            "value": [
+              0,
+              0
+            ]
+          }
+        },
+        "startEndIterationB": {
+          "frames": [],
+          "frames194": {
+            "frame": 0,
+            "value": [
+              0,
+              0
+            ]
+          }
+        },
+        "angleStartEnd": {
+          "frames": [],
+          "frames194": {
+            "frame": 0,
+            "value": [
+              0,
+              0
+            ]
+          }
+        },
+        "pertubations": [
+          {
+            "pertubation": {
+              "frames": [
+                {
+                  "frame": 0,
+                  "value": [
+                    -0.002607421875,
+                    0.0076953125
+                  ]
+                },
+                {
+                  "frame": 721,
+                  "value": [
+                    -0.16783203124999999,
+                    0.027431640624999996
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "KEYFRAMES": {
+          "pertubations": [
+            {
+              "pertubation": {
+                "frames": [
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  },
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "location": [
+        0.28389648437500004,
+        0.012548828125000001
+      ],
+      "zoomStartEnd": [
+        0.0009765625,
+        0
+      ],
+      "sinFactStartEnd": [
+        0,
+        1
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        216,
+        0
+      ],
+      "id": "MqUAGMh",
+      "pertubations": [],
+      "sineWaves2": [
+        {
+          "iterationStart": 15,
+          "iterationEnd": 100,
+          "x": {
+            "phase": 0,
+            "amplitude": 0.01,
+            "frequency": 12,
+            "speed": 1
+          },
+          "y": {
+            "phase": 0,
+            "amplitude": 0.0007,
+            "frequency": 2.1,
+            "speed": 1
+          }
+        }
+      ],
+      "julia": false,
+      "color1": "#ffffff",
+      "color2": "#123456"
+    },
+    {
+      "name": "NEW MINIBROT",
+      "description": "",
+      "seedShift": [
+        0,
+        0
+      ],
+      "KEYFRAMES": {
+        "seedShift": {
+          "frames": []
+        },
+        "location": {
+          "frames": []
+        },
+        "zoomStartEnd": {
+          "frames": []
+        },
+        "sinFactStartEnd": {
+          "frames": []
+        },
+        "startEndIterationA": {
+          "frames": []
+        },
+        "startEndIterationB": {
+          "frames": []
+        },
+        "angleStartEnd": {
+          "frames": []
+        },
+        "pertubations": [
+          {
+            "pertubation": {
+              "frames": [
+                {
+                  "frame": 0,
+                  "value": [
+                    0.016404687499999997,
+                    0.0004921874999999997
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                },
+                {
+                  "frame": 500,
+                  "value": [
+                    0.05089531249999998,
+                    0.033296875
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                }
+              ]
+            }
+          },
+          {
+            "pertubation": {
+              "frames": [
+                {
+                  "frame": 0,
+                  "value": [
+                    0.016404687499999997,
+                    0.0004921874999999997
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                },
+                {
+                  "frame": 500,
+                  "value": [
+                    0.05089531249999998,
+                    0.033296875
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                }
+              ]
+            }
+          }
+        ],
+        "KEYFRAMES": {
+          "pertubations": [
+            {
+              "pertubation": {
+                "frames": [
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  },
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "pertubation": {
+                "frames": [
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  },
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "KEYFRAMES": {
+            "pertubations": [
+              null,
+              {
+                "pertubation": {
+                  "frames": [
+                    null,
+                    {
+                      "value": {
+                        "frames": [
+                          {
+                            "value": {
+                              "frames": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "location": [
+        -0.3724220256728207,
+        0.03541887723473219
+      ],
+      "zoomStartEnd": [
+        1,
+        0
+      ],
+      "sinFactStartEnd": [
+        1,
+        1
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        269,
+        0
+      ],
+      "id": "te6OCpd",
+      "color1": "#ff0000",
+      "color2": "#e7e7e7",
+      "sineWaves2": [
+        {
+          "iterationStart": 1,
+          "iterationEnd": 132,
+          "x": {
+            "frequency": 31,
+            "phase": 1,
+            "amplitude": 0.1,
+            "speed": 0.001
+          },
+          "y": {
+            "frequency": 3,
+            "phase": 0,
+            "amplitude": 0.1,
+            "speed": 0.00117
+          }
+        },
+        {
+          "iterationStart": 0,
+          "iterationEnd": 400,
+          "x": {
+            "phase": 1,
+            "amplitude": 0.001,
+            "frequency": 31,
+            "speed": 0.005
+          },
+          "y": {
+            "phase": 1,
+            "amplitude": 0.001,
+            "frequency": 12,
+            "speed": 0.003
+          }
+        }
+      ],
+      "pertubations": [
+        {
+          "iteration": 11,
+          "iterationRadius": 11,
+          "pertubation": [
+            -0.18982031249999998,
+            -0.3106265625
+          ]
+        },
+        {
+          "iteration": 10,
+          "iterationRadius": 1,
+          "pertubation": [
+            0,
+            0
+          ]
+        }
+      ],
+      "startEndIteration": [
+        0,
+        0
+      ],
+      "julia": false
+    },
+    {
+      "name": "Elephant Gross 2",
+      "description": "",
+      "seedShift": [
+        0,
+        0
+      ],
+      "KEYFRAMES": {
+        "seedShift": {
+          "frames": []
+        },
+        "location": {
+          "frames": []
+        },
+        "zoomStartEnd": {
+          "frames": []
+        },
+        "sinFactStartEnd": {
+          "frames": []
+        },
+        "startEndIterationA": {
+          "frames": []
+        },
+        "startEndIterationB": {
+          "frames": []
+        },
+        "angleStartEnd": {
+          "frames": []
+        }
+      },
+      "location": [
+        0,
+        0
+      ],
+      "zoomStartEnd": [
+        0,
+        0
+      ],
+      "sinFactStartEnd": [
+        0,
+        0
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        0,
+        0
+      ],
+      "id": "iV9j2Iq"
+    },
+    {
+      "name": "NEW MINIBROT FUN33",
+      "description": "",
+      "seedShift": [
+        0,
+        0
+      ],
+      "KEYFRAMES": {
+        "seedShift": {
+          "frames": []
+        },
+        "location": {
+          "frames": [
+            {
+              "frame": 240,
+              "value": [
+                -0.7379689006728206,
+                -0.1487217477652678
+              ],
+              "easingIn": "",
+              "easingOut": "",
+              "isExponential": false
+            },
+            {
+              "frame": 600,
+              "value": [
+                -0.7485157756728206,
+                -0.13989362276526782
+              ],
+              "easingIn": "",
+              "easingOut": "",
+              "isExponential": false
+            }
+          ]
+        },
+        "zoomStartEnd": {
+          "frames": []
+        },
+        "sinFactStartEnd": {
+          "frames": []
+        },
+        "startEndIterationA": {
+          "frames": []
+        },
+        "startEndIterationB": {
+          "frames": []
+        },
+        "angleStartEnd": {
+          "frames": []
+        },
+        "pertubations": [
+          {
+            "pertubation": {
+              "frames": [
+                {
+                  "frame": 0,
+                  "value": [
+                    0.016404687499999997,
+                    0.0004921874999999997
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                },
+                {
+                  "frame": 500,
+                  "value": [
+                    0.05089531249999998,
+                    0.033296875
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                }
+              ]
+            }
+          },
+          {
+            "pertubation": {
+              "frames": [
+                {
+                  "frame": 0,
+                  "value": [
+                    0.016404687499999997,
+                    0.0004921874999999997
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                },
+                {
+                  "frame": 500,
+                  "value": [
+                    0.05089531249999998,
+                    0.033296875
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                }
+              ]
+            }
+          }
+        ],
+        "KEYFRAMES": {
+          "pertubations": [
+            {
+              "pertubation": {
+                "frames": [
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  },
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "pertubation": {
+                "frames": [
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  },
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "KEYFRAMES": {
+            "pertubations": [
+              null,
+              {
+                "pertubation": {
+                  "frames": [
+                    null,
+                    {
+                      "value": {
+                        "frames": [
+                          {
+                            "value": {
+                              "frames": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "location": [
+        -0.7485157756728206,
+        -0.13989362276526782
+      ],
+      "zoomStartEnd": [
+        0.00390625,
+        0
+      ],
+      "sinFactStartEnd": [
+        1,
+        1
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        268,
+        0
+      ],
+      "color1": "#ff0000",
+      "color2": "#e7e7e7",
+      "sineWaves2": [
+        {
+          "iterationStart": 1,
+          "iterationEnd": 112,
+          "x": {
+            "frequency": 1,
+            "phase": 1,
+            "amplitude": 0.01,
+            "speed": 0.03103
+          },
+          "y": {
+            "frequency": 12,
+            "phase": 0,
+            "amplitude": 0.01,
+            "speed": 0.01
+          }
+        }
+      ],
+      "pertubations": [
+        {
+          "iteration": 10,
+          "iterationRadius": 1,
+          "pertubation": [
+            -0.0004453125,
+            -0.0000015625000000002751
+          ]
+        }
+      ],
+      "startEndIteration": [
+        0,
+        0
+      ],
+      "id": "F-8jr4m"
+    },
+    {
+      "name": "Man 1",
+      "description": "",
+      "seedShift": [
+        0,
+        0
+      ],
+      "location": [
+        0,
+        0
+      ],
+      "zoomStartEnd": [
+        1,
+        0
+      ],
+      "sinFactStartEnd": [
+        1,
+        1
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        0,
+        0
+      ],
+      "id": "Fc0e6NX",
+      "color1": "#b62424",
+      "color2": "#6e7fff",
+      "startEndIteration": [
+        1,
+        1000
+      ],
+      "sineWaves2": []
+    },
+    {
+      "name": "Minibrot Sinus 1`",
+      "category_ids": [
+        3,
+        1
+      ],
+      "description": "Some newer tests with keyframes and sines",
+      "seedShift": [
+        0,
+        0
+      ],
+      "location": [
+        0,
+        0
+      ],
+      "zoomStartEnd": [
+        1,
+        0
+      ],
+      "sinFactStartEnd": [
+        0,
+        0
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        0,
+        0
+      ],
+      "id": "dbJLMpY",
+      "color1": "#3b96c0",
+      "color2": "#77cd47",
+      "KEYFRAMES": {
+        "location": {
+          "frames": []
+        }
+      },
+      "startEndIteration": [
+        0,
+        0
+      ],
+      "sineWaves2": []
+    },
+    {
+      "name": "",
+      "description": "",
+      "color1": "#ff0000",
+      "color2": "#00ffff",
+      "seedShift": [
+        0,
+        0
+      ],
+      "location": [
+        0,
+        0
+      ],
+      "zoomStartEnd": [
+        1
+      ],
+      "sinFactStartEnd": [
+        0,
+        0
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        0,
+        0
+      ],
+      "id": "iiuWPff"
+    },
+    {
+      "name": "Joyfun 1 testing",
+      "category_ids": [
+        1
+      ],
+      "description": "",
+      "color1": "#00c1ff",
+      "color2": "#310b38",
+      "seedShift": [
+        0,
+        0
+      ],
+      "location": [
+        0.06671875000000002,
+        -0.6156250000000001
+      ],
+      "zoomStartEnd": [
+        0.015625
+      ],
+      "sinFactStartEnd": [
+        0,
+        0
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        0,
+        0
+      ],
+      "id": "7NKdFbD",
+      "KEYFRAMES": {
+        "location": {
+          "frames": [
+            {
+              "frame": 946,
+              "value": [
+                -0.24390625,
+                -0.64
+              ],
+              "easingIn": "",
+              "easingOut": "",
+              "isExponential": false
+            }
+          ]
+        }
+      },
+      "startEndIteration": [
+        0,
+        0
+      ],
+      "sineWaves2": [
+        {
+          "iterationStart": 21,
+          "iterationEnd": 444,
+          "x": {
+            "phase": 0,
+            "amplitude": 0.05,
+            "frequency": 13,
+            "speed": 0.31
+          },
+          "y": {
+            "phase": 0,
+            "amplitude": 0.01,
+            "frequency": 21,
+            "speed": 0.13
+          }
+        }
+      ]
+    },
+    {
+      "name": "",
+      "description": "",
+      "color1": "#ff0000",
+      "color2": "#00ffff",
+      "seedShift": [
+        0,
+        0
+      ],
+      "location": [
+        0,
+        0
+      ],
+      "zoomStartEnd": [
+        1
+      ],
+      "sinFactStartEnd": [
+        0,
+        0
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        0,
+        0
+      ],
+      "id": "Kor5VSt"
+    },
+    {
+      "name": "Test Evoke 2024",
+      "description": "",
+      "color1": "#ff0000",
+      "color2": "#00ffff",
+      "seedShift": [
+        0,
+        0
+      ],
+      "location": [
+        -0.27,
+        0.53
+      ],
+      "zoomStartEnd": [
+        1
+      ],
+      "sinFactStartEnd": [
+        0,
+        0
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        0,
+        0
+      ],
+      "id": "7ojsUfe",
+      "julia": false,
+      "KEYFRAMES": {
+        "location": {
+          "frames": []
+        }
+      },
+      "startEndIteration": [
+        0,
+        0
+      ],
+      "sineWaves2": [
+        {
+          "iterationStart": 0,
+          "iterationEnd": 0,
+          "x": {
+            "phase": 2,
+            "amplitude": 2,
+            "frequency": 3,
+            "speed": 4
+          },
+          "y": {
+            "phase": 4,
+            "amplitude": 2,
+            "frequency": 1,
+            "speed": 1
+          }
+        }
+      ],
+      "pertubations": [
+        {
+          "iteration": 10,
+          "iterationRadius": 1,
+          "pertubation": [
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "NEW MINIBROT 24 1",
+      "description": "",
+      "seedShift": [
+        0,
+        0
+      ],
+      "KEYFRAMES": {
+        "seedShift": {
+          "frames": []
+        },
+        "location": {
+          "frames": []
+        },
+        "zoomStartEnd": {
+          "frames": []
+        },
+        "sinFactStartEnd": {
+          "frames": []
+        },
+        "startEndIterationA": {
+          "frames": []
+        },
+        "startEndIterationB": {
+          "frames": []
+        },
+        "angleStartEnd": {
+          "frames": []
+        },
+        "pertubations": [
+          {
+            "pertubation": {
+              "frames": [
+                {
+                  "frame": 0,
+                  "value": [
+                    0.016404687499999997,
+                    0.0004921874999999997
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                },
+                {
+                  "frame": 500,
+                  "value": [
+                    0.05089531249999998,
+                    0.033296875
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                }
+              ]
+            }
+          },
+          {
+            "pertubation": {
+              "frames": [
+                {
+                  "frame": 0,
+                  "value": [
+                    0.016404687499999997,
+                    0.0004921874999999997
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                },
+                {
+                  "frame": 500,
+                  "value": [
+                    0.05089531249999998,
+                    0.033296875
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                }
+              ]
+            }
+          }
+        ],
+        "KEYFRAMES": {
+          "pertubations": [
+            {
+              "pertubation": {
+                "frames": [
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  },
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "pertubation": {
+                "frames": [
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  },
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "KEYFRAMES": {
+            "pertubations": [
+              null,
+              {
+                "pertubation": {
+                  "frames": [
+                    null,
+                    {
+                      "value": {
+                        "frames": [
+                          {
+                            "value": {
+                              "frames": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "location": [
+        -0.7558595256728207,
+        -0.034268622765267806
+      ],
+      "zoomStartEnd": [
+        0.015625,
+        0
+      ],
+      "sinFactStartEnd": [
+        1,
+        1
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        0,
+        0
+      ],
+      "color1": "#ff0000",
+      "color2": "#e7e7e7",
+      "sineWaves2": [
+        {
+          "iterationStart": 100,
+          "iterationEnd": 120,
+          "x": {
+            "frequency": 3,
+            "phase": 1,
+            "amplitude": 0.2,
+            "speed": 1
+          },
+          "y": {
+            "frequency": 7,
+            "phase": 0,
+            "amplitude": 0.1,
+            "speed": 0.7
+          }
+        }
+      ],
+      "pertubations": [
+        {
+          "iteration": 10,
+          "iterationRadius": 1,
+          "pertubation": [
+            -0.0004453125,
+            -0.0000015625000000002751
+          ]
+        }
+      ],
+      "startEndIteration": [
+        0,
+        0
+      ],
+      "julia": false,
+      "id": "EFcX9iR"
+    },
+    {
+      "name": "NEW MINIBROT 24 2",
+      "description": "",
+      "seedShift": [
+        0,
+        0
+      ],
+      "KEYFRAMES": {
+        "seedShift": {
+          "frames": []
+        },
+        "location": {
+          "frames": []
+        },
+        "zoomStartEnd": {
+          "frames": []
+        },
+        "sinFactStartEnd": {
+          "frames": []
+        },
+        "startEndIterationA": {
+          "frames": []
+        },
+        "startEndIterationB": {
+          "frames": []
+        },
+        "angleStartEnd": {
+          "frames": []
+        },
+        "pertubations": [
+          {
+            "pertubation": {
+              "frames": [
+                {
+                  "frame": 0,
+                  "value": [
+                    0.016404687499999997,
+                    0.0004921874999999997
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                },
+                {
+                  "frame": 500,
+                  "value": [
+                    0.05089531249999998,
+                    0.033296875
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                }
+              ]
+            }
+          },
+          {
+            "pertubation": {
+              "frames": [
+                {
+                  "frame": 0,
+                  "value": [
+                    0.016404687499999997,
+                    0.0004921874999999997
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                },
+                {
+                  "frame": 500,
+                  "value": [
+                    0.05089531249999998,
+                    0.033296875
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                }
+              ]
+            }
+          }
+        ],
+        "KEYFRAMES": {
+          "pertubations": [
+            {
+              "pertubation": {
+                "frames": [
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  },
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "pertubation": {
+                "frames": [
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  },
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "KEYFRAMES": {
+            "pertubations": [
+              null,
+              {
+                "pertubation": {
+                  "frames": [
+                    null,
+                    {
+                      "value": {
+                        "frames": [
+                          {
+                            "value": {
+                              "frames": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "location": [
+        -0.3724220256728207,
+        0.03541887723473219
+      ],
+      "zoomStartEnd": [
+        1,
+        0
+      ],
+      "sinFactStartEnd": [
+        1,
+        1
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        269,
+        0
+      ],
+      "color1": "#0088ff",
+      "color2": "#7f0000",
+      "sineWaves2": [
+        {
+          "iterationStart": 10,
+          "iterationEnd": 132,
+          "x": {
+            "frequency": 31,
+            "phase": 1,
+            "amplitude": 1,
+            "speed": 1
+          },
+          "y": {
+            "frequency": 3,
+            "phase": 0,
+            "amplitude": 0.1,
+            "speed": 3
+          }
+        },
+        {
+          "iterationStart": 0,
+          "iterationEnd": 40,
+          "x": {
+            "phase": 1,
+            "amplitude": 0.1,
+            "frequency": 31,
+            "speed": 1
+          },
+          "y": {
+            "phase": 1,
+            "amplitude": 0.1,
+            "frequency": 12,
+            "speed": 2
+          }
+        }
+      ],
+      "pertubations": [
+        {
+          "iteration": 11,
+          "iterationRadius": 11,
+          "pertubation": [
+            -0.18982031249999998,
+            -0.3106265625
+          ]
+        },
+        {
+          "iteration": 10,
+          "iterationRadius": 1,
+          "pertubation": [
+            0,
+            0
+          ]
+        }
+      ],
+      "startEndIteration": [
+        0,
+        0
+      ],
+      "julia": false,
+      "id": "BipNpI0",
+      "color3": "#ffffff"
+    },
+    {
+      "name": "NEW Anim 22",
+      "description": "",
+      "seedShift": [
+        0,
+        0
+      ],
+      "KEYFRAMES": {
+        "seedShift": {
+          "frames": [],
+          "frames194": {
+            "frame": 0,
+            "value": [
+              0,
+              0
+            ]
+          }
+        },
+        "location": {
+          "frames": [],
+          "frames194": {
+            "frame": 0,
+            "value": [
+              0,
+              0
+            ]
+          }
+        },
+        "zoomStartEnd": {
+          "frames": [],
+          "frames194": {
+            "frame": 0,
+            "value": [
+              0,
+              0
+            ]
+          }
+        },
+        "sinFactStartEnd": {
+          "frames": [],
+          "frames194": {
+            "frame": 0,
+            "value": [
+              0,
+              0
+            ]
+          }
+        },
+        "startEndIterationA": {
+          "frames": [],
+          "frames194": {
+            "frame": 0,
+            "value": [
+              0,
+              0
+            ]
+          }
+        },
+        "startEndIterationB": {
+          "frames": [],
+          "frames194": {
+            "frame": 0,
+            "value": [
+              0,
+              0
+            ]
+          }
+        },
+        "angleStartEnd": {
+          "frames": [],
+          "frames194": {
+            "frame": 0,
+            "value": [
+              0,
+              0
+            ]
+          }
+        },
+        "pertubations": [
+          {
+            "pertubation": {
+              "frames": [
+                {
+                  "frame": 0,
+                  "value": [
+                    -0.002607421875,
+                    0.0076953125
+                  ]
+                },
+                {
+                  "frame": 721,
+                  "value": [
+                    -0.16783203124999999,
+                    0.027431640624999996
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "KEYFRAMES": {
+          "pertubations": [
+            {
+              "pertubation": {
+                "frames": [
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  },
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "location": [
+        0.28389648437500004,
+        0.012548828125000001
+      ],
+      "zoomStartEnd": [
+        0.0009765625,
+        0
+      ],
+      "sinFactStartEnd": [
+        0,
+        1
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        216,
+        0
+      ],
+      "pertubations": [],
+      "sineWaves2": [
+        {
+          "iterationStart": 15,
+          "iterationEnd": 100,
+          "x": {
+            "phase": 0,
+            "amplitude": 0.01,
+            "frequency": 12,
+            "speed": 0.003
+          },
+          "y": {
+            "phase": 0,
+            "amplitude": 0.0007,
+            "frequency": 2.1,
+            "speed": 0.0001
+          }
+        }
+      ],
+      "julia": false,
+      "color1": "#ffffff",
+      "color2": "#123456",
+      "id": "pYSJkVN"
+    },
+    {
+      "name": "EVOKE CREATOR 001",
+      "description": "12",
+      "color1": "#ff0000",
+      "color2": "#00ffff",
+      "seedShift": [
+        0,
+        0
+      ],
+      "location": [
+        0.27,
+        0.02000000000000004
+      ],
+      "zoomStartEnd": [
+        1
+      ],
+      "sinFactStartEnd": [
+        0,
+        0
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        0,
+        0
+      ],
+      "id": "pLOGudV",
+      "julia": false,
+      "sineWaves2": [
+        {
+          "iterationStart": 10,
+          "iterationEnd": 140,
+          "x": {
+            "phase": 0,
+            "amplitude": 1,
+            "frequency": 1,
+            "speed": 2
+          },
+          "y": {
+            "phase": 0,
+            "amplitude": 1,
+            "frequency": 31,
+            "speed": 3
+          }
+        },
+        {
+          "iterationStart": 30,
+          "iterationEnd": 80,
+          "x": {
+            "phase": 0,
+            "amplitude": 1,
+            "frequency": 2,
+            "speed": 1
+          },
+          "y": {
+            "phase": 0,
+            "amplitude": 1,
+            "frequency": 33,
+            "speed": 1
+          }
+        },
+        {
+          "iterationStart": 77,
+          "iterationEnd": 120,
+          "x": {
+            "phase": 0,
+            "amplitude": 1,
+            "frequency": 12,
+            "speed": 1
+          },
+          "y": {
+            "phase": 0,
+            "amplitude": 1,
+            "frequency": 1,
+            "speed": 1
+          }
+        }
+      ],
+      "pertubations": []
+    },
+    {
+      "name": "NEW MINIBROT 24 3",
+      "description": "",
+      "seedShift": [
+        0,
+        0
+      ],
+      "KEYFRAMES": {
+        "seedShift": {
+          "frames": []
+        },
+        "location": {
+          "frames": []
+        },
+        "zoomStartEnd": {
+          "frames": []
+        },
+        "sinFactStartEnd": {
+          "frames": []
+        },
+        "startEndIterationA": {
+          "frames": []
+        },
+        "startEndIterationB": {
+          "frames": []
+        },
+        "angleStartEnd": {
+          "frames": []
+        },
+        "pertubations": [
+          {
+            "pertubation": {
+              "frames": [
+                {
+                  "frame": 0,
+                  "value": [
+                    0.016404687499999997,
+                    0.0004921874999999997
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                },
+                {
+                  "frame": 500,
+                  "value": [
+                    0.05089531249999998,
+                    0.033296875
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                }
+              ]
+            }
+          },
+          {
+            "pertubation": {
+              "frames": [
+                {
+                  "frame": 0,
+                  "value": [
+                    0.016404687499999997,
+                    0.0004921874999999997
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                },
+                {
+                  "frame": 500,
+                  "value": [
+                    0.05089531249999998,
+                    0.033296875
+                  ],
+                  "easingIn": "",
+                  "easingOut": "",
+                  "isExponential": false
+                }
+              ]
+            }
+          }
+        ],
+        "KEYFRAMES": {
+          "pertubations": [
+            {
+              "pertubation": {
+                "frames": [
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  },
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "pertubation": {
+                "frames": [
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  },
+                  {
+                    "value": {
+                      "frames": []
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "KEYFRAMES": {
+            "pertubations": [
+              null,
+              {
+                "pertubation": {
+                  "frames": [
+                    null,
+                    {
+                      "value": {
+                        "frames": [
+                          {
+                            "value": {
+                              "frames": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "location": [
+        -0.3724220256728207,
+        0.03541887723473219
+      ],
+      "zoomStartEnd": [
+        1,
+        0
+      ],
+      "sinFactStartEnd": [
+        1,
+        1
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        269,
+        0
+      ],
+      "color1": "#0088ff",
+      "color2": "#7f0000",
+      "sineWaves2": [
+        {
+          "iterationStart": 10,
+          "iterationEnd": 132,
+          "x": {
+            "frequency": 31,
+            "phase": 1,
+            "amplitude": 1,
+            "speed": 1
+          },
+          "y": {
+            "frequency": 3,
+            "phase": 0,
+            "amplitude": 0.1,
+            "speed": 3
+          }
+        },
+        {
+          "iterationStart": 0,
+          "iterationEnd": 40,
+          "x": {
+            "phase": 1,
+            "amplitude": 0.1,
+            "frequency": 31,
+            "speed": 1
+          },
+          "y": {
+            "phase": 1,
+            "amplitude": 0.1,
+            "frequency": 12,
+            "speed": 2
+          }
+        }
+      ],
+      "pertubations": [
+        {
+          "iteration": 5,
+          "iterationRadius": 4,
+          "pertubation": [
+            -0.24982031249999995,
+            -0.3006265625
+          ]
+        },
+        {
+          "iteration": 20,
+          "iterationRadius": 15,
+          "pertubation": [
+            -0.07999999999999996,
+            -0.3299999999999999
+          ]
+        }
+      ],
+      "startEndIteration": [
+        0,
+        0
+      ],
+      "julia": false,
+      "color3": "#ffffff",
+      "id": "xRdd5cv"
+    }
+  ]
+}
