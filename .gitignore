@@ -287,5 +287,5 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 *.wav
-
+*.html
 demoeditor/node_modules
