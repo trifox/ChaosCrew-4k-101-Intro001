@@ -289,3 +289,4 @@ __pycache__/
 *.wav
 *.html
 demoeditor/node_modules
+out.html
