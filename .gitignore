@@ -61,8 +61,8 @@ artifacts/
 *.rsp
 *.sbr
 *.tlb
-*.tli
-*.tlh
+*.tli 
+*.iml
 *.asm
 *.inc
 *.wav
