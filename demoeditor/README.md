@@ -2,6 +2,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+ok this should be as described below, for using start the local database in the db folder as well
+
 ## Available Scripts
 
 In the project directory, you can run:

@@ -1,0 +1,110 @@
+bpm: 120
+rowsperbeat: 4
+score:
+    tracks:
+        - numvoices: 1
+          order: [0, 1, 2]
+          patterns: [[57, 1, 1, 1, 56, 1, 1, 1, 57, 1, 1, 1, 57, 1, 1, 1, 56, 1, 1, 1, 57, 1, 1, 1, 56, 1, 1, 1, 56, 1, 1, 1, 57, 1, 1, 1, 56, 1, 1, 1, 57, 1, 1, 1, 57, 1, 1, 1, 56, 1, 1, 1, 57, 1, 1, 1, 56, 1, 1, 1, 56], [69, 1, 1, 1, 60, 1, 1, 1, 69, 1, 1, 1, 69, 1, 1, 1, 60, 1, 1, 1, 69, 1, 1, 1, 60, 1, 1, 1, 60], [69, 1, 1, 1, 60, 1, 1, 1, 64, 1, 1, 1, 68, 1, 1, 1, 69, 1, 1, 1, 60, 1, 1, 1, 64, 1, 1, 1, 68]]
+        - numvoices: 1
+          order: [-1, 0, 1]
+          patterns: [[1, 60, 1, 60, 1, 1, 1, 1, 1, 60, 1, 1, 1, 60, 1, 1, 1, 60, 1, 60, 1, 1, 1, 1, 1, 60, 1, 1, 1, 60], [1, 60, 1, 60, 1, 1, 1, 1, 1, 60, 1, 1, 1, 60, 1, 1, 1, 60, 1, 60, 1, 1, 1, 1, 1, 60, 1, 1, 1, 60]]
+    rowsperpattern: 32
+    length: 3
+patch:
+    - name: Bass3
+      numvoices: 1
+      units:
+        - type: envelope
+          id: 1
+          parameters: {attack: 0, decay: 72, gain: 128, release: 16, stereo: 0, sustain: 0}
+        - type: send
+          id: 2
+          parameters: {amount: 88, port: 0, sendpop: 0, target: 249}
+        - type: distort
+          id: 3
+          parameters: {drive: 16, stereo: 0}
+        - type: noise
+          id: 5
+          parameters: {gain: 128, shape: 64, stereo: 0}
+        - type: distort
+          id: 6
+          parameters: {drive: 64, stereo: 0}
+        - type: hold
+          id: 66
+          parameters: {holdfreq: 0, stereo: 0}
+        - type: send
+          id: 67
+          parameters: {amount: 74, port: 0, sendpop: 1, target: 250}
+        - type: oscillator
+          id: 248
+          parameters: {color: 64, detune: 62, gain: 128, lfo: 0, phase: 0, shape: 64, stereo: 0, transpose: 64, type: 2}
+        - type: oscillator
+          id: 11
+          parameters: {color: 16, detune: 74, gain: 128, lfo: 0, phase: 0, shape: 64, stereo: 0, transpose: 64, type: 2}
+        - type: addp
+          id: 12
+          parameters: {stereo: 0}
+        - type: filter
+          id: 249
+          parameters: {bandpass: 0, frequency: 48, highpass: 0, lowpass: 1, negbandpass: 0, neghighpass: 0, resonance: 128, stereo: 0}
+        - type: filter
+          id: 250
+          parameters: {bandpass: 0, frequency: 48, highpass: 0, lowpass: 1, negbandpass: 0, neghighpass: 0, resonance: 64, stereo: 0}
+        - type: mulp
+          id: 251
+          parameters: {stereo: 0}
+        - type: delay
+          id: 16
+          parameters: {damp: 64, dry: 128, feedback: 64, notetracking: 2, pregain: 64, stereo: 0}
+          varargs: [32]
+        - type: pan
+          id: 17
+          parameters: {panning: 64, stereo: 0}
+        - type: outaux
+          id: 18
+          parameters: {auxgain: 16, outgain: 128, stereo: 1}
+    - name: Hihat
+      numvoices: 1
+      units:
+        - type: envelope
+          id: 258
+          parameters: {attack: 0, decay: 64, gain: 128, release: 0, stereo: 0, sustain: 0}
+        - type: noise
+          id: 259
+          parameters: {gain: 128, shape: 64, stereo: 0}
+        - type: mulp
+          id: 260
+          parameters: {stereo: 0}
+        - type: filter
+          id: 4
+          parameters: {bandpass: 0, frequency: 128, highpass: 1, lowpass: 0, negbandpass: 0, neghighpass: 0, resonance: 128, stereo: 0}
+        - type: pan
+          id: 261
+          parameters: {panning: 64, stereo: 0}
+        - type: outaux
+          id: 262
+          parameters: {auxgain: 0, outgain: 64, stereo: 1}
+    - name: Piano
+      numvoices: 1
+      units:
+        - type: envelope
+          id: 269
+          parameters: {attack: 0, decay: 74, gain: 128, release: 74, stereo: 0, sustain: 0}
+        - type: oscillator
+          id: 270
+          parameters: {color: 128, detune: 64, gain: 128, lfo: 0, phase: 64, shape: 96, stereo: 0, transpose: 64, type: 0}
+        - type: oscillator
+          id: 271
+          parameters: {color: 128, detune: 64, gain: 128, lfo: 0, phase: 64, shape: 96, stereo: 0, transpose: 64, type: 0}
+        - type: mulp
+          id: 272
+          parameters: {stereo: 0}
+        - type: mulp
+          id: 273
+          parameters: {stereo: 0}
+        - type: pan
+          id: 274
+          parameters: {panning: 64, stereo: 0}
+        - type: outaux
+          id: 59
+          parameters: {auxgain: 93, outgain: 64, stereo: 1}

@@ -61,8 +61,11 @@ artifacts/
 *.rsp
 *.sbr
 *.tlb
-*.tli
-*.tlh
+*.tli 
+*.iml
+*.asm
+*.inc
+*.wav
 *.tmp
 *.tmp_proj
 *.log
@@ -287,5 +290,6 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 *.wav
-
+*.html
 demoeditor/node_modules
+out.html
