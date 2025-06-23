@@ -1,3 +1,7 @@
+# Acknowledgments
+
+- mnandelbrot roots feature database from this thread https://fractalforums.org/collaborations-and-jobs/6/mandelbrot-roots-challenge/4865/msg35192#new
+
 # How to build
 
 the idea is to only be able to build project without visualstudio installation
