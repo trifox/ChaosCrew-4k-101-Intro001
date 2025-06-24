@@ -7,6 +7,7 @@ import { DemokeyframeEdit } from "./resources/demokeyframes/KeyFramesEdit";
 import { DemokeyframeCreate } from "./resources/demokeyframes/KeyFramesCreate";
 import { DemosEdit } from "./resources/demos/DemosEdit";
 import categories from "./resources/categories";
+import v101 from "./resources/v101demo";
 import keyframes from "./resources/demokeyframes";
 import sinewaves from "./resources/sinewaves";
 import { theme } from "./Theme";
@@ -28,6 +29,7 @@ const App = () => (
       <Resource {...explicitkeyframes} />
       <Resource name="demos" list={ListGuesser} edit={DemosEdit} />
       <Resource {...categories} />
+      <Resource {...v101} />
     </Admin>
     <TimelineView></TimelineView>
   </TimelineContextProvider>

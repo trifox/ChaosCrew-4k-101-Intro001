@@ -1,7 +1,6 @@
 #version 130
 
 uniform int m; // Time in sample player
-out vec4 o;
 
 const float PI = 3.1416;
 
@@ -9,10 +8,8 @@ const int MAX_ITER = 256;
 const int NUM_LOCATIONS = 2;
 const float bpm = 140.0;
 
-float t = float(m) / 44100.0;
-float secsPerBeat = 60.0 / bpm;
-
 // vec3 real,imag,scale for locations 
+const int LOCS=11;
 const vec3 locations[11] = vec3[11](
   ///////////////////// 1
 vec3(0.247111618194178,-0.623180551151656,0.000004765875645556761),
@@ -38,20 +35,14 @@ vec3(-0.15652016683,-1.0322471089,0.08188697027694743),
 vec3(-1.754877666,0,0.18201981627989672)
 
 );
+ 
 
-float getDiddle(vec2 one,vec2 two,float t){
-
-
-
-return 0;
-
-}
-
-
-float mandelbrot(in vec2 c,float t)
+float mandelbrot( vec2 c,float t)
 { 
     float l = 0.0;
     vec2 z = vec2(0.0);
+float secsPerBeat = 60.0 / bpm;
+
 
     int currentTimeInterval = int(floor(t / secsPerBeat )) % 11;
     vec3 loc = locations[currentTimeInterval];
@@ -70,16 +61,22 @@ float explerp(float v0, float v1, float t) {
     return exp(mix(log(v0), log(v1), t));
 }
 
-void main()
+vec4 mainWrap()
 {
+float t = float(m) / 44100.0;
+float secsPerBeat = 60.0 / bpm;
+
+
+
     float currentTimeInterval = t / secsPerBeat;
     float interval = fract(currentTimeInterval);
 
 if(currentTimeInterval<12.0){
 
 // need to chek, green for firsr ywa, 3 i
-    o = vec4(0.,0.,0.1*sin(t*1000.0), 1.0);
-}else{
+     return vec4(0.,0.,0.1*sin(t*1000.0), 1.0);
+     
+     }else{
 
 
     vec2 res = vec2(1280, 720);
@@ -87,6 +84,21 @@ if(currentTimeInterval<12.0){
     vec2 v = -1.0 + 2.0 * q; // to -1 +1 real,imag
 
     float l = mandelbrot(v,t-12.0*secsPerBeat);
-    o = vec4(l, l, l, 1.0);
+    return vec4(l, l, l, 1.0);
 }
 }
+
+//EOE/////////////////////////////////////////////////////////////////////////////////////////////////////// 
+//
+// This is c++ call wrap header, ommit this when editing it in the editor
+//
+// Reasoning:
+// out declarations toplevel are not really useful, in c++ world it is the declared output of the shader
+// in glsl this is handled similarly but using that gl_FragColor instead, having the mainWrap() method to be used in html editor
+out vec4 o;
+void main()
+{
+ o=mainWrap();
+
+}
+
