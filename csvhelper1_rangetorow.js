@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /* as of now this is a standalone utility to work with the feature database */
-/* here we want to create a list of closest periods as an output to have an ingoing progression for an intro e.g.*/
-// rudimentary usage> node .\csvhelper2.js feature-database_by_fractalforums_org.csv 200 .005
+/* here we list the closest radius rows around a given row :) */
+
 const fs = require("fs");
 const path = require("path");
 
@@ -63,46 +63,54 @@ function rowToObject(row) {
   return obj;
 }
 
+function printJsStyle(it) {
+  return console.log(
+    `[${rowToObject(it).realNucleus},${rowToObject(it).imagNucleus},'${
+      rowToObject(it).period
+    }-${rowToObject(it).angledInternalAddress}',${
+      rowToObject(it).minibrotSize
+    },${rowToObject(it).orientationRadians}], `
+  );
+}
+function printGlslStyle(it) {
+  var obj = rowToObject(it);
+  return console.log(
+    `vec4(${obj.orientationRadians},${obj.minibrotSize},${obj.realNucleus},${obj.imagNucleus}), `
+  );
+}
 const center = rows[index];
 const x0 = center[9];
 const y0 = center[10];
 
+function printJsStyle(it) {
+  return console.log(
+    `[${rowToObject(it).realNucleus},${rowToObject(it).imagNucleus},'${
+      rowToObject(it).period
+    }-${rowToObject(it).angledInternalAddress}',${
+      rowToObject(it).minibrotSize
+    },${rowToObject(it).orientationRadians}], `
+  );
+}
 console.log("---------------------------- Reference Row");
 console.log(rowToObject(center));
-console.log("---------------------------- Reference Row");
+console.log(printGlslStyle(center));
+console.log("---------------------------- /Reference Row");
 
-function getClosestNextRow(row) {
-  function dist(row1, row2) {
-    const dx = row1[9] - row2[9];
-    const dy = row1[10] - row2[10];
-    return Math.sqrt(dx * dx + dy * dy);
-  }
+// === Euklidische Distanz und Filter ===
+const result = rows
+  .filter((it) => /** remove mirrors */ it[10] < 0)
+  .filter((it) => /** remove periods of choice */ it[0] < 8)
+  .filter((row) => {
+    //console.log("row is", row);
+    const dx = row[9] - x0;
+    const dy = row[10] - y0;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    return distance <= radius;
+  });
 
-  const result = rows
-    .filter((it) => it[0] == row[0] - 1)
-    .filter((it) => it[1] == "True")
-    // .filter((it) => it[2] == row[2].split(" ").slice(0, -1).join(" "))
-    .sort((it1, it2) => {
-      // console.log("row is", it, dist(row, it));
-
-      return dist(row, it1) - dist(row, it2);
-    })[0];
-
-  return result;
-}
-
-function outputGlsl(row) {
+// === Ergebnis ausgeben ===
+result.forEach((row) => {
   var obj = rowToObject(row);
-  return `vec3(${obj.realNucleus},${obj.imagNucleus},${
-    obj.minibrotSize * 10.0
-  }),`;
-}
-
-console.log("Ok wir sind auf level", center[0]);
-var current = center;
-var rowIndex = 1;
-for (var i = 3; i < center[0]; i++) {
-  console.log(`///////////////////// ${rowIndex++}`);
-  current = getClosestNextRow(current);
-  console.log(outputGlsl(current));
-}
+  console.log(`${obj.period} ${obj.angledInternalAddress}`);
+  console.log(printGlslStyle(row));
+});

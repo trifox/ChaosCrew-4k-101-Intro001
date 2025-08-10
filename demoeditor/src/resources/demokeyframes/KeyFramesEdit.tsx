@@ -76,7 +76,10 @@ export const DemokeyframeEdit = () => (
               min={0}
               max={360}
             ></NumberEditSlider>
-            <MandelbrotRootsSelect source="location"></MandelbrotRootsSelect>
+            <MandelbrotRootsSelect
+              sourceLoc="location"
+              sourceZoom="zoomStartEnd[0]"
+            ></MandelbrotRootsSelect>
             {/* <BooleanInput
               source="julia"
               title={`When using Julia mode, use a pertubation covering the whole iteration

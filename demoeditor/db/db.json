@@ -205,6 +205,42 @@
           ]
         }
       ]
+    },
+    {
+      "name": "refurio1",
+      "category_ids": [
+        3
+      ],
+      "description": "test fuer demo ",
+      "seedShift": [
+        0,
+        0
+      ],
+      "location": [
+        -0.730827254598,
+        0.3593229327601
+      ],
+      "zoomStartEnd": [
+        0.00006081625152253863,
+        0
+      ],
+      "sinFactStartEnd": [
+        0,
+        0
+      ],
+      "startEndIterationA": [
+        0,
+        0
+      ],
+      "startEndIterationB": [
+        0,
+        0
+      ],
+      "angleStartEnd": [
+        0,
+        0
+      ],
+      "id": 4
     }
   ],
   "sinewaves": [

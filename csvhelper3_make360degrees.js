@@ -98,11 +98,44 @@ function outputGlsl(row) {
   }),`;
 }
 
-console.log("Ok wir sind auf level", center[0]);
-var current = center;
-var rowIndex = 1;
-for (var i = 3; i < center[0]; i++) {
-  console.log(`///////////////////// ${rowIndex++}`);
-  current = getClosestNextRow(current);
-  console.log(outputGlsl(current));
+function getAngleDist(row1, row2) {
+  return row1[7] - row2[7];
 }
+// Define a function named degrees_to_radians that converts degrees to radians.
+function degrees_to_radians(degrees) {
+  // Store the value of pi.
+  var pi = Math.PI;
+  // Multiply degrees by pi divided by 180 to convert to radians.
+  return degrees * (pi / 180);
+}
+var objCenter = rowToObject(center);
+console.log("Ok wir sind auf level", objCenter.period);
+console.log("und haben winkel", objCenter.orientationRadians);
+console.log("und arbeiten mit", objCenter);
+
+function filterMyFriendForAngleDist(targetAngleRadiansMyFriendin) {
+  return rows.filter((it) => {
+    return it[7] - targetAngleRadiansMyFriendin;
+  });
+}
+// filtern wir mal so nah wie moeglich an 10 grad away +
+
+var xxx = rows.filter((it) => {
+  // console.log(
+  //   "hehe, also was hammwa, ist 7 wirklich radianshit> ",
+  //   it[7],
+  //   "wir suchen",
+  //   objCenter.orientationRadians - degrees_to_radians(10),
+  //   "=",
+  //   it[7] - objCenter.orientationRadians - degrees_to_radians(10)
+  // );
+  return (
+    it[7] -
+      filterMyFriendForAngleDist(
+        objCenter.orientationRadians - degrees_to_radians(10)
+      ) <
+    0.1
+  );
+});
+
+console.log(xxx);
