@@ -5,38 +5,41 @@ uniform int m; // Time in sample player
 const float PI = 3.1416;
 const float PI2= PI*2;
 
+
+const vec2 iResolution=vec2(1920,1080);
+
 const int MAX_ITER = 256; 
 const float bpm = 154.0;
 const float secsPerBeat = 60.0 / bpm;
 const float beatTrack_1[16]=float[16](
     
-    0.,0.,0.,0.,
-    0.,0.,0.,0., 
     1.,0.,0.,0.,
-    0.,0.,0.,0.
+    1.,0.,0.,0., 
+    1.,0.,0.,0.,
+    1.,0.,0.,0.
     ); 
 const float beatTrack_2[16]=float[16](
-    1.,0.,1.,1.,
-    1.,0.,1.,1., 
-    1.,0.,1.,1.,
-    1.,0.,1.,1.
+    0.,1.,0.,0.,
+    0.,1.,0.,0., 
+    0.,1.,0.,0.,
+    0.,1.,0.,0.
     ); 
 
 // cowbell
 const float beatTrack_3[16]=float[16](
     0.,0.,0.,0.,
     0.,0.,0.,0., 
-    0.,1.,0.,1.,
-    0.,1.,0.,1.
+    0.,0.,0.,0.,
+    0.,0.,0.,0.
     ); 
 
 // achtelnoten
 const float beatTrack_4_8chtel[32]=float[32](
 
-    0.,0.,1.,1.,0.0,1.,1.,0.,
-    0.,0.,1.,1.,0.0,1.,1.,0.,
-    0.,0.,1.,1.,0.0,1.,1.,0.,
-    0.,0.,1.,1.,0.0,1.,1.,0. 
+    1.,0.,0.,0.,0.0,0.,0.,0.,
+    0.,0.,0.,0.,0.0,0.,0.,0.,
+    0.,0.,0.,0.,0.0,0.,0.,0.,
+    0.,0.,0.,0.,0.0,0.,0.,0. 
 
     ); 
 
@@ -61,6 +64,201 @@ vec4(0.35925922476,0.64251373714,0.04714342394528389,2.0447869433636376),
 vec4(-0.15652016683,1.0322471089,0.08188697027694743,2.4777729354236357),
 vec4(-1.754877666,0,0.18201981627989672,3.141592653589793) 
 );
+
+// refurio cardioid abrollen
+
+float funFactor=10.;
+
+float abs2(vec2 z) {
+  return dot(z,z);
+}
+float arg(vec2 z) {
+  return atan(z.y, z.x);
+}
+vec2 cmul(vec2 a, vec2 b) {
+  return vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x);
+}
+vec2 cdiv(vec2 a, vec2 b) {
+  return vec2(dot(a,b), a.y*b.x-a.x*b.y)/abs2(b);
+}
+vec2 cinv(vec2 b) {
+  return vec2(b.x, b.y)/abs2(b);
+}
+vec2 cexp(vec2 z) {
+  float e = exp(z[0]);
+  return vec2(e*cos(z[1]), e*sin(z[1]));
+}
+vec2 cln(vec2 z) {
+  return vec2(log(sqrt(abs2(z))), arg(z));
+}
+vec2 cpow(vec2 b, vec2 e) {
+  return cexp(cmul(e,cln(b)));
+}
+vec2 csqrt(vec2 z) {
+  return cpow(z, vec2(.5,0.));
+}
+float osc(float lo, float hi, float f, float t) {
+  float d=(hi-lo)/2.;
+  return sin(t*f*pi*2.)*d;
+}
+
+// https://github.com/hughsk/glsl-hsv2rgb/blob/master/index.glsl
+vec3 hsv2rgb(in vec3 c) {
+  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+// coloring:
+vec4 phase(vec2 z) {
+  return hsv2rgb(vec3(arg(z)/pi, 1., 1.)).xyzz;
+}
+vec4 axies(vec2 z) {
+  float t = arg(z)/pi;
+  float a = mod(2.*t+2., 2.)-1.;
+  a = abs(2.*a)-1.;
+  a = asin(a)/pi+.5;
+  return vec4(a,a,a, 1.);
+}
+vec4 icolor(int i) {
+  float x = float(i);
+  return vec4(sin(x*100.), sin(x*200.), sin(x*300.), 0.);
+}
+vec4 black = vec4(0., 0., 0., 1.);
+vec4 white = vec4(1., 1., 1., 1.);
+
+vec2 p2c(vec2 p) {
+  vec2 wh2 = iResolution.xy/2.;
+  float pr = min(wh2.x, wh2.y);
+  vec2 c = (p - wh2)/pr;
+  vec2 r = radius * vec2(cos(angle), sin(angle));
+  return cmul(r,c) + center;
+}
+
+vec4 f(vec2 c) {
+  int n = 1000;
+  const vec2 one = vec2(1.,0.);
+  float di = 1.5*(1.+cos(iTime/3.));
+  c = cinv(csqrt(one-4.*c)) - vec2(0.,di);
+  c = 0.25*(one-cinv(cmul(c,c)));
+  vec2 z = c;
+  vec2 dz = vec2(0.,0.);
+  vec2 phi = z;
+  for(int i=0; i<n; ++i) {
+    dz = 2.*cmul(z,dz);
+    z = cmul(z,z);
+    z+=c;
+    vec2 a = cdiv(z,z-c);
+    float s = pow(0.5, float(i));
+    phi = cmul(phi, cpow(a, vec2(s,0.)));
+    if(abs2(z) > 10000.) {
+      return white*clamp(abs2(z)/pow(2.,float(i)/(1.+di)),0.,1.);
+    }
+  }
+  return phase(z);
+}
+
+
+
+// Refurio Julia Bobs
+ const float pi = radians(180.);
+
+vec2 cmul(vec2 a, vec2 b) {
+  return vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x);
+}
+float abs2(vec2 z) {
+  return dot(z, z);
+}
+float arg(vec2 z) {
+  return atan(z.y, z.x);
+} 
+
+float sqr(float x) {
+  return x*x;
+}
+
+vec3 hsv(float h, float s, float v) {
+  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+  vec3 p = abs(fract(vec3(h,h,h) + K.xyz) * 6.0 - K.www);
+  return v * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), s);
+}
+vec4 cmix(vec4 a, vec4 b, float t) {
+  return sqrt(mix((a)*(a), (b)*(b), t));
+}
+
+
+vec2  p2c_wh2;
+float p2c_pr;
+vec2  p2c_r;
+vec2 p2c_center;
+void p2c_init(vec2 center, float radius, float angle) {
+  p2c_wh2 = iResolution.xy/2.;
+  p2c_pr = min(p2c_wh2.x, p2c_wh2.y);
+  p2c_r = radius * vec2(cos(angle), sin(angle));
+  p2c_center = center;
+}
+vec2 p2c(vec2 p) {
+    // picture to complex
+  vec2 c = (p - p2c_wh2)/p2c_pr;
+  return cmul(c, p2c_r) + p2c_center;
+}
+
+
+
+vec2 cardioid(float a) {
+  float r = 1.;
+  float x = cos(a)*r;
+  float y = sin(a)*r;
+  return vec2(1.-(sqr(x-1.)-sqr(y)),
+              -2.*(x-1.)*y
+             )/4.;
+}
+
+
+float f_n;
+float f_k;
+vec2 f_ph;
+void f_init(int n) {
+  f_n = float(n);
+}
+bool f(vec2 c, vec2 z0) {
+  vec2 z = z0;
+  f_ph = z;
+  for(f_k = 0.; f_k < f_n; ++f_k) {
+    z = cmul(z, z) + c; 
+    if(abs2(z) > 256.)
+      return false;
+  }
+  return true;
+} 
+vec3 scene0(vec2 xy,float iTime,vec4 loc) {
+  f_init(50);
+  float t = iTime*2.;
+  float n = 100.; 
+  float r = 0.2; // (sin(t/10.)/2.+.5)*2.; // amplitude of movements
+  float ia = 1.; // (sin(t/3.)/2.); // how much of the circle to draw
+  float lissa = 1.; // (sin(t/12.)/2.+.5)*2.+1.;
+  float scale = 1.3;
+  r /= scale;
+  float b = 0.;
+  vec3 col = vec3(0.);
+  for(float i = 0.; i < n; ++i) {
+    vec2 c = cardioid(t+i/n*sin(t/20.))*1.1;
+    vec2 o = r*vec2(cos(t-i/n*pi*2.*ia*lissa), sin(-t+i/n*pi*2.*ia));
+//    o = c;
+    p2c_init(vec2(0., 0.), 2., 0.);
+    vec2 p = p2c(xy)/scale-o;    
+    if(f(c, p)) {
+      if(i==0.)
+        return vec3(1.);
+      return hsv((t/4.-i/n/3.), .5, pow(1.-i/n, 2.));
+    } 
+    col += hsv(0.03, 0.5, pow(f_k/f_n, 1./8.)); // weird glow
+  }
+  return col/f_n;
+}
+////////////////
+
 
 // A simple anf really efficient way to create color variation.
 //
@@ -128,7 +326,7 @@ vec4 mandelbrotRenderJulia( vec2 c,vec4 loc){
 
 vec4 getKeyFrame(float t){
 
-    int currentTimeInterval = int(floor(t / (secsPerBeat*16.) )) % 17;
+    int currentTimeInterval = int(floor(t / (secsPerBeat*.5) )) % 17;
     return locations[currentTimeInterval];
 } 
 float explerp(float v0, float v1, float t) {
@@ -174,9 +372,8 @@ if(currentTimeInterval<8.){
      
      }else{
 
-
-    vec2 res = vec2(1920, 1080);
-    vec2 q =fragCoord / res.xy; // Normalize
+ 
+    vec2 q =fragCoord / iResolution.xy; // Normalize
     vec2 v = -1.0 + 2.0 * q; // to -1 +1 real,imag
     // arg allgemeiner winkel, normalisiert dann auf 0..1 also der winkel 0..360
     float arg=(atan( v.x,v.y)+PI)/PI2;
@@ -206,7 +403,10 @@ result.x+=tap*beatTrack_4_8chtel[indexAchtel]*0.2*sin(arg*arg*PI2 +.23);
 result.y+=tap*beatTrack_4_8chtel[indexAchtel]*0.2*sin(arg*arg*PI2 +.23);
 result.z+=tap*beatTrack_4_8chtel[indexAchtel]*0.2*sin(arg*arg*PI2 +.23);
  }
-return result;
+
+
+
+return  vec4(scene0(fragCoord,t,getKeyFrame(t)),1.);
 }
 }
 
