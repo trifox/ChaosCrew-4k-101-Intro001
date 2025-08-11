@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "*.txt": "glsl",
+    "string": "cpp"
+  }
+}

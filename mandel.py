@@ -1,8 +1,71 @@
 import numpy as np 
 from PIL import Image, ImageDraw, ImageFont
 import math
+def _hsv_to_rgb(h, s, v):
+    i = np.floor(h * 6).astype(int)
+    f = h * 6 - i
+    p = v * (1 - s)
+    q = v * (1 - f * s)
+    t = v * (1 - (1 - f) * s)
+    i_mod = i % 6
+    r = np.select([i_mod == 0, i_mod == 1, i_mod == 2, i_mod == 3, i_mod == 4, i_mod == 5],
+                  [v, q, p, p, t, v])
+    g = np.select([i_mod == 0, i_mod == 1, i_mod == 2, i_mod == 3, i_mod == 4, i_mod == 5],
+                  [t, v, v, q, p, p])
+    b = np.select([i_mod == 0, i_mod == 1, i_mod == 2, i_mod == 3, i_mod == 4, i_mod == 5],
+                  [p, p, t, v, v, q])
+    return np.stack([r, g, b], axis=-1)
 
 def mandelbrot(cx, cy, zoom, angle, width=400, height=400, max_iter=100):
+    """
+    Rendert einen Mandelbrot-Ausschnitt.
+    
+    cx, cy: Zentrum (in der komplexen Ebene)
+    zoom: Maßstab (größer = näher)
+    angle: Rotation in Grad
+    width, height: Bildgröße
+    max_iter: maximale Iterationen
+    """
+    # Basisgröße (ohne Zoom) in der komplexen Ebene
+    scale = 3.0 / zoom
+    aspect = width / height
+
+    # Koordinaten-Raster (vor Rotation)
+    xs = np.linspace(-scale * aspect / 2, scale * aspect / 2, width, dtype=np.float64)
+    ys = np.linspace(-scale / 2, scale / 2, height, dtype=np.float64)
+    X, Y = np.meshgrid(xs, ys)
+
+    # Rotation anwenden
+    rad = math.radians(angle)
+    Xr = X * math.cos(rad) - Y * math.sin(rad)
+    Yr = X * math.sin(rad) + Y * math.cos(rad)
+
+    # In komplexe Koordinaten verschieben
+    C = (Xr + cx) + 1j * (Yr + cy)
+
+    Z = np.zeros_like(C)
+    counts = np.zeros(C.shape, dtype=np.float32)
+    mask = np.ones(C.shape, dtype=bool)
+
+    for i in range(max_iter):
+        Z[mask] = Z[mask] * Z[mask] + C[mask]
+        escaped = np.abs(Z) > 2.0
+        counts[escaped & mask] = i
+        mask &= ~escaped
+        if not mask.any():
+            break
+
+    # Normierung & Färbung
+    norm = counts / max_iter
+    hue = (0.95 - 0.95 * norm) % 1.0
+    sat = np.where(counts > 0, 0.9, 0.0)
+    val = np.where(counts > 0, 1.0, 0.0)
+
+    rgb = _hsv_to_rgb(hue, sat, val)
+    rgb_uint8 = (np.clip(rgb, 0, 1) * 255).astype(np.uint8)
+    return Image.fromarray(rgb_uint8, mode="RGB")
+
+def mandelbrotAlt(cx, cy, zoom, angle, width=400, height=400, max_iter=100):
     # Bild erstellen
     img = Image.new('RGB', (width, height))
     pixels = img.load()
@@ -51,58 +114,69 @@ def mandelbrot(cx, cy, zoom, angle, width=400, height=400, max_iter=100):
             pixels[x,y] = (color, color, color)
 
     return img
+def _hsv_to_rgb(h, s, v):
+    i = np.floor(h * 6).astype(int)
+    f = h * 6 - i
+    p = v * (1 - s)
+    q = v * (1 - f * s)
+    t = v * (1 - (1 - f) * s)
+    i_mod = i % 6
+    r = np.select([i_mod == 0, i_mod == 1, i_mod == 2, i_mod == 3, i_mod == 4, i_mod == 5],
+                  [v, q, p, p, t, v])
+    g = np.select([i_mod == 0, i_mod == 1, i_mod == 2, i_mod == 3, i_mod == 4, i_mod == 5],
+                  [t, v, v, q, p, p])
+    b = np.select([i_mod == 0, i_mod == 1, i_mod == 2, i_mod == 3, i_mod == 4, i_mod == 5],
+                  [p, p, t, v, v, q])
+    return np.stack([r, g, b], axis=-1)
 
 def julia(cx, cy, zoom, angle, width=400, height=400, max_iter=100):
-    # Bild erstellen
-    img = Image.new('RGB', (width, height))
-    pixels = img.load()
-
-    # Wandeln zu numpy.float32 für Single Precision
+    """
+    Rendert einen Mandelbrot-Ausschnitt.
     
-    print("Rendering Doubles",cx,cy,zoom,angle)
-    cx = np.float32(cx)
-    cy = np.float32(cy)
-    zoom = np.float32(zoom)
-    angle = np.float32(angle)
-    print("Rendering Floats",cx,cy,zoom,angle)
+    cx, cy: Zentrum (in der komplexen Ebene)
+    zoom: Maßstab (größer = näher)
+    angle: Rotation in Grad
+    width, height: Bildgröße
+    max_iter: maximale Iterationen
+    """
+    # Basisgröße (ohne Zoom) in der komplexen Ebene
+    scale = 3.0 / zoom
+    aspect = width / height
 
-    # Rotation-Matrix für den Winkel 
-    cos_a = np.cos(angle).astype(np.float32)
-    sin_a = np.sin(angle).astype(np.float32)
+    # Koordinaten-Raster (vor Rotation)
+    xs = np.linspace(-scale * aspect / 2, scale * aspect / 2, width, dtype=np.float64)
+    ys = np.linspace(-scale / 2, scale / 2, height, dtype=np.float64)
+    X, Y = np.meshgrid(xs, ys)
 
-    # Skalierung passend zum Zoom
-    scale =  zoom
+    # Rotation anwenden
+    rad = math.radians(angle)
+    Xr = X * math.cos(rad) - Y * math.sin(rad)
+    Yr = X * math.sin(rad) + Y * math.cos(rad)
 
-    for x in range(width):
-        for y in range(height):
-            # Normierte Koordinaten (-1 .. 1)
-            nx = (x - width/2) / (width/2)
-            ny = (y - height/2) / (height/2)
+    # In komplexe Koordinaten verschieben
+    C = (Xr + cx) + 1j * (Yr + cy)
 
-            # Rotation um Angle
-            rx = nx * cos_a - ny * sin_a
-            ry = nx * sin_a + ny * cos_a
+    Z = np.zeros_like(C)
+    counts = np.zeros(C.shape, dtype=np.float32)
+    mask = np.ones(C.shape, dtype=bool)
 
-            # Verschiebung und Zoom
-            zx =  np.float32(  rx* scale)
-            zy =  np.float32(  ry* scale)
+    for i in range(max_iter):
+        Z[mask] = Z[mask] * Z[mask] + C[mask]
+        escaped = np.abs(Z) > 2.0
+        counts[escaped & mask] = i
+        mask &= ~escaped
+        if not mask.any():
+            break
 
-            # Mandelbrot-Iteration
-            zx0, zy0 =  np.float32(zx), np.float32(zy)
-            zx=cx
-            zy=cy
-            i = 0
-            while zx0*zx0 + zy0*zy0 < 4 and i < max_iter:
-                xtemp = zx0*zx0 - zy0*zy0 + zx
-                zy0 = np.float32(2*zx0*zy0 + zy)
-                zx0 = np.float32(xtemp)
-                i += 1
+    # Normierung & Färbung
+    norm = counts / max_iter
+    hue = (0.95 - 0.95 * norm) % 1.0
+    sat = np.where(counts > 0, 0.9, 0.0)
+    val = np.where(counts > 0, 1.0, 0.0)
 
-            # Farbe: je nach Iterationszahl, simple Palette
-            color = 255 - int((i * 255 / max_iter))
-            pixels[x,y] = (color, color, color)
-
-    return img
+    rgb = _hsv_to_rgb(hue, sat, val)
+    rgb_uint8 = (np.clip(rgb, 0, 1) * 255).astype(np.uint8)
+    return Image.fromarray(rgb_uint8, mode="RGB")
 
 # Beispiel-Parameter aus deiner Liste (real, imag, zoom, angle)
 params = [
@@ -165,52 +239,6 @@ params = [
 (0.359892739013,0.684762020212,0.005553083570499503,3.1212786038479035),
 (0.35925922476,0.64251373714,0.04714342394528389,2.0447869433636376),
 (-0.15652016683,1.0322471089,0.08188697027694743,2.4777729354236357),
-(-1.754877666,0,0.18201981627989672,3.141592653589793),
-(0.41454631129228,-0.144863154352124,0.000002223890630045355,1.3530033171596558),
-(0.414682500672716,-0.145134528246019,0.000009584950919338333,-0.2747893305646976),
-(0.41406636191309,-0.14557276430874,0.000095502405196868,1.6362169391640733),
-(0.4151849701495,-0.1467207960502,0.00015837626742424426,0.5929211111473646),
-(0.4156154401242,-0.1490359148832,0.00043468013697464507,-0.659547022579832),
-(0.412962939722,-0.152846281898,0.0026314059074198834,-2.4669387254540656),
-(0.40489966518,-0.14582036377,0.0137915293869407,-1.3103920714734332),
-(0.43237619264,-0.22675990444,0.019870650227158178,-1.4949237379094331),
-(0.4433256334,-0.37296241666,0.02979002154572719,-1.7319180262293394),
-(0.35925922476,-0.64251373714,0.04714342394528389,-2.044786943363638),
-(-0.15652016683,-1.0322471089,0.08188697027694743,-2.477772935423636),
-(-1.754877666,0,0.18201981627989672,3.141592653589793),
-(-1.2934066886,0.43994190472363,0.000011901360740179637,2.986430957136852),
-(-1.2951891635854,0.440937435674443,0.000009074338984972875,1.7366942116368287),
-(-1.292558061034,0.4381988160866,0.00011637520095705769,1.5299828437050538),
-(-1.28408492553,0.427268896041,0.0015969109043169794,1.3000088526380376),
-(-1.2563679301,0.38032096347,0.028498444156839945,0.9684115640636399),
-(-1.94079980653,0,0.00983928985307716,3.141592653589793),
-(-1.754877666,0,0.18201981627989672,3.141592653589793), 
-(-1.2773135611555,-0.3517272542055,0.000010500464447502607,0.5584776879127991),
-(-1.2761901195939,-0.35393408441721,0.000027428310639290748,0.6706557404871057),
-(-1.2784746578109,-0.35111324367505,0.00004894935635449893,1.3970662537409173),
-(-1.274116315322,-0.3549942535053,0.00018620400945501206,1.3413048986262641),
-(-1.281184978294,-0.3509381764418,0.00019063083629504034,2.2637442471402687),
-(-1.2926258241427,-0.35266703528364,0.00002666478984322011,3.043402523680894),
-(-1.285677330214,-0.3527071237234,0.0004528441207283607,-3.062225112609597),
-(-1.252735884,-0.34247064789,0.012762410119084943,-1.857981297199099),
-(-1.28408492553,-0.427268896041,0.0015969109043169794,-1.3000088526380378),
-(-1.2563679301,-0.38032096347,0.028498444156839945,-0.9684115640636403),
-(-1.94079980653,0,0.00983928985307716,3.141592653589793),
-(-1.754877666,0,0.18201981627989672,3.141592653589793),
-(-0.5940514958762,-0.6292629667873,0.0002922483646680723,3.099261653530033),
-(-0.603421923426,-0.616048562056,0.0012598462863674836,2.403074537277332),
-(-0.6139771782069,-0.6188021849914,0.0002137761047844001,3.092495092954199),
-(-0.62088494971395,-0.61316570022097,0.00007441849875480086,-1.77685059163448),
-(-0.62236850514274,-0.60983298966161,0.00007993119868547747,1.2458534970737516),
-(-0.6165326858499,-0.6124313544614,0.0009183157781669933,1.4972586664462597),
-(-0.59246590275,-0.62134868926,0.02025460548275603,1.520412843678222),
-(-0.623532485956,-0.681064414225,0.0016925691892992266,-3.101970681355807),
-(-0.59689164465,-0.66298074458,0.021384109663499292,-2.697250740867463),
-(-0.198042099364,-1.10026953729,0.0068445800687591705,2.9934934161151103),
-(-0.15652016683,-1.0322471089,0.08188697027694743,-2.477772935423636),
-(-1.754877666,0,0.18201981627989672,3.141592653589793),
-(-1.754877666,0,0.18201981627989672,3.141592653589793),
-(-1.754877666,0,0.18201981627989672,3.141592653589793),
 (-1.754877666,0,0.18201981627989672,3.141592653589793)
 ]
 
@@ -221,7 +249,7 @@ overview_center = (-0.75, 0.0)
 overview_zoom = 1.5
 overview_angle = 0
 
-img = mandelbrot(overview_center[0], overview_center[1], overview_zoom, overview_angle,124,124)
+img = mandelbrot(overview_center[0], overview_center[1], overview_zoom, overview_angle,1024,1024)
 
 draw = ImageDraw.Draw(img)
 font = ImageFont.load_default() 
@@ -242,7 +270,7 @@ def coord_to_pixel(real, imag, cx, cy, zoom, angle, width, height):
 
 # Alle Punkte einzeichnen
 for idx, (r, i, z, a) in enumerate(params):
-    px, py = coord_to_pixel(r, i, overview_center[0], overview_center[1], overview_zoom, overview_angle, 124, 124)
+    px, py = coord_to_pixel(r, i, overview_center[0], overview_center[1], overview_zoom, overview_angle, 1024, 1024)
     draw.ellipse((px-2, py-2, px+2, py+2), fill=(255,0,0))
     draw.text((px+4, py-4), str(idx), font=font, fill=(255,255,0))
 
@@ -252,19 +280,10 @@ img.save("out/mandelbrot_map.jpg")
 # Rendere die Bilder und speichere sie ab
 for idx, (r, i, z, a) in enumerate(params):
     print(idx,"Rendering scale",z)
-    img = mandelbrot(r, i, z, 0,400,400,100) 
-    img.save(f"out/{idx}-mandel.jpg")
+  #  img = mandelbrot(r, i, 1/z, 0,400,400,100) 
+  #  img.save(f"out/{idx}-mandel.jpg")
 
-    img = mandelbrot(r, i, z,a,400,400,100,) 
-    img.save(f"out/{idx}_angled.jpg")
-
-    img = julia(r,i, 1, 0,400,400,100) 
-    img.save(f"out/{idx}_julia.jpg")
-    img = julia(r,i, .1, 0,400,400,100) 
-    img.save(f"out/{idx}_julia2.jpg")
-    img = julia(r,i, z*10, 0,400,400,100) 
-    img.save(f"out/{idx}_julia_zoom.jpg")
-    img = julia(r,i, z*10, a,400,400,100) 
-    img.save(f"out/{idx}_julia_zoom_angled.jpg")
+    img = mandelbrot(r, i, 1/z,a,400,400,100,) 
+    img.save(f"out/{idx}_angled.jpg") 
 
 
