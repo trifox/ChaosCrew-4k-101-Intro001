@@ -2,7 +2,7 @@
 setlocal
 
 REM === Konfigurationen ===
-set BUILD_CONFIG="Heavy Release"
+set BUILD_CONFIG="Editor"
 set BUILD_PLATFORM=win32
 set SLN_FILE=pbr-leviathan-2.0.sln
 
