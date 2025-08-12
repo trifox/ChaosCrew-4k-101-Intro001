@@ -132,7 +132,7 @@ if(currentTimeInterval<4.){
 
     float l = mandelbrot(v,t-secsPerBeat*16.);
 
-    l.x=sin(interval*PI);
+    l=sin(interval*PI);
     return vec4(l, l, l, 1.0);
 }
 }
