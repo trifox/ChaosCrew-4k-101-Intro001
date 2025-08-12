@@ -65,6 +65,233 @@ vec4(-0.15652016683,1.0322471089,0.08188697027694743,2.4777729354236357),
 vec4(-1.754877666,0,0.18201981627989672,3.141592653589793) 
 );
 
+
+
+vec2 rotate(vec2 p, float angle) {
+    float s = sin(angle);
+    float c = cos(angle);
+    return vec2(
+        c * p.x - s * p.y,
+        s * p.x + c * p.y
+    );
+}
+
+
+// font stuff
+////////////////////////////////////////////////////////////
+// font 5x6: covering 0-9, A-Z and some punctuation
+//
+// this font is a bit bigger: 5x6 and I' think I'm done
+// with bitmap fonts for a while :-P
+//
+// I'm actually a bit pleased with these and the arcade
+// flashbacks they inspire 
+//
+// it's a 10 wide grid so you can also use it as a code
+// lookup
+//
+// see https://www.shadertoy.com/view/WtGyWD for more 
+// utility code that should be reusable with this charset
+// with some tweaks
+//
+// The bitmap code is on github with char to code converter
+// luckybit4755/rando-calrissian/blob/master/rnd/etc/ifon.js
+//
+// Creative Commons Attribution-NonCommercial-ShareAlike
+// 3.0 Unported License
+// 
+// Do what thou wilt shall be the whole of the Law.
+// 
+// by Val "valalalalala" GvM 💃 2025
+////////////////////////////////////////////////////////////
+
+const int CHARACTERS[] = int[60](488166958,432148639,487701279,487786030,73759815,1057949230,261047854,1041317000,488064558,488160324,145292849,1025459774,488129070,1025033790,1057964575,1057964560,488132142,589284913,1044517023,505645644,594303537,554189343,599643697,597481075,488162862,1025047056,488166989,1025047121,487983662,1044516996,588826158,588589188,588830378,581052977,588583044,1041441311,198,139432064,31744,18157905,35787024,4539392,32506848,149360644,487657476,142876932,136382532,478421262,471926862,10813440,4333568,10813998,31,6212,545394753,490397199,589435185,368409920,145118798,138547332);
+
+float chard(int digit, vec2 id) {   
+    if (id.x < .0 || id.y < .0 || id.x > 4. || id.y > 5.) return .0;
+    return float(1 & (CHARACTERS[digit] >> (4 - int(id.x) + int(id.y) * 5)));
+}
+ 
+
+////////////////////////////////////////////////////////////
+// 1. quick and hacky version
+#define print(n) f += chard(n, floor(p*30.03)); p.x -= .22;
+
+float goodTimes(vec2 p) {
+  p.x+=1.5;
+    float f = .0;
+    print(16); print(24); print(24); print(0xD); 
+    p.x -= .13;
+    print(29); print(18); print(22); print(0xE); print(28);
+    print(43); print(43); print(43); 
+    p.x -= .22;
+    print(51);
+    return f;
+}
+
+// Amplitude
+//  1.0 ──┐
+//        │\
+//        │ \
+//        │  \      Sustain-Level (s)
+//        │   \───────────────
+//        │                   │
+//        │                   │
+//  0.0 ──┴───────────────────┴─────────> Zeit
+//       |   |        |       |    |
+//       0   a        a+d     duration r
+//           ↑        ↑        ↑       ↑
+//           |        |        |       |
+//         Attack   Decay   Sustain  Release
+// Klassische ADSR-Hüllkurve
+// time: Zeit seit Note-Start (Sekunden)
+// a: Attack-Zeit (Sekunden)
+// d: Decay-Zeit (Sekunden)
+// s: Sustain-Level (0.0–1.0)
+// r: Release-Zeit (Sekunden)
+// duration: Dauer der Note, danach beginnt Release
+float envelopeADSR(float time, float a, float d, float s, float r, float duration) {
+    if (time < 0.0) return 0.0;
+
+    if (time < a) {
+        // Attack: Linearer Anstieg auf 1.0
+        return time / a;
+    } else if (time < a + d) {
+        // Decay: Exponentieller Abfall auf Sustain-Level
+        float decayT = (time - a) / d;
+        return mix(1.0, s, decayT);
+    } else if (time < duration) {
+        // Sustain-Phase
+        return s;
+    } else if (time < duration + r) {
+        // Release: Exponentieller Abfall von s auf 0
+        float releaseT = (time - duration) / r;
+        return mix(s, 0.0, releaseT);
+    }
+
+    // Nach der Note: Stille
+    return 0.0;
+}
+
+float mandelbrot(vec2 c,vec2 start, float maxIterations) {
+    vec2 z = start;
+    float iter = 0.0; 
+    for (float i = 0.0; i < maxIterations; i++) {
+        z = vec2(z.x*z.x - z.y*z.y, 2.0*z.x*z.y) + c;
+        if(dot(z,z) > 4.0) break;
+        iter += 1.0;
+    }
+    return iter / maxIterations;
+}
+ 
+
+vec4 mandelbrotExt(vec2 c,vec2 start,vec2 center, float scale, float angle,float iterations) {
+
+// Mandelbrot
+vec2 uv=center+c*scale;
+uv=rotate(uv,radians(angle));
+return vec4(vec3(mandelbrot(uv,start,float(iterations))),1.);
+}
+vec4 juliaExt(vec2 c,vec2 start,vec2 center, float scale, float angle,float iterations) {
+
+// Mandelbrot
+vec2 uv=center+c*scale;
+uv=rotate(uv,radians(angle));
+return vec4(vec3(mandelbrot(start,uv,float(iterations))),1.);
+}
+
+
+// hehe der mandelman
+
+vec4 mandelMan(vec2 uv ,vec2 seed,vec2 headPos, float iterations,float triops,float iTime)
+{
+vec4 fragColor=vec4(0.);
+    // Normalized pixel coordinates (from 0 to 1)
+uv = rotate(uv,radians(90.));
+vec2 center=vec2( 0.5,-0.  );
+
+float scale=2.;
+
+// Mandelbrot 
+fragColor= mandelbrotExt(uv,seed* .25,center+vec2(-1.3,0),scale* .4 ,180.,iterations)* .5;
+
+
+// Nodding/Head Movement
+
+float beatPosition=mod(iTime/secsPerBeat ,1.) ;
+
+float env=envelopeADSR(beatPosition,secsPerBeat*0.2,
+secsPerBeat*0.2,0.5,secsPerBeat*0.6 ,0.1);
+uv+=headPos;
+
+ 
+fragColor += mandelbrotExt(uv,seed* .25,center,scale*1. ,180.,iterations);
+fragColor-= juliaExt(uv,seed ,              center+vec2(  3.150, 2.40),scale*8.,-90.,iterations) ;
+fragColor -= juliaExt(vec2(uv.x, -uv.y),seed ,center+vec2(   3.150,2.40),scale*8.,-90.,iterations) ;
+fragColor -= juliaExt(uv,seed,center+vec2(   -5.,.0),scale*8.,90.,iterations) ;
+  
+ uv=rotate(uv,radians(-90.)); 
+if(triops<0.5){
+// tri-fox hat halt drei mandelbrote, sehen lustigerweise aus wie ne krone, also genommen
+ fragColor+=0.5*mandelbrot((rotate(uv,radians( 90.))+vec2(  .40,-.15 )  )*7.,vec2(0.0),MAX_ITER);
+ fragColor+=0.5*mandelbrot((rotate(uv,radians( 90.))+vec2(  .40,.0 )  )*8.,vec2(0.0),MAX_ITER);
+ fragColor+=0.5*mandelbrot((rotate(uv,radians( 90.))+vec2(  .40,.15 )  )*7.,vec2(0.0),MAX_ITER);
+}  else{
+// 2te variante also refurio in dem fall versuch es genauso komplex zu machen, also 3 mandelbrot aufrufe, damit nicht sinnloser stall entsteht
+// refurio hat weisen bart ist die idee sozusagen, also einen krone oben und 2 unten dann
+ // oben, check das passt
+ fragColor+=0.5*mandelbrot((rotate(uv,radians( 90.))+vec2(  .45,.0 )  )*8.,vec2(0.0),MAX_ITER);
+ 
+ // unten mal sehen
+   fragColor+=0.5*mandelbrot((rotate(uv,radians( -90.))+vec2(  .385,.0 )  )*8.,vec2(0.0),MAX_ITER);
+  fragColor+=0.15*mandelbrot((rotate(uv,radians( -90.))+vec2(  .685,.0 )  )*2.,vec2(0.0),MAX_ITER);
+ 
+ 
+ 
+ 
+}
+return fragColor;
+
+}
+//////////////////////////
+float smoothStepCounter(float t, float stepDuration, float rampFrac)
+{
+    // t: Zeit (z. B. iTime)
+    // stepDuration: Zeit pro Ganzzahl (z. B. 1.0 Sekunde pro Schritt)
+    // rampFrac: Anteil der Zeit, der für den Übergang benutzt wird (z. B. 0.1 = 10%)
+
+    float totalSteps = t / stepDuration;   // float step counter
+    float base = floor(totalSteps);        // aktueller Ganzzahlwert
+    float phase = fract(totalSteps);       // 0..1 innerhalb des Schritts
+
+    if (phase < rampFrac) {
+        // Im Ramp-Bereich → sanft hochziehen
+        float ramp = smoothstep(0.0, rampFrac, phase);
+        return base + ramp;
+    } else {
+        // Plateau → konstanter Wert
+        return base + 1.0;
+    }
+}
+// A simple anf really efficient way to create color variation.
+//
+// Short video about this method to make palettes:
+//
+//   https://www.youtube.com/shorts/TH3OTy5fTog
+//
+// and a longer article here:
+//
+//   https://iquilezles.org/articles/palettes for more information
+
+vec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d )
+{
+    return a + b*cos( 6.28318*(c*t+d) );
+}
+
+
+vec3 makePal1(float i){
+    return pal( i, vec3(0.3,0.3,0.3),vec3(0.6,0.6,0.6),vec3(2.0,1.0,0.0),vec3(0.5,0.20,0.25) );
+}
 // refurio cardioid abrollen
 
 float funFactor=10.;
@@ -108,18 +335,7 @@ vec3 hsv2rgb(in vec3 c) {
   vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
   return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
-
-// coloring:
-vec4 phase(vec2 z) {
-  return hsv2rgb(vec3(arg(z)/PI, 1., 1.)).xyzz;
-}
-vec4 axies(vec2 z) {
-  float t = arg(z)/PI;
-  float a = mod(2.*t+2., 2.)-1.;
-  a = abs(2.*a)-1.;
-  a = asin(a)/PI+.5;
-  return vec4(a,a,a, 1.);
-}
+ 
 vec4 icolor(int i) {
   float x = float(i);
   return vec4(sin(x*100.), sin(x*200.), sin(x*300.), 0.);
@@ -129,7 +345,7 @@ vec4 white = vec4(1., 1., 1., 1.);
 
 vec2 center = vec2(0.,0.);
 float radius = 1.5;
-float angle = radians(0.);
+float angle = radians(float(0.));
 
 vec2 p2c(vec2 p) {
   vec2 wh2 = iResolution.xy/2.;
@@ -139,11 +355,11 @@ vec2 p2c(vec2 p) {
   return cmul(r,c) + center;
 }
 
-vec4 scene3Cardioid(vec2 c,float iTime) { 
+vec4 scene3Cardioid_Content(vec2 c,float angle) {  
     c = p2c(c);
   int n = MAX_ITER;
   const vec2 one = vec2(1.,0.);
-  float di = 1.5*(1.+cos(iTime/3.));
+  float di = 1.5*(1.+cos(angle));
   c = cinv(csqrt(one-4.*c)) - vec2(0.,di);
   c = 0.25*(one-cinv(cmul(c,c)));
   vec2 z = c;
@@ -157,13 +373,17 @@ vec4 scene3Cardioid(vec2 c,float iTime) {
     float s = pow(0.5, float(i));
     phi = cmul(phi, cpow(a, vec2(s,0.)));
     if(abs2(z) > 10000.) {
-      return white*clamp(abs2(z)/pow(2.,float(i)/(1.+di)),0.,1.);
+      return vec4(0.73,0.6,0.8,1.) ;
     }
   }
-  return phase(z);
+  return vec4(makePal1(arg(z)),1.0);
 }
 
 
+vec4 scene3Cardioid(vec2 c,float iTime) { 
+
+return scene3Cardioid_Content(c,smoothStepCounter(iTime,secsPerBeat*4.,0.4)*(PI/16.) );
+}
 
 // Refurio Julia Bobs
    
@@ -234,7 +454,7 @@ vec3 scene0(vec2 xy,float iTime) {
     vec2 c = cardioid(t+i/n*sin(t/20.))*1.1;
     vec2 o = r*vec2(cos(t-i/n*PI*2.*ia*lissa), sin(-t+i/n*PI*2.*ia));
 //    o = c;
-    p2c_init(vec2(0., 0.), 2., 0.);
+    p2c_init(vec2(0., 0.), float(2.), float(0.));
     vec2 p = p2c(xy)/scale-o;    
     if(f(c, p)) {
       if(i==0.)
@@ -248,21 +468,6 @@ vec3 scene0(vec2 xy,float iTime) {
 ////////////////
 
 
-// A simple anf really efficient way to create color variation.
-//
-// Short video about this method to make palettes:
-//
-//   https://www.youtube.com/shorts/TH3OTy5fTog
-//
-// and a longer article here:
-//
-//   https://iquilezles.org/articles/palettes for more information
-
-vec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d )
-{
-    return a + b*cos( 6.28318*(c*t+d) );
-}
-
 // Exponentielle Interpolation zwischen a und b mit Parameter t in [0,1]
 // t=0 -> a, t=1 -> b
 // Exponentielle Interpolation für positive Werte a,b > 0
@@ -272,16 +477,6 @@ float expInterp(float a, float b, float t) {
     // (logarithmische lineare Interpolation)
     return exp(mix(log(a), log(b), t));
 }
-
-vec2 rotate(vec2 p, float angle) {
-    float s = sin(angle);
-    float c = cos(angle);
-    return vec2(
-        c * p.x - s * p.y,
-        s * p.x + c * p.y
-    );
-}
-
 
  float easeInOutTap(float t) {
     return smoothstep(0.0, 0.1, t) * (1.0 - smoothstep(0.1, 0.2, t));
@@ -316,10 +511,6 @@ float explerp(float v0, float v1, float t) {
     return exp(mix(log(v0), log(v1), t));
 }
 
-
-vec3 makePal1(float i){
-    return pal( i, vec3(0.3,0.3,0.3),vec3(0.6,0.6,0.6),vec3(2.0,1.0,0.0),vec3(0.5,0.20,0.25) );
-}
 
 vec3 colorMandelResultIteration(vec4 result){
 
@@ -406,9 +597,14 @@ vec4 mainWrap(vec2 fragCoord,float t){
         vec4 scene_1= scene2Mandelbroetchen(fragCoord,t) ;
         vec4 scene_2=   vec4(scene0(fragCoord,t),1.);
 
+
+vec4 mandelTriklops=mandelMan((fragCoord/iResolution)*2.0-1.0,vec2(sin(t)),vec2(0.),100.,0.,t);
+vec4 mandelRefurio=mandelMan((fragCoord/iResolution)*2.0-1.0,vec2(cos(t)),vec2(0.),100.,1.,t);
+
     if(currentTimeInterval<2.){
       // mini intro
       result=noise;
+      result+=mix(mandelTriklops,mandelRefurio,sin(currentTimeInterval*PI)*0.5+0.5);
     }else
     if(currentTimeInterval<4.){
       // uebergang zu main wums 
@@ -439,6 +635,7 @@ vec4 mainWrap(vec2 fragCoord,float t){
       result=noise;
     }
  
+ result+=goodTimes((fragCoord/iResolution)*4.-2.);
 return result;
 }
 
