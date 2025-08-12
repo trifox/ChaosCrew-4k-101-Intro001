@@ -8,7 +8,7 @@ const vec2 iResolution= vec2(1920.,1080.);
 
  
 
-const int MAX_ITER = 256; 
+const int MAX_ITER = 100; 
 const float bpm = 154.0;
 const float secsPerBeat = 60.0 / bpm;
 const float beatTrack_1[16]=float[16](
@@ -75,60 +75,7 @@ vec2 rotate(vec2 p, float angle) {
         s * p.x + c * p.y
     );
 }
-
-
-// font stuff
-////////////////////////////////////////////////////////////
-// font 5x6: covering 0-9, A-Z and some punctuation
-//
-// this font is a bit bigger: 5x6 and I' think I'm done
-// with bitmap fonts for a while :-P
-//
-// I'm actually a bit pleased with these and the arcade
-// flashbacks they inspire 
-//
-// it's a 10 wide grid so you can also use it as a code
-// lookup
-//
-// see https://www.shadertoy.com/view/WtGyWD for more 
-// utility code that should be reusable with this charset
-// with some tweaks
-//
-// The bitmap code is on github with char to code converter
-// luckybit4755/rando-calrissian/blob/master/rnd/etc/ifon.js
-//
-// Creative Commons Attribution-NonCommercial-ShareAlike
-// 3.0 Unported License
-// 
-// Do what thou wilt shall be the whole of the Law.
-// 
-// by Val "valalalalala" GvM 💃 2025
-////////////////////////////////////////////////////////////
-
-const int CHARACTERS[] = int[60](488166958,432148639,487701279,487786030,73759815,1057949230,261047854,1041317000,488064558,488160324,145292849,1025459774,488129070,1025033790,1057964575,1057964560,488132142,589284913,1044517023,505645644,594303537,554189343,599643697,597481075,488162862,1025047056,488166989,1025047121,487983662,1044516996,588826158,588589188,588830378,581052977,588583044,1041441311,198,139432064,31744,18157905,35787024,4539392,32506848,149360644,487657476,142876932,136382532,478421262,471926862,10813440,4333568,10813998,31,6212,545394753,490397199,589435185,368409920,145118798,138547332);
-
-float chard(int digit, vec2 id) {   
-    if (id.x < .0 || id.y < .0 || id.x > 4. || id.y > 5.) return .0;
-    return float(1 & (CHARACTERS[digit] >> (4 - int(id.x) + int(id.y) * 5)));
-}
  
-
-////////////////////////////////////////////////////////////
-// 1. quick and hacky version
-#define print(n) f += chard(n, floor(p*30.03)); p.x -= .22;
-
-float goodTimes(vec2 p) {
-  p.x+=1.5;
-    float f = .0;
-    print(16); print(24); print(24); print(0xD); 
-    p.x -= .13;
-    print(29); print(18); print(22); print(0xE); print(28);
-    print(43); print(43); print(43); 
-    p.x -= .22;
-    print(51);
-    return f;
-}
-
 // Amplitude
 //  1.0 ──┐
 //        │\
@@ -218,7 +165,7 @@ fragColor= mandelbrotExt(uv,seed* .25,center+vec2(-1.3,0),scale* .4 ,180.,iterat
 
 // Nodding/Head Movement
 
-float beatPosition=mod(iTime/secsPerBeat ,1.) ;
+float beatPosition=mod(iTime ,1.) ;
 
 float env=envelopeADSR(beatPosition,secsPerBeat*0.2,
 secsPerBeat*0.2,0.5,secsPerBeat*0.6 ,0.1);
@@ -347,16 +294,9 @@ vec2 center = vec2(0.,0.);
 float radius = 1.5;
 float angle = radians(float(0.));
 
-vec2 p2c(vec2 p) {
-  vec2 wh2 = iResolution.xy/2.;
-  float pr = min(wh2.x, wh2.y);
-  vec2 c = (p - wh2)/pr;
-  vec2 r = radius * vec2(cos(angle), sin(angle));
-  return cmul(r,c) + center;
-}
-
 vec4 scene3Cardioid_Content(vec2 c,float angle) {  
-    c = p2c(c);
+//    c = p2c(c);
+  c=c*2.;
   int n = MAX_ITER;
   const vec2 one = vec2(1.,0.);
   float di = 1.5*(1.+cos(angle));
@@ -440,6 +380,7 @@ bool f(vec2 c, vec2 z0) {
   return true;
 } 
 vec3 scene0(vec2 xy,float iTime) {
+  xy*=2.;
   f_init(50);
   float t = iTime*2.;
   float n = 100.; 
@@ -455,7 +396,7 @@ vec3 scene0(vec2 xy,float iTime) {
     vec2 o = r*vec2(cos(t-i/n*PI*2.*ia*lissa), sin(-t+i/n*PI*2.*ia));
 //    o = c;
     p2c_init(vec2(0., 0.), float(2.), float(0.));
-    vec2 p = p2c(xy)/scale-o;    
+    vec2 p = xy/scale-o;    
     if(f(c, p)) {
       if(i==0.)
         return vec3(1.);
@@ -503,8 +444,8 @@ vec4 mandelbrotRenderJulia( vec2 c,vec4 loc){
 }
 
 vec4 getKeyFrame(float t){
-
-    int currentTimeInterval = int(floor(t / (secsPerBeat*.5) )) % 17;
+    // Achtung, hier kommt schon auf bpm normalisiertes "t" rein
+    int currentTimeInterval = int(t) % 17;
     return locations[currentTimeInterval];
 } 
 float explerp(float v0, float v1, float t) {
@@ -523,41 +464,19 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord,float t)
 {
 
 
-
-    float currentTimeInterval = t / secsPerBeat;
-    float interval = fract(currentTimeInterval);
-
-// beat bangs 
-
-
-
-
-
-if(currentTimeInterval<8.){
-
-    // intro flicker
-     return vec4(
-        (0.5*sin(t*PI2*secsPerBeat*3.), 1.0)*(1.0-currentTimeInterval/8.0),
-        (0.5*sin(t*PI2*secsPerBeat*14.), 1.0)*(1.0-currentTimeInterval/8.0),
-        (0.5*sin(t*PI2*secsPerBeat*225.), 1.0)*(1.0-currentTimeInterval/8.0),
-       1.
-    );
-     
-     }else{
-
-
-    vec2 q =fragCoord / iResolution.xy; // Normalize
-    vec2 v = -1.0 + 2.0 * q; // to -1 +1 real,imag
+ 
+    float interval = fract(t); 
+    vec2 v = fragCoord; // to -1 +1 real,imag
     // arg allgemeiner winkel, normalisiert dann auf 0..1 also der winkel 0..360
     float arg=(atan( v.x,v.y)+PI)/PI2;
 
-    int index=int(floor(mod(currentTimeInterval,16.)));
-    int indexAchtel=int(floor(mod(currentTimeInterval,32.)));
-    vec4 keyframe=getKeyFrame(t-secsPerBeat*0.);
+    int index=int(floor(mod(t,16.)));
+    int indexAchtel=int(floor(mod(t,32.)));
+    vec4 keyframe=getKeyFrame(t);
 
     vec4 l = mandelbrotRender(v,keyframe  );
 
-    vec4 ljulia = mandelbrotRenderJulia(v,vec4(keyframe.xyz,keyframe.w+easeInOutTap(fract(currentTimeInterval/8.))*(PI/2.)));
+    vec4 ljulia = mandelbrotRenderJulia(v,vec4(keyframe.xyz,keyframe.w+easeInOutTap(fract(t/8.))*(PI/2.)));
      vec4 result=vec4(l.zzz,1.);
        result+=beatTrack_1[index]*vec4(colorMandelResultIteration(l),1.);
        result+=beatTrack_2[index]*vec4(colorMandelResultIteration(ljulia),1.) ;
@@ -571,7 +490,7 @@ if(currentTimeInterval<8.){
      if(l.z<1.0){
         // circular shading :) optimize please
         // also hier noch irgendwie nen slope mit reinmachen ey
-        float tap=easeInOutTap(fract(currentTimeInterval));
+        float tap=easeInOutTap(fract(t));
         result.x+=tap*beatTrack_4_8chtel[indexAchtel]*0.2*sin(arg*arg*PI2 +.23);
         result.y+=tap*beatTrack_4_8chtel[indexAchtel]*0.2*sin(arg*arg*PI2 +.23);
         result.z+=tap*beatTrack_4_8chtel[indexAchtel]*0.2*sin(arg*arg*PI2 +.23);
@@ -579,8 +498,7 @@ if(currentTimeInterval<8.){
 
 
 
-    return  result;
-}
+    return  result; 
 
 
 
@@ -588,54 +506,57 @@ if(currentTimeInterval<8.){
 
 
 vec4 mainWrap(vec2 fragCoord,float t){
-
-    float currentTimeInterval = t / secsPerBeat;
-
+ 
     vec4 result=vec4(0.);
-    vec4 noise=vec4(sin(currentTimeInterval*10.)*0.5+0.5);
+    vec4 noise=vec4(sin(t*10.)*0.5+0.5);
         vec4 scene_0=   scene3Cardioid(fragCoord,t) ;
         vec4 scene_1= scene2Mandelbroetchen(fragCoord,t) ;
         vec4 scene_2=   vec4(scene0(fragCoord,t),1.);
 
 
-vec4 mandelTriklops=mandelMan((fragCoord/iResolution)*2.0-1.0,vec2(sin(t)),vec2(0.),100.,0.,t);
-vec4 mandelRefurio=mandelMan((fragCoord/iResolution)*2.0-1.0,vec2(cos(t)),vec2(0.),100.,1.,t);
+vec4 mandelTriklops=mandelMan(fragCoord,vec2(sin(t)),vec2(0,sin(t)*0.1),100.,0.,t);
+vec4 mandelRefurio=mandelMan(fragCoord,vec2(cos(t)),vec2(0.),100.,1.,t);
 
-    if(currentTimeInterval<2.){
-      // mini intro
-      result=noise;
-      result+=mix(mandelTriklops,mandelRefurio,sin(currentTimeInterval*PI)*0.5+0.5);
+    if(t<2.){
+      // mini intro     
+      result.xyzw=vec4(fract(t/2.));
     }else
-    if(currentTimeInterval<4.){
+    if(t<4.){
       // uebergang zu main wums 
         result=noise;
         result.y=1.0-result.y;
 
     }else
-    if(currentTimeInterval<4.*9){
+    if(t<4.*9){
       // Main Wums Scene
         result=scene_0;
     }else
-    if(currentTimeInterval<4.*16.5){
+    if(t<4.*16.5){
       result=scene_0+noise;
     }else
-    if(currentTimeInterval<4.*24.){
+    if(t<4.*24.){
       result=scene_1;
     }else
-    if(currentTimeInterval<4.*39.){
+    if(t<4.*39.){
       result=scene_1+noise;
     }else
-    if(currentTimeInterval<4.*55.){
+    if(t<4.*55.){
       result=scene_2;
     }else
-    if(currentTimeInterval<4.*58.){
+    if(t<4.*58.){
       result=scene_2+noise; 
+    }else
+    if(t<4.*64.){
+      result=mandelRefurio; 
     }else{
       //outro
+
+result+=mandelTriklops;
+
+
       result=noise;
     }
- 
- result+=goodTimes((fragCoord/iResolution)*4.-2.);
+  
 return result;
 }
 
@@ -646,18 +567,23 @@ return result;
 // Reasoning:
 // out declarations toplevel are not really useful, in c++ world it is the declared output of the shader
 // in glsl this is handled similarly but using that gl_FragColor instead, having the mainWrap() method to be used in html editor
+
+
 out vec4 o;
 void main()
 {
 
-  float t = float(m) / 44100.0;
+  // t is timed to beat
+  float t = (float(m) / 44100.0)/secsPerBeat;
+
 // debug offset
-t-=0.5;
+//t-=0.5;
   vec4 rz = vec4(0.);
   for (float i=0.; i<4.; i++) 
   {
-      vec2  of = floor(vec2(i/2.,mod(i,2.)));
-      rz += mainWrap(gl_FragCoord.xy+ of* 0.5,t);
+    vec2  of = floor(vec2(i/2.,mod(i,2.)));
+    vec2 project = gl_FragCoord.xy+ of* 0.5;
+    rz += mainWrap((project/iResolution)*2.0-1.0,t);
   }
     
   rz /= 4.;

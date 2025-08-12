@@ -12,7 +12,9 @@
 #endif
 
 #define POST_PASS    0
-#define USE_MIPMAPS  1
+#define USE_MIPMAPS  0
+#define USE_VSYNC    0 /* vsync dangerous, make sure you never exceeed 60fps when using */
+#define USE_CLEAN_BLACK_START    0 /* ensures windows and gl buffers are properly cleared at start to avoid flicker */
 #define USE_AUDIO    1
 #define NO_UNIFORMS  0
 
@@ -46,8 +48,26 @@ int __cdecl main(int argc, char* argv[])
 	#if FULLSCREEN
 		ChangeDisplaySettings(&screenSettings, CDS_FULLSCREEN);
 		ShowCursor(0);
-		const HDC hDC = GetDC(CreateWindow((LPCSTR)0xC018, 0, WS_POPUP | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0));
-	#else
+		const HWND hwnd = CreateWindow((LPCSTR)0xC018, 0, WS_POPUP  | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
+		const HDC hDC = GetDC(hwnd);
+			#ifdef USE_CLEAN_BLACK_START
+					RECT rect;
+					GetClientRect(hwnd, &rect);
+					HBRUSH blackBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
+					FillRect(hDC, &rect, blackBrush);
+							
+					// 1. Setze Clear Color auf Schwarz
+					glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+					// 2. Lösche den Farb-Puffer (Backbuffer)
+					glClear(GL_COLOR_BUFFER_BIT);
+					// 3. Präsentiere den Frame (flippt Backbuffer in den Frontbuffer)
+					SwapBuffers(hDC);
+					
+					// 5. Fenster sichtbar machen
+					ShowWindow(hwnd, SW_SHOW);
+					UpdateWindow(hwnd);
+			#endif
+		#else
 		#ifdef EDITOR_CONTROLS
 			HWND window = CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0);
 			HDC hDC = GetDC(window);
@@ -62,12 +82,14 @@ int __cdecl main(int argc, char* argv[])
 	// initalize opengl context
 	SetPixelFormat(hDC, ChoosePixelFormat(hDC, &pfd), &pfd);
 	wglMakeCurrent(hDC, wglCreateContext(hDC));
-	
-    // Hier VSync aktivieren
+
+	#if USE_VSYNC
+    // Hier VSync aktivieren / achtung gefaehrlich darf nie unter 60fps sinken sonst shite
     EnableVSync(TRUE);
- 	
+
+ 	#endif
 	// create and compile shader programs
-	pidMain = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment);
+	pidMain = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment_frag);
 	#if POST_PASS
 		pidPost = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post);
 	#endif
