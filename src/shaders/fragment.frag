@@ -578,15 +578,21 @@ void main()
 
 // debug offset
 //t-=0.5;
-  vec4 rz = vec4(0.);
+  vec4 rz = mainWrap((gl_FragCoord.xy/iResolution)*2.0-1.0,t);
+  o=rz;
+  return;
+
+/** Anti Alias 
+  
   for (float i=0.; i<4.; i++) 
   {
-    vec2  of = floor(vec2(i/2.,mod(i,2.)));
-    vec2 project = gl_FragCoord.xy+ of* 0.5;
+    vec2  of = floor(vec2(i/2.,mod(i,2.)))-0.5;
+    vec2 project = gl_FragCoord.xy+ of;
     rz += mainWrap((project/iResolution)*2.0-1.0,t);
   }
     
-  rz /= 4.;
+  rz /= 5.;
   o= rz;
+*/
 }
 
