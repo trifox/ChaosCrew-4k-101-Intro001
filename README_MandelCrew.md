@@ -30,3 +30,20 @@ compile asm to obj
     C:\Users\ck\AppData\Local\bin\NASM\nasm.exe -f win32 .\src\sointu\song_000.asm
 
 When you change the name or path of the song, all vcxproj and include pathes need to be adjusted as well
+
+Working sheet for timings in intro with musik>
+
+1 Beat = 4/4
+1/2 Beat = 8/8
+Takt= 4 Beat
+Pattern = 4 Takt
+
+// Intro
+2 Beats Wubeel Sound
+4 beats geht main drum los ( alle 4 beats)
+8ter Takt geht erste 9er Sequenc Los
+14ter Takt geht 2te 9er sequenc los
+20er takt geht 3te 9er sequenc los
+20 bis 32 kommt lange sequence also 2 zusammen
+32 bis 50 lange sequence
+50 bis 52 dann outtro

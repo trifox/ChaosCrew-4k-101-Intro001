@@ -63,6 +63,9 @@ int __cdecl main(int argc, char* argv[])
 	SetPixelFormat(hDC, ChoosePixelFormat(hDC, &pfd), &pfd);
 	wglMakeCurrent(hDC, wglCreateContext(hDC));
 	
+    // Hier VSync aktivieren
+    EnableVSync(TRUE);
+ 	
 	// create and compile shader programs
 	pidMain = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment);
 	#if POST_PASS

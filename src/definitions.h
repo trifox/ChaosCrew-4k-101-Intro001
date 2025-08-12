@@ -33,6 +33,21 @@ static const PIXELFORMATDESCRIPTOR pfd = {
 #endif
 };
 
+
+typedef BOOL (WINAPI *PFNWGLSWAPINTERVALEXTPROC)(int interval);
+static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = NULL;
+
+void EnableVSync(BOOL enable)
+{
+    if (!wglSwapIntervalEXT) {
+        wglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+    }
+
+    if (wglSwapIntervalEXT) {
+        wglSwapIntervalEXT(enable ? 1 : 0);
+    }
+}
+
 #pragma data_seg(".screensettings")
 static DEVMODE screenSettings = { 
 	{0}, 0, 0, sizeof(screenSettings), 0, DM_PELSWIDTH|DM_PELSHEIGHT,
