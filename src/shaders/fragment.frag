@@ -5,7 +5,7 @@ uniform int m; // Time in sample player
 const float PI = 3.1416;
 const float PI2= PI*2.;
 const vec2 iResolution= vec2(1920.,1080.);
-
+const float BAILOUT=256;
  
 
 const int MAX_ITER = 100; 
@@ -65,8 +65,49 @@ vec4(-0.15652016683,1.0322471089,0.08188697027694743,2.4777729354236357),
 vec4(-1.754877666,0,0.18201981627989672,3.141592653589793) 
 );
 
+// Utility Methods, 
 
+  // Dies Soll die core mandelbrot methode werden,
+  // input:
+  // c  = constante to add
+  // z0 = start value for z mandelbrot iteration 
+  // remark:
+  // use it for julia rendering by flipping the inputs yourself
+  //
+  // returns>
+  // vec4(
+  // zreal
+  // zimag
+  // iteration normalized
+  // smoothed iters
+  // )
+  
+float abs2(vec2 z) {
+  return dot(z,z);
+}
+vec2 cmul(vec2 a, vec2 b) { 
+  return vec2(a.x*b.x-a.y*b.y, 2.*a.x*b.y);
+}
+vec4 mandelbrotCore(vec2 c, vec2 z0,float iterations) {
+  vec2 z = z0; 
+  float i; 
+  for(i = 0.; i < iterations; i++) {
+    z = cmul(z, z) + c; 
+    if(abs2(z) > BAILOUT) break;
+  }
+  
+  float diff = log2(log2(dot(z,z))) -4.;
 
+  return vec4(z.xy,i/iterations,diff);
+
+} 
+float mandelbrotIters(vec2 c, vec2 z0,float iterations) {
+  // yes utility method utilizing the other to get a result in environment of formula or something weird
+  vec4 result=mandelbrotCore(c,z0,iterations);
+  return result.z;
+}
+
+// util rotate
 vec2 rotate(vec2 p, float angle) {
     float s = sin(angle);
     float c = cos(angle);
@@ -75,79 +116,28 @@ vec2 rotate(vec2 p, float angle) {
         s * p.x + c * p.y
     );
 }
- 
-// Amplitude
-//  1.0 ──┐
-//        │\
-//        │ \
-//        │  \      Sustain-Level (s)
-//        │   \───────────────
-//        │                   │
-//        │                   │
-//  0.0 ──┴───────────────────┴─────────> Zeit
-//       |   |        |       |    |
-//       0   a        a+d     duration r
-//           ↑        ↑        ↑       ↑
-//           |        |        |       |
-//         Attack   Decay   Sustain  Release
-// Klassische ADSR-Hüllkurve
-// time: Zeit seit Note-Start (Sekunden)
-// a: Attack-Zeit (Sekunden)
-// d: Decay-Zeit (Sekunden)
-// s: Sustain-Level (0.0–1.0)
-// r: Release-Zeit (Sekunden)
-// duration: Dauer der Note, danach beginnt Release
-float envelopeADSR(float time, float a, float d, float s, float r, float duration) {
-    if (time < 0.0) return 0.0;
-
-    if (time < a) {
-        // Attack: Linearer Anstieg auf 1.0
-        return time / a;
-    } else if (time < a + d) {
-        // Decay: Exponentieller Abfall auf Sustain-Level
-        float decayT = (time - a) / d;
-        return mix(1.0, s, decayT);
-    } else if (time < duration) {
-        // Sustain-Phase
-        return s;
-    } else if (time < duration + r) {
-        // Release: Exponentieller Abfall von s auf 0
-        float releaseT = (time - duration) / r;
-        return mix(s, 0.0, releaseT);
-    }
-
-    // Nach der Note: Stille
-    return 0.0;
-}
-
-float mandelbrot(vec2 c,vec2 start, float maxIterations) {
-    vec2 z = start;
-    float iter = 0.0; 
-    for (float i = 0.0; i < maxIterations; i++) {
-        z = vec2(z.x*z.x - z.y*z.y, 2.0*z.x*z.y) + c;
-        if(dot(z,z) > 4.0) break;
-        iter += 1.0;
-    }
-    return iter / maxIterations;
-}
- 
+  
 
 vec4 mandelbrotExt(vec2 c,vec2 start,vec2 center, float scale, float angle,float iterations) {
 
 // Mandelbrot
 vec2 uv=center+c*scale;
 uv=rotate(uv,radians(angle));
-return vec4(vec3(mandelbrot(uv,start,float(iterations))),1.);
+vec4 res=mandelbrotCore(uv,start,float(iterations));
+return vec4(res.zzz,1.);
 }
 vec4 juliaExt(vec2 c,vec2 start,vec2 center, float scale, float angle,float iterations) {
 
 // Mandelbrot
 vec2 uv=center+c*scale;
 uv=rotate(uv,radians(angle));
-return vec4(vec3(mandelbrot(start,uv,float(iterations))),1.);
+vec4 res=mandelbrotCore(start,uv,float(iterations));
+return vec4(res.zzz,1.);
 }
 
-
+float env(float t){
+  return sin(t*PI);
+}
 // hehe der mandelman
 
 vec4 mandelMan(vec2 uv ,vec2 seed,vec2 headPos, float iterations,float triops,float iTime)
@@ -167,31 +157,30 @@ fragColor= mandelbrotExt(uv,seed* .25,center+vec2(-1.3,0),scale* .4 ,180.,iterat
 
 float beatPosition=mod(iTime ,1.) ;
 
-float env=envelopeADSR(beatPosition,secsPerBeat*0.2,
-secsPerBeat*0.2,0.5,secsPerBeat*0.6 ,0.1);
+float env=env(beatPosition);
 uv+=headPos;
 
  
-fragColor += mandelbrotExt(uv,seed* .25,center,scale*1. ,180.,iterations);
+fragColor += mandelbrotExt(uv,vec2(0.),center,scale*1. ,180.,iterations);
 fragColor-= juliaExt(uv,seed ,              center+vec2(  3.150, 2.40),scale*8.,-90.,iterations) ;
 fragColor -= juliaExt(vec2(uv.x, -uv.y),seed ,center+vec2(   3.150,2.40),scale*8.,-90.,iterations) ;
-fragColor -= juliaExt(uv,seed,center+vec2(   -5.,.0),scale*8.,90.,iterations) ;
+fragColor -= juliaExt(uv,vec2(0.3,0.4),center+vec2(   -5.,.0),scale*8.,90.,iterations) ;
   
  uv=rotate(uv,radians(-90.)); 
 if(triops<0.5){
 // tri-fox hat halt drei mandelbrote, sehen lustigerweise aus wie ne krone, also genommen
- fragColor+=0.5*mandelbrot((rotate(uv,radians( 90.))+vec2(  .40,-.15 )  )*7.,vec2(0.0),MAX_ITER);
- fragColor+=0.5*mandelbrot((rotate(uv,radians( 90.))+vec2(  .40,.0 )  )*8.,vec2(0.0),MAX_ITER);
- fragColor+=0.5*mandelbrot((rotate(uv,radians( 90.))+vec2(  .40,.15 )  )*7.,vec2(0.0),MAX_ITER);
+ fragColor+=0.5*mandelbrotIters((rotate(uv,radians( 90.))+vec2(  .40,-.15 )  )*7.,vec2(0.0),MAX_ITER);
+ fragColor+=0.5*mandelbrotIters((rotate(uv,radians( 90.))+vec2(  .40,.0 )  )*8.,vec2(0.0),MAX_ITER);
+ fragColor+=0.5*mandelbrotIters((rotate(uv,radians( 90.))+vec2(  .40,.15 )  )*7.,vec2(0.0),MAX_ITER);
 }  else{
 // 2te variante also refurio in dem fall versuch es genauso komplex zu machen, also 3 mandelbrot aufrufe, damit nicht sinnloser stall entsteht
 // refurio hat weisen bart ist die idee sozusagen, also einen krone oben und 2 unten dann
  // oben, check das passt
- fragColor+=0.5*mandelbrot((rotate(uv,radians( 90.))+vec2(  .45,.0 )  )*8.,vec2(0.0),MAX_ITER);
+ fragColor+=0.5*mandelbrotIters((rotate(uv,radians( 90.))+vec2(  .45,.0 )  )*8.,vec2(0.0),MAX_ITER);
  
  // unten mal sehen
-   fragColor+=0.5*mandelbrot((rotate(uv,radians( -90.))+vec2(  .385,.0 )  )*8.,vec2(0.0),MAX_ITER);
-  fragColor+=0.15*mandelbrot((rotate(uv,radians( -90.))+vec2(  .685,.0 )  )*2.,vec2(0.0),MAX_ITER);
+   fragColor+=0.5*mandelbrotIters((rotate(uv,radians( -90.))+vec2(  .385,.0 )  )*8.,vec2(0.0),MAX_ITER);
+  fragColor+=0.15*mandelbrotIters((rotate(uv,radians( -90.))+vec2(  .685,.0 )  )*2.,vec2(0.0),MAX_ITER);
  
  
  
@@ -237,20 +226,14 @@ vec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d )
 
 
 vec3 makePal1(float i){
-    return pal( i, vec3(0.3,0.3,0.3),vec3(0.6,0.6,0.6),vec3(2.0,1.0,0.0),vec3(0.5,0.20,0.25) );
+    return pal( i, vec3(0.3,0.2,0.5),vec3(0.6,0.2,0.8),vec3(2.0,1.0,0.0),vec3(0.5,2.20,0.25) );
 }
 // refurio cardioid abrollen
 
 float funFactor=10.;
 
-float abs2(vec2 z) {
-  return dot(z,z);
-}
 float arg(vec2 z) {
   return atan(z.y, z.x);
-}
-vec2 cmul(vec2 a, vec2 b) {
-  return vec2(a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x);
 }
 vec2 cdiv(vec2 a, vec2 b) {
   return vec2(dot(a,b), a.y*b.x-a.x*b.y)/abs2(b);
@@ -274,13 +257,6 @@ vec2 csqrt(vec2 z) {
 float osc(float lo, float hi, float f, float t) {
   float d=(hi-lo)/2.;
   return sin(t*f*PI*2.)*d;
-}
-
-// https://github.com/hughsk/glsl-hsv2rgb/blob/master/index.glsl
-vec3 hsv2rgb(in vec3 c) {
-  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
  
 vec4 icolor(int i) {
@@ -321,8 +297,9 @@ vec4 scene3Cardioid_Content(vec2 c,float angle) {
 
 
 vec4 scene3Cardioid(vec2 c,float iTime) { 
-
-return scene3Cardioid_Content(c,smoothStepCounter(iTime,secsPerBeat*4.,0.4)*(PI/16.) );
+// wink
+float wink=sin(iTime*PI)*0.025;
+return scene3Cardioid_Content(c,smoothStepCounter(iTime,4.,0.2)*(PI2/16.)+wink );
 }
 
 // Refurio Julia Bobs
@@ -330,17 +307,20 @@ return scene3Cardioid_Content(c,smoothStepCounter(iTime,secsPerBeat*4.,0.4)*(PI/
 float sqr(float x) {
   return x*x;
 }
-
-vec3 hsv(float h, float s, float v) {
-  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-  vec3 p = abs(fract(vec3(h,h,h) + K.xyz) * 6.0 - K.www);
-  return v * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), s);
+  
+ 
+vec2 cardioid(float a) {
+  float r = 1.;
+  float x = cos(a)*r;
+  float y = sin(a)*r;
+  return vec2(1.-(sqr(x-1.)-sqr(y)),
+              -2.*(x-1.)*y
+             )/4.;
 }
-vec4 cmix(vec4 a, vec4 b, float t) {
-  return sqrt(mix((a)*(a), (b)*(b), t));
-}
 
+  
 
+// some variables used by the bobber
 vec2  p2c_wh2;
 float p2c_pr;
 vec2  p2c_r;
@@ -352,59 +332,37 @@ void p2c_init(vec2 center, float radius, float angle) {
   p2c_center = center;
 }
  
- 
-vec2 cardioid(float a) {
-  float r = 1.;
-  float x = cos(a)*r;
-  float y = sin(a)*r;
-  return vec2(1.-(sqr(x-1.)-sqr(y)),
-              -2.*(x-1.)*y
-             )/4.;
-}
 
-
-float f_n;
-float f_k;
-vec2 f_ph;
-void f_init(int n) {
-  f_n = float(n);
-}
-bool f(vec2 c, vec2 z0) {
-  vec2 z = z0;
-  f_ph = z;
-  for(f_k = 0.; f_k < f_n; ++f_k) {
-    z = cmul(z, z) + c; 
-    if(abs2(z) > 256.)
-      return false;
-  }
-  return true;
-} 
-vec3 scene0(vec2 xy,float iTime) {
-  xy*=2.;
-  f_init(50);
-  float t = iTime*2.;
-  float n = 100.; 
+vec3 scene0JuliaBobs(vec2 xy,float iTime,float iterations,float numberOfBobs) {
+  xy*=2.; 
+  vec4 keyframe=locations[10];
+  float t = iTime/16.; 
   float r = 0.2; // (sin(t/10.)/2.+.5)*2.; // amplitude of movements
   float ia = 1.; // (sin(t/3.)/2.); // how much of the circle to draw
   float lissa = 1.; // (sin(t/12.)/2.+.5)*2.+1.;
-  float scale = 1.3;
+  float scale =1.;
   r /= scale;
   float b = 0.;
   vec3 col = vec3(0.);
-  for(float i = 0.; i < n; ++i) {
-    vec2 c = cardioid(t+i/n*sin(t/20.))*1.1;
-    vec2 o = r*vec2(cos(t-i/n*PI*2.*ia*lissa), sin(-t+i/n*PI*2.*ia));
+  vec4 res=vec4(0.);
+  for(float i = 0.; i < numberOfBobs; ++i) {
+    vec2 c = cardioid(t+i/numberOfBobs*sin(t/20.))*1.1;
+    vec2 o = r*vec2(cos(t-i/numberOfBobs*PI*2.*ia*lissa), sin(-t+i/numberOfBobs*PI*2.*ia));
 //    o = c;
-    p2c_init(vec2(0., 0.), float(2.), float(0.));
+    p2c_init(keyframe.xy, float(2.), float(0.));
     vec2 p = xy/scale-o;    
-    if(f(c, p)) {
+      res=mandelbrotCore(c, p,iterations);
+    if(res.z>=1.0) {
       if(i==0.)
-        return vec3(1.);
-      return hsv((t/4.-i/n/3.), .5, pow(1.-i/n, 2.));
+        return makePal1(.0);
+     // return hsv((t/4.-i/numberOfBobs/3.), .5, pow(1.-i/numberOfBobs, 2.));
+     return makePal1(pow(1.-i/numberOfBobs, 2.));
     } 
-    col += hsv(0.03, 0.5, pow(f_k/f_n, 1./8.)); // weird glow
+    
+    col += makePal1(pow(res.z, 1./8.)); // weird glow\
+
   }
-  return col/f_n;
+  return col/numberOfBobs;
 }
 ////////////////
 
@@ -420,27 +378,15 @@ float expInterp(float a, float b, float t) {
 }
 
  float easeInOutTap(float t) {
-    return smoothstep(0.0, 0.1, t) * (1.0 - smoothstep(0.1, 0.2, t));
-}
-
-vec4 mandelbrotRenderFormula( vec2 c,vec2 start){
-    float l = 0.0;
-    vec2 z =start;
-    for (int i = 0; i < MAX_ITER; i++) {
-        z = vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y) + c;
-        if (dot(z, z) > 4.0) break;
-        l += 1.0;
-    } 
-    float diff = log2(log2(dot(z,z))) -4.;
-    return vec4(z, l / float(MAX_ITER),diff);
+    return smoothstep(0.0, 0.2, t) * (1.0 - smoothstep(0.2, 0.5, t));
 }
 vec4 mandelbrotRender( vec2 c,vec4 loc){
      c = rotate(c,loc.w) * loc.z + loc.xy;
-    return mandelbrotRenderFormula(c,vec2(0.));
+    return mandelbrotCore(c,vec2(0.),MAX_ITER);
 }
 vec4 mandelbrotRenderJulia( vec2 c,vec4 loc){
      c = rotate(c,loc.w) * loc.z + loc.xy;
-    return mandelbrotRenderFormula(loc.xy,c);
+    return mandelbrotCore(loc.xy,c,MAX_ITER);
 }
 
 vec4 getKeyFrame(float t){
@@ -462,8 +408,6 @@ vec3 colorMandelResultIteration(vec4 result){
  // minibrote trifox
 vec4 scene2Mandelbroetchen(vec2 fragCoord,float t)
 {
-
-
  
     float interval = fract(t); 
     vec2 v = fragCoord; // to -1 +1 real,imag
@@ -505,42 +449,60 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord,float t)
 }
 
 
+const float offset=1.; // audio offset, somehow the track has a 1bpm delay at start
 vec4 mainWrap(vec2 fragCoord,float t){
  
     vec4 result=vec4(0.);
     vec4 noise=vec4(sin(t*10.)*0.5+0.5);
-        vec4 scene_0=   scene3Cardioid(fragCoord,t) ;
+ 
         vec4 scene_1= scene2Mandelbroetchen(fragCoord,t) ;
-        vec4 scene_2=   vec4(scene0(fragCoord,t),1.);
+        vec4 scene_2=   vec4(scene0JuliaBobs(fragCoord,t,25.,50.),1.);
 
 
-vec4 mandelTriklops=mandelMan(fragCoord,vec2(sin(t)),vec2(0,sin(t)*0.1),100.,0.,t);
-vec4 mandelRefurio=mandelMan(fragCoord,vec2(cos(t)),vec2(0.),100.,1.,t);
+vec4 mandelTriklops=mandelMan(
+  //uv
+  fragCoord*2.5-vec2(0.65,0), 
+  // seed eyes
+vec2(sin(t),cos(t*2.))*0.1,
+// headpos
+vec2(sin(t)*0.1,0),
+// iters
+100.,
+// trifox or refurio
+0.,
+// time
+t);
+return mandelTriklops;
+vec4 mandelRefurio=mandelMan(fragCoord*2.5+vec2(-1.1,0.5),vec2(cos(t*PI),sin(t*PI)*0.1),vec2(sin(t*PI)*0.1,0.),100.,1.,t);
+  t=t-1.;
+  if(t<0){
+    return vec4(1.0);
+  }else
 
-    if(t<2.){
-      // mini intro     
-      result.xyzw=vec4(fract(t/2.));
-    }else
     if(t<4.){
-      // uebergang zu main wums 
-        result=noise;
-        result.y=1.0-result.y;
-
-    }else
-    if(t<4.*9){
-      // Main Wums Scene
+      // mini intro  ein takt   
+      //result.xyzw=vec4(1.0-easeInOutTap(fract(t)  ));
+        vec4 scene_0=  scene3Cardioid_Content(fragCoord,PI );
         result=scene_0;
+    }else 
+    if(t<4.*8){
+      // Main Wums Scene nach halbem pattern
+        vec4 scene_0=   scene3Cardioid(fragCoord,t-4.*8) ;
+        result=scene_0;
+ 
     }else
-    if(t<4.*16.5){
-      result=scene_0+noise;
+    if(t<4.*16){
+      // ... and so on
+        vec4 scene_0=   scene3Cardioid(fragCoord,t-4*8) ;
+      result=scene_0+mandelRefurio;
     }else
     if(t<4.*24.){
       result=scene_1;
     }else
     if(t<4.*39.){
-      result=scene_1+noise;
+      result=scene_1+mandelTriklops;
     }else
-    if(t<4.*55.){
+    if(t<4.*54.){
       result=scene_2;
     }else
     if(t<4.*58.){
@@ -553,8 +515,7 @@ vec4 mandelRefurio=mandelMan(fragCoord,vec2(cos(t)),vec2(0.),100.,1.,t);
 
 result+=mandelTriklops;
 
-
-      result=noise;
+ 
     }
   
 return result;

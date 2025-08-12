@@ -99,9 +99,10 @@ void Editor::updateShaders(int* mainShaderPID, int* postShaderPID, bool force_up
 			if (newPID > 0)
 				*mainShaderPID = newPID;
 
+				/*
 			newPID = reloadShaderSource("../src/shaders/post.frag");
 			if (newPID > 0)
-				*postShaderPID = newPID;
+				*postShaderPID = newPID;*/
 		}
 
 		previousUpdateTime = timeGetTime();
