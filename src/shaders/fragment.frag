@@ -2,8 +2,9 @@
 
 uniform int m; // Time in sample player
 
-const float PI = 3.1416;
+const float PI = radians(180.);
 const float PI2= PI*2.;
+const float HALF_PI=PI/2.;
 const vec2 iResolution= vec2(1920.,1080.);
 const float BAILOUT=256;
  
@@ -11,9 +12,14 @@ const float BAILOUT=256;
 const int MAX_ITER = 100; 
 const float bpm = 154.0;
 const float secsPerBeat = 60.0 / bpm;
+const float one=1.;
+const float zero=0.;
+// complex one
+const vec2 cone = vec2(one,zero);
+
 const float beatTrack_1[16]=float[16](
     
-    1.,0.,0.,0.,
+    0.,0.,0.5,1.,
     1.,0.,0.,0., 
     1.,0.,0.,0.,
     1.,0.,0.,0.
@@ -45,24 +51,20 @@ const float beatTrack_4_8chtel[32]=float[32](
 
 
 // vec4 real,imag,scale for locations  
-const vec4 locations[17] = vec4[17](
-vec4(-1.7683588440488,0.05142235910284,0.00005355907904092338,0.27563548147126493),
-vec4(-1.766495147994,0.0417267061464,0.00044402239147676086,0.1517894639121909),
-vec4(-1.769261670277,0.0569195003956,0.0002995182771678725,0.23423347691063795),
-vec4(-1.90728009107,0,0.0011754560896387338,3.141592653589793),
-vec4(-1.8607825222,0,0.007767650197946792,3.141592653589793),
-vec4(-1.94079980653,0,0.00983928985307716,3.141592653589793),
-vec4(-1.754877666,0,0.18201981627989672,3.141592653589793),
-vec4(0.38798963546146,0.61197516811835,0.00004396647496816971,-2.380696251364367),
-vec4(0.3890111704987,0.6084278463908,0.0005274726330800535,2.686827005755999),
-vec4(0.381237793363,0.599378097942,0.004300393224212388,0.21065064233145478),
-vec4(0.36040230539,0.61490698108,0.011646798131609109,2.4731928462200328),
-vec4(0.377149286568,0.666878777916,0.0010316522371209885,-1.5133807978646205),
-vec4(0.376893240379,0.67856869319,0.0012574438753357167,0.6599920743443956),
-vec4(0.359892739013,0.684762020212,0.005553083570499503,3.1212786038479035),
-vec4(0.35925922476,0.64251373714,0.04714342394528389,2.0447869433636376),
-vec4(-0.15652016683,1.0322471089,0.08188697027694743,2.4777729354236357),
-vec4(-1.754877666,0,0.18201981627989672,3.141592653589793) 
+const vec4 locations[7] = vec4[7](  
+ 
+vec4(-1.870003880829,0,0.0002674561862707285,3.141592653589793),
+vec4(-0.525971082531,-0.696943648552,0.0012521592421613436,-1.4127195914530066),
+vec4(-0.5283268509101,-0.7040732663739,0.00010731840819160572,-2.0375321234958355),
+
+
+vec4(-0.7241362058945,0.3615746809763,0.0006762353967640741,-0.3535661995436758),
+
+vec4(-0.690942897652,0.465349538581,0.008320645697370592,2.718719757271499),
+vec4(-0.71129999537417,0.47361824034266,0.00006140226906652181,-3.0772975283438235),
+vec4(-0.7064983534592,0.4721945038287,0.0006342193550945032,2.9386115579413823)
+
+
 );
 
 // Utility Methods, 
@@ -82,11 +84,14 @@ vec4(-1.754877666,0,0.18201981627989672,3.141592653589793)
   // smoothed iters
   // )
   
+ float easeInOutTap(float t) {
+    return smoothstep(0.0, 0.2, t) * (1.0 - smoothstep(0.2, 0.5, t));
+}
 float abs2(vec2 z) {
   return dot(z,z);
 }
 vec2 cmul(vec2 a, vec2 b) { 
-  return vec2(a.x*b.x-a.y*b.y, 2.*a.x*b.y);
+  return vec2(a.x*b.x-a.y*b.y,  a.x*b.y+a.y*b.x);
 }
 vec4 mandelbrotCore(vec2 c, vec2 z0,float iterations) {
   vec2 z = z0; 
@@ -228,13 +233,10 @@ vec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d )
 vec3 makePal1(float i){
     return pal( i, vec3(0.3,0.2,0.5),vec3(0.6,0.2,0.8),vec3(2.0,1.0,0.0),vec3(0.5,2.20,0.25) );
 }
-// refurio cardioid abrollen
-
-float funFactor=10.;
-
+// refurio cardioid abrollen 
 float arg(vec2 z) {
   return atan(z.y, z.x);
-}
+} 
 vec2 cdiv(vec2 a, vec2 b) {
   return vec2(dot(a,b), a.y*b.x-a.x*b.y)/abs2(b);
 }
@@ -254,34 +256,24 @@ vec2 cpow(vec2 b, vec2 e) {
 vec2 csqrt(vec2 z) {
   return cpow(z, vec2(.5,0.));
 }
-float osc(float lo, float hi, float f, float t) {
-  float d=(hi-lo)/2.;
-  return sin(t*f*PI*2.)*d;
-}
  
 vec4 icolor(int i) {
   float x = float(i);
   return vec4(sin(x*100.), sin(x*200.), sin(x*300.), 0.);
-}
-vec4 black = vec4(0., 0., 0., 1.);
-vec4 white = vec4(1., 1., 1., 1.);
-
+} 
+ 
+vec4 scene3Cardioid_Content(vec2 c,float ggg) {  
 vec2 center = vec2(0.,0.);
 float radius = 1.5;
 float angle = radians(float(0.));
-
-vec4 scene3Cardioid_Content(vec2 c,float angle) {  
-//    c = p2c(c);
-  c=c*2.;
-  int n = MAX_ITER;
-  const vec2 one = vec2(1.,0.);
-  float di = 1.5*(1.+cos(angle));
-  c = cinv(csqrt(one-4.*c)) - vec2(0.,di);
-  c = 0.25*(one-cinv(cmul(c,c)));
+  c=c; 
+  c = cinv(csqrt(cone-4.*c)) - vec2(0.,ggg);
+  c = 0.25*(cone-cinv(cmul(c,c)));
+  
   vec2 z = c;
   vec2 dz = vec2(0.,0.);
   vec2 phi = z;
-  for(int i=0; i<n; ++i) {
+  for(int i=0; i<MAX_ITER; ++i) {
     dz = 2.*cmul(z,dz);
     z = cmul(z,z);
     z+=c;
@@ -289,17 +281,20 @@ vec4 scene3Cardioid_Content(vec2 c,float angle) {
     float s = pow(0.5, float(i));
     phi = cmul(phi, cpow(a, vec2(s,0.)));
     if(abs2(z) > 10000.) {
-      return vec4(0.73,0.6,0.8,1.) ;
+      return vec4(0.6)*clamp(abs2(z)/pow(2.,float(i)/(1.+ggg)),0.,1.);
     }
   }
-  return vec4(makePal1(arg(z)),1.0);
+  return vec4(makePal1(arg(z)),1.);
+  
+  }
+
+
+float elasticIn(float t) {
+  return sin(13.0 * t * HALF_PI) * pow(2.0, 10.0 * (t - 1.0));
 }
 
-
-vec4 scene3Cardioid(vec2 c,float iTime) { 
-// wink
-float wink=sin(iTime*PI)*0.025;
-return scene3Cardioid_Content(c,smoothStepCounter(iTime,4.,0.2)*(PI2/16.)+wink );
+vec4 scene3Cardioid(vec2 c,float iTime) {  
+return scene3Cardioid_Content((c-vec2(0.5,0.))*2.,iTime );
 }
 
 // Refurio Julia Bobs
@@ -308,50 +303,45 @@ float sqr(float x) {
   return x*x;
 }
   
- 
-vec2 cardioid(float a) {
-  float r = 1.;
-  float x = cos(a)*r;
-  float y = sin(a)*r;
-  return vec2(1.-(sqr(x-1.)-sqr(y)),
-              -2.*(x-1.)*y
-             )/4.;
-}
-
   
 
-// some variables used by the bobber
-vec2  p2c_wh2;
-float p2c_pr;
-vec2  p2c_r;
-vec2 p2c_center;
-void p2c_init(vec2 center, float radius, float angle) {
-  p2c_wh2 = iResolution.xy/2.;
-  p2c_pr = min(p2c_wh2.x, p2c_wh2.y);
-  p2c_r = radius * vec2(cos(angle), sin(angle));
-  p2c_center = center;
-}
- 
-
-vec3 scene0JuliaBobs(vec2 xy,float iTime,float iterations,float numberOfBobs) {
+// some variables used by the bobber 
+vec3 scene0JuliaBobs(vec2 xy,float iTime,float iterations,float numberOfBobs,float scaleMul,vec4 keyframe,float lissa,vec2 dir) {
+  // ok also die methode funktioniert nun so>
+  // die location wird aus locations tabelle genommen, man kann dann die anderen params quasi nutzen so zumindest die idee
   xy*=2.; 
-  vec4 keyframe=locations[10];
-  float t = iTime/16.; 
-  float r = 0.2; // (sin(t/10.)/2.+.5)*2.; // amplitude of movements
+  float t = iTime/4.; 
+  float r = 0.1; // (sin(t/10.)/2.+.5)*2.; // amplitude of movements
   float ia = 1.; // (sin(t/3.)/2.); // how much of the circle to draw
-  float lissa = 1.; // (sin(t/12.)/2.+.5)*2.+1.;
-  float scale =1.;
+  //float lissa = 1.3; // (sin(t/12.)/2.+.5)*2.+1.;
+  float scale = keyframe.z*scaleMul;
   r /= scale;
   float b = 0.;
   vec3 col = vec3(0.);
   vec4 res=vec4(0.);
   for(float i = 0.; i < numberOfBobs; ++i) {
-    vec2 c = cardioid(t+i/numberOfBobs*sin(t/20.))*1.1;
-    vec2 o = r*vec2(cos(t-i/numberOfBobs*PI*2.*ia*lissa), sin(-t+i/numberOfBobs*PI*2.*ia));
-//    o = c;
-    p2c_init(keyframe.xy, float(2.), float(0.));
-    vec2 p = xy/scale-o;    
-      res=mandelbrotCore(c, p,iterations);
+float iNormalized=i/numberOfBobs;
+//    vec2 c = cardioid(t+i/numberOfBobs*sin(t/20.))*1.1;
+  vec2  c=keyframe.xy;
+    // o ist dann wohl die location?
+    vec2 oOriginal = r*vec2(
+      cos(t*iNormalized*PI2*ia*lissa), 
+      sin(-t*iNormalized*PI2*ia)
+      ) *iNormalized;
+//    o = c; 
+
+// c scheint einfach der julia seed fuer die kids zu sein, ok
+c+=vec2(
+  sin(i*0.3),
+  cos(i*0.25)
+)*keyframe.z*0.06*1.; 
+
+
+vec2 o=vec2(i*keyframe.z,0.);
+o.x=oOriginal.x*keyframe.z+iNormalized*dir.x*keyframe.z;
+o.y=oOriginal.y*keyframe.z+iNormalized*dir.y*keyframe.z;
+    vec2 p = xy*scale+o ;    
+    res=mandelbrotCore(c, p,iterations);
     if(res.z>=1.0) {
       if(i==0.)
         return makePal1(.0);
@@ -377,9 +367,6 @@ float expInterp(float a, float b, float t) {
     return exp(mix(log(a), log(b), t));
 }
 
- float easeInOutTap(float t) {
-    return smoothstep(0.0, 0.2, t) * (1.0 - smoothstep(0.2, 0.5, t));
-}
 vec4 mandelbrotRender( vec2 c,vec4 loc){
      c = rotate(c,loc.w) * loc.z + loc.xy;
     return mandelbrotCore(c,vec2(0.),MAX_ITER);
@@ -391,7 +378,7 @@ vec4 mandelbrotRenderJulia( vec2 c,vec4 loc){
 
 vec4 getKeyFrame(float t){
     // Achtung, hier kommt schon auf bpm normalisiertes "t" rein
-    int currentTimeInterval = int(t) % 17;
+    int currentTimeInterval = int(t) % 7;
     return locations[currentTimeInterval];
 } 
 float explerp(float v0, float v1, float t) {
@@ -447,23 +434,36 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord,float t)
 
 
 }
+float cubicIn(float t) {
+  return t * t  ;
+} 
 
+float backIn(float t) {
+  return pow(t, 3.0) - t * sin(t * PI);
+}
+float flashBang(float time, float[16] arr){
+  return easeInOutTap(fract(time)) * arr[ int(time)%16];
+}
 
 const float offset=1.; // audio offset, somehow the track has a 1bpm delay at start
 vec4 mainWrap(vec2 fragCoord,float t){
  
+
+
     vec4 result=vec4(0.);
+
+
+
     vec4 noise=vec4(sin(t*10.)*0.5+0.5);
+    float env=env(fract(t));
  
         vec4 scene_1= scene2Mandelbroetchen(fragCoord,t) ;
-        vec4 scene_2=   vec4(scene0JuliaBobs(fragCoord,t,25.,50.),1.);
-
 
 vec4 mandelTriklops=mandelMan(
   //uv
   fragCoord*2.5-vec2(0.65,0), 
   // seed eyes
-vec2(sin(t),cos(t*2.))*0.1,
+vec2(sin(t),cos(t*2.))*0.01,
 // headpos
 vec2(sin(t)*0.1,0),
 // iters
@@ -471,29 +471,40 @@ vec2(sin(t)*0.1,0),
 // trifox or refurio
 0.,
 // time
-t);
-return mandelTriklops;
-vec4 mandelRefurio=mandelMan(fragCoord*2.5+vec2(-1.1,0.5),vec2(cos(t*PI),sin(t*PI)*0.1),vec2(sin(t*PI)*0.1,0.),100.,1.,t);
-  t=t-1.;
+t);   
+vec4 mandelRefurio=mandelMan(
+  fragCoord*2.5+vec2(-1.1,0.5),
+  vec2(sin(t*PI) 
+  
+  ,sin(t*PI))*0.06,vec2(sin(t*PI)*0.1,0.),100.,1.,t);
+  t=t-offset;
   if(t<0){
-    return vec4(1.0);
+    return vec4(0.0);
   }else
 
-    if(t<4.){
+    if(t<4.*1.){
+      // laenge 4
       // mini intro  ein takt   
       //result.xyzw=vec4(1.0-easeInOutTap(fract(t)  ));
-        vec4 scene_0=  scene3Cardioid_Content(fragCoord,PI );
-        result=scene_0;
+        vec4 scene_0=  scene3Cardioid(fragCoord,0.  )*(t/4.);
+        result=vec4(scene_0.xxx,1.);
     }else 
     if(t<4.*8){
+
+      // laenge 32
       // Main Wums Scene nach halbem pattern
-        vec4 scene_0=   scene3Cardioid(fragCoord,t-4.*8) ;
+        float smoothStepTime=smoothStepCounter(t,1.0,0.35);
+        vec4 scene_0=   scene3Cardioid(fragCoord,mix(0.,1.5,cubicIn(fract((smoothStepTime-4.)/16.))   ) );
         result=scene_0;
- 
+
+if(t-4>16){    
+    vec4 scene_2=   vec4(scene0JuliaBobs(fragCoord,t, 25.,25., 25.,locations[1],1.3,vec2(5.,-10.)),1.);
+    result+=flashBang(t,beatTrack_1)*scene_2;
+}
     }else
     if(t<4.*16){
       // ... and so on
-        vec4 scene_0=   scene3Cardioid(fragCoord,t-4*8) ;
+        vec4 scene_0=   scene3Cardioid(fragCoord,1.0-((t-4.*8.)/4.*8.)) ;
       result=scene_0+mandelRefurio;
     }else
     if(t<4.*24.){
@@ -502,10 +513,13 @@ vec4 mandelRefurio=mandelMan(fragCoord*2.5+vec2(-1.1,0.5),vec2(cos(t*PI),sin(t*P
     if(t<4.*39.){
       result=scene_1+mandelTriklops;
     }else
-    if(t<4.*54.){
+    if(t<4.*54.){        
+      vec4 scene_2=   vec4(scene0JuliaBobs(fragCoord,t, 25.,25., 25.,locations[1],1.3,vec2(5.,-10.)),1.);
+
       result=scene_2;
-    }else
-    if(t<4.*58.){
+    }else if(t<4.*58.){        
+      vec4 scene_2=   vec4(scene0JuliaBobs(fragCoord,t, 25.,25., 25.,locations[1],1.3,vec2(5.,-10.)),1.);
+
       result=scene_2+noise; 
     }else
     if(t<4.*64.){
@@ -517,7 +531,6 @@ result+=mandelTriklops;
 
  
     }
-  
 return result;
 }
 
