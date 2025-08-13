@@ -19,16 +19,16 @@ const vec2 cone = vec2(one,zero);
 
 const float beatTrack_1[16]=float[16](
     
-    0.,0.,0.5,1.,
-    1.,0.,0.,0., 
-    1.,0.,0.,0.,
-    1.,0.,0.,0.
+    1.,0.,0.5,1.,
+    0.,1.,0.,0.5, 
+    .1,0.,1.,0.,
+    0.,0.,0.,1.
     ); 
 const float beatTrack_2[16]=float[16](
-    0.,1.,0.,0.,
-    0.,1.,0.,0., 
-    0.,1.,0.,0.,
-    0.,1.,0.,0.
+    0.,1.,0.,1.,
+    0.,1.,0.,1., 
+    0.,1.,0.,1.,
+    0.,1.,0.,1.
     ); 
 
 // cowbell
@@ -437,7 +437,11 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord,float t)
 float cubicIn(float t) {
   return t * t  ;
 } 
-
+float cubicInOut(float t) {
+  return t < 0.5
+    ? 4.0 * t * t * t
+    : 0.5 * pow(2.0 * t - 2.0, 3.0) + 1.0;
+}
 float backIn(float t) {
   return pow(t, 3.0) - t * sin(t * PI);
 }
@@ -452,6 +456,7 @@ vec4 mainWrap(vec2 fragCoord,float t){
 
     vec4 result=vec4(0.);
 
+ 
 
 
     vec4 noise=vec4(sin(t*10.)*0.5+0.5);
@@ -478,31 +483,39 @@ vec4 mandelRefurio=mandelMan(
   
   ,sin(t*PI))*0.06,vec2(sin(t*PI)*0.1,0.),100.,1.,t);
   t=t-offset;
+
+
+
   if(t<0){
     return vec4(0.0);
   }else
 
-    if(t<4.*1.){
+    if(t<=4.*1.){
       // laenge 4
       // mini intro  ein takt   
       //result.xyzw=vec4(1.0-easeInOutTap(fract(t)  ));
         vec4 scene_0=  scene3Cardioid(fragCoord,0.  )*(t/4.);
         result=vec4(scene_0.xxx,1.);
     }else 
-    if(t<4.*8){
+    if(t<=4.*8){
 
+        float smoothStepTime=smoothStepCounter(t,1.0,0.35);
+          float stepTime=(smoothStepTime-4.)/16.;
       // laenge 32
       // Main Wums Scene nach halbem pattern
-        float smoothStepTime=smoothStepCounter(t,1.0,0.35);
-        vec4 scene_0=   scene3Cardioid(fragCoord,mix(0.,1.5,cubicIn(fract((smoothStepTime-4.)/16.))   ) );
-        result=scene_0;
 
-if(t-4>16){    
-    vec4 scene_2=   vec4(scene0JuliaBobs(fragCoord,t, 25.,25., 25.,locations[1],1.3,vec2(5.,-10.)),1.);
-    result+=flashBang(t,beatTrack_1)*scene_2;
+        vec4 scene_0=   scene3Cardioid(fragCoord,mix(0.,1.5,cubicInOut(fract(clamp(stepTime,0.,.999)) )  ) );
+        result=scene_0;
+if(t-4>=16.){
+
+    vec4 scene_2=   vec4(
+      scene0JuliaBobs(fragCoord,t, 50.,25.,25.,locations[int(t)%7],1.3,vec2(5.,10.)),3.);
+
+    result=mix(result,scene_2,flashBang(t,beatTrack_2));
+  //  result+=scene_2;  
 }
     }else
-    if(t<4.*16){
+    if(t<=4.*16){
       // ... and so on
         vec4 scene_0=   scene3Cardioid(fragCoord,1.0-((t-4.*8.)/4.*8.)) ;
       result=scene_0+mandelRefurio;
