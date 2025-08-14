@@ -167,7 +167,7 @@ float sdBox( in vec2 p, in vec2 b )
 }
 
 vec4 mandelMan(vec2 uvIn ,vec2 seedEyes,vec2 seedMouth,vec2 headPos, float iterations,
-float triops,float iTime,float teethOpen,vec3 eye1Color,float eyeSize, float browPos,float eyeAngle)
+float triops,float iTime,float teethOpen,vec3 eye1Color,float eyeSize, float browPos,float eyeAngle,vec2 eyePosOffset)
 {
 vec4 fragColor=vec4(0.);
     // Normalized pixel coordinates (from 0 to 1)
@@ -189,12 +189,12 @@ uv+=headPos;
 
 
 vec2 eyePos=center+vec2(  3.150, 2.40);
-float eye=sdCircle(uv+vec2(0.27,0.15),eyeSize);
+float eye=sdCircle(uv+vec2(0.27,0.15)+eyePosOffset,eyeSize);
 float eyestep=smoothstep(0.02,0.,eye);
 if(eyestep>0){
  fragColor.xyz+=eye1Color*(1.0-eyestep)*0.95;
 }
-float eye2=sdCircle(uv+vec2(0.27,-0.15),eyeSize);
+float eye2=sdCircle(uv+vec2(0.27,-0.15)+eyePosOffset,eyeSize);
 float eye2step=smoothstep(0.02,0.,eye2);
 
 if(eye2step>0){
@@ -562,39 +562,44 @@ vec4 mainWrap(vec2 fragCoord,float t){
  
 
 
-    vec4 noise=vec4(sin(t*10.)*0.5+0.5);
+    vec4 noise=vec4(easeInOutTap(flashBang8(t,beatTrack_4Achtel)));
     float env=env(fract(t));
- 
+  
+//        vec4 scene_1= scene2Mandelbroetchen(fragCoord,t) ;
+//     return scene_1;
 
-        vec4 scene_1= scene2Mandelbroetchen(fragCoord,t) ;
-
-     return scene_1;
-
-/* develop */ 
-/*
-vec4 mandelTriklops=mandelMan(
-  //uv
-  fragCoord*2.5+vec2(1.5,0.5), 
-  // seed eyes
-vec2(-0.85,0.01) ,
-// seed mouth
-vec2(0.,0.),
-// headpos
-vec2(sin(t)*0.1,0),
-// iters
-100.,
-// trifox or refurio
-0.,
-// time
-t,0.03,vec3(1.,0.,0.),0.001,0.35,t*10);   
-vec4 mandelRefurio=mandelMan(
+/* develop */
+/* 
+ vec4 mandelRefurio=mandelMan(
   fragCoord*2.5+vec2(- .8,0.5),
-  vec2(0  ,0)*0.45-0.25,vec2(sin(t*PI*2.)*0.20,sin(t*PI*0.1)*0.5),vec2(sin(t*PI)*0.1,0.),100.,1.,t,abs(sin(t*PI))*0.03,
-  vec3(1.,0.,0.),0.001,0.33,45.);
-  t=t-offset; 
-
-return mandelTriklops+mandelRefurio; 
-*/
+  // eye seed
+  vec2(sin(t*PI)   
+  ,0)*0.01-vec2(0.35,0.),
+  
+  // mouth seed
+  vec2(sin(t*PI*1.25),sin(t*PI*0.5))*0.3,
+  // head pos
+  vec2(0.,0.),
+  // iterations
+  100.,
+  // triops/refurio control par
+   1.,
+   // time
+   t,
+   //teethopen
+   0.05,
+   // eyecolor
+   vec3(1.,1.,1.),
+   // eyesize
+   0.002,
+   0.35,
+   0.,
+   // eyepos offset
+   vec2(0.01,0.01)
+   ); 
+   return mandelRefurio;
+   */
+   
   if(t<0){
     return vec4(0.0);
   }else
@@ -646,14 +651,17 @@ vec4 mandelRefurio=mandelMan(
    // eyecolor
    vec3(1.,1.,1.),
    // eyesize
-   0.002,
-   0.35,
-   0.); 
+   0.001,
+   0.31,
+   0.,
+   // eyepos offset
+   vec2(0.015,0.)
+   ); 
    result=max(result,mandelRefurio); 
 }
     }else
     if(t<=4.*16){
-// hier dann 2ter teil cardioid intro es wieder abrollen mit triklops avatar 
+// hier dann 2ter teil cardioid intro es wieder abrollen mit triklops avatar und refurio, am ende redet nochmal ltriklpos
               float smoothStepTime=smoothStepCounter(t,1.0,0.35);
           float stepTime=(smoothStepTime-32.)/16.;
 
@@ -680,11 +688,13 @@ vec4 mandelRefurio=mandelMan(
    //teethopen
    0.001,
    // eyecolor
-   vec3(1.,1.,1.),0.001,0.36,50.); 
+   vec3(1.,1.,1.),0.001,0.36,0.,
+   // eyepos offset
+   vec2(0.001,0.03)); 
 
 /// Scene 1 MandelRefurio schaurt sich cardioid effekt an
 vec4 mandelTriklops=mandelMan(
-  stepTime<1.? 
+  stepTime>1.? 
   fragCoord*2.5+vec2(1.5,0.5):
   fragCoord*3.5+vec2(1.5,1.)
   
@@ -694,7 +704,7 @@ vec4 mandelTriklops=mandelMan(
   ,0)*0.01-vec2(0.35,0.),
   
   // mouth seed
-  stepTime<1.?vec2(cos(t),sin(t*0.34))*0.5:vec2(-0.8,0.1),
+  stepTime>1.?vec2(cos(t),sin(t*0.34))*0.5:vec2(-0.8,0.1),
   // head pos
   vec2(0.,0.),
   // iterations
@@ -704,9 +714,11 @@ vec4 mandelTriklops=mandelMan(
    // time
    t,
    //teethopen
-  stepTime<1.? 0.05:0.001,
+  stepTime>1.? 0.05:0.001,
    // eyecolor
-   vec3(1.,1.,1.),0.001,0.36,0.); 
+   vec3(1.,1.,1.),0.001,0.36,0.,
+   // eyepos offset
+    stepTime>1.?vec2(0.):vec2(0.001,-0.03)); 
 
 
 
@@ -719,21 +731,33 @@ if(stepTime>1.0){
 
     }else
     if(t<4.*24.){       
+// hier dann abschnitt mit minibroetchen
+
         vec4 scene_1= scene2Mandelbroetchen(fragCoord,t) ;
 
       result=scene_1;
     }else
     if(t<4.*39.){
+// hier dann abschnitt mit minibroetchen und triklops er soll aber nur ein tak sichtbar sein und wackeln
+// wird einfach zuviel gedoens, analog soll dann refurio bei seinem auch wackeln
+// am ende wackeln beide und freuen sich
 
+        vec4 scene_1= scene2Mandelbroetchen(fragCoord,t) ;
+
+      result=scene_1;
+
+float tnormalized=t-4*24.;
+if(tnormalized>8*4&&tnormalized<12*4){
+// debug mandell triklops fun
 vec4 mandelTriklops=mandelMan(
   //uv
   fragCoord*2.5+vec2(1.5,0.5), 
   // seed eyes
-vec2( 0.23,0.3),
+vec2( 0. ,-0.),
 // seed mouth
-vec2(sin(t),0.)*0.25,
+vec2(0.,0.)*0.25,
 // headpos
-vec2(0.,0),
+vec2(sin(t*4.)*0.1,0),
 // iters
 100.,
 // trifox or refurio
@@ -741,7 +765,7 @@ vec2(0.,0),
 // time
 t,
 // mouthopen
-0.3,
+0.03,
 // eyecolor
 vec3(1.,1.,1.),
 // eyesize
@@ -749,14 +773,16 @@ vec3(1.,1.,1.),
 // browpos
 0.4
 // browangle
-,0.
+,0,
+   // eyepos offset
+   vec2(0.)
 );   
 
-        vec4 scene_1= scene2Mandelbroetchen(fragCoord,t) ;
+result=max(result,mandelTriklops);
 
-      result=max(scene_1,mandelTriklops);
+}
     }else
-    if(t<4.*54.){        
+    if(t<4.*52.){        
       vec4 scene_2=   vec4(scene0JuliaBobs(fragCoord,t, 25.,25., 25.,locations[1],1.3,vec2(5.,-10.)),1.);
 
       result=scene_2;
@@ -764,6 +790,39 @@ vec3(1.,1.,1.),
       vec4 scene_2=   vec4(scene0JuliaBobs(fragCoord,t, 25.,25., 25.,locations[1],1.3,vec2(5.,-10.)),1.);
 
       result=scene_2+noise; 
+
+/// refurio schaut sich seine bobs an
+
+vec4 mandelRefurio=mandelMan(
+  //uv  
+  fragCoord*2.5+vec2(- .8, .5),
+  // seed eyes
+vec2( 0. ,-0.),
+// seed mouth
+vec2(0.,0.)*0.25,
+// headpos
+vec2(sin(t*4.)*0.1,0),
+// iters
+100.,
+// trifox or refurio
+1.,
+// time
+t,
+// mouthopen
+0.03,
+// eyecolor
+vec3(1.,1.,1.),
+// eyesize
+0.001,
+// browpos
+0.4
+// browangle
+,0,
+   // eyepos offset
+   vec2(0.)
+);   
+result=max(result,mandelRefurio);
+
     }else
     if(t<4.*64.){
 
@@ -775,28 +834,26 @@ vec4 mandelRefurio=mandelMan(
   vec2(sin(t*PI)   
   ,0)*0.45-0.25,vec2(0,0.4),vec2(sin(t*PI)*0.1,0.),100.,1.,t,
 // mouthopen
-0.3,
+0.01,
 // eyecolor
-vec3(1.,0.,0.),
+vec3(0.,1.,0.),
 // eyesize
-0.001,
+0.003,
 // browpos
-0.2
+0.4
 // browangle
-,0.); 
-      result=mandelRefurio; 
-    }else{
-      //outro
-
+,0.,
+   // eyepos offset
+   vec2(0.)); 
 vec4 mandelTriklops=mandelMan(
   //uv
   fragCoord*2.5+vec2(1.5,0.5), 
   // seed eyes
-vec2(0,cos(t*2.3565))*0.5,
+vec2( 0. ,-0.),
 // seed mouth
-vec2(0.3,0.4),
+vec2(0.,0.)*0.25,
 // headpos
-vec2(sin(t)*0.1,0),
+vec2(sin(t*4.)*0.1,0),
 // iters
 100.,
 // trifox or refurio
@@ -804,16 +861,29 @@ vec2(sin(t)*0.1,0),
 // time
 t,
 // mouthopen
-0.3,
+0.01,
 // eyecolor
 vec3(1.,0.,0.),
 // eyesize
 0.001,
 // browpos
-0.2
+0.4
 // browangle
-,0.);   
-result+=mandelTriklops;
+,0,
+   // eyepos offset
+   vec2(0.)
+);   
+
+
+
+      result=max(mandelTriklops,mandelRefurio); 
+    }else if(t<4.*67.){
+      //outro
+        result=vec4(easeInOutTap(flashBang8(t,beatTrack_4Achtel)));
+    }else{
+      //outro totalo
+ 
+result=vec4(0.);
 
  
     }
