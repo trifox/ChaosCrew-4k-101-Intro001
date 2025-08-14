@@ -626,6 +626,9 @@ vec4 mainWrap(vec2 fragCoord,float t){
     vec4 result=vec4(0.); 
 
 
+/// achtung hier die methode direkt zu returnen
+// unten werden aber alle 4 auch aufgerufen, man sollte also 
+// hier die params fuer unten festlegen
 
     if(t < 4.*16.) {
       const float ref1[8]=float[8](
