@@ -41,6 +41,7 @@ Song::Song(LPCWSTR path) : playing(false)
 	__int64 position = 0;
 	mediaSeeking->SetPositions(&position, AM_SEEKING_AbsolutePositioning, &position, AM_SEEKING_NoPositioning);
 	pause();
+	//seek(10);
 }
 
 Song::~Song()
