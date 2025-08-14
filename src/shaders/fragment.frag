@@ -425,7 +425,7 @@ c+=vec2(
 vec2 o=vec2(i*keyframe.z,0.);
 o.x=oOriginal.x*keyframe.z+iNormalized*dir.x*keyframe.z;
 o.y=oOriginal.y*keyframe.z+iNormalized*dir.y*keyframe.z;
-    vec2 p = xy*scale+o ;    
+    vec2 p = xy*scale+o +sin(1.)*0.01;    
     res=mandelbrotCore(c, p,iterations);
     if(res.z>=1.0) {
       if(i==0.)
@@ -541,6 +541,118 @@ float flashBang8(float time, float[8] arr){
   return easeInOutTap(fract(time)) * arr[ int(time)%8];
 } 
 
+///////////////////
+////////////// for the sake of code, we have to redo this globall method using
+// an init function for setting the iteration? wtf!
+
+vec3 hsv(float h, float s, float v) {
+  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+  vec3 p = abs(fract(vec3(h,h,h) + K.xyz) * 6.0 - K.www);
+  return v * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), s);
+}
+vec3 cmix(vec3 a, vec3 b, float t) {
+  return sqrt(mix(a*a, b*b, t));
+}
+
+vec2 rotor(float a) {
+  return vec2(cos(a), sin(a));
+}
+vec2 cardioid(float a) {
+  vec2 v = rotor(2.*PI*a);
+  v.x -= 1.;
+  return vec2(
+    1.-(sqr(v.x-v.y)),
+    -2.*(v.x)*(v.y)
+  )/4.;
+}
+
+float f_n;
+float f_k;
+void f_init(int n) {
+  // wow this method i celebrte @ref
+  f_n = float(n);
+}
+vec2 f_z;
+bool f(vec2 c, vec2 z0) {
+  f_z = z0;
+  for(f_k = 0.; f_k < f_n; ++f_k) {
+    f_z = cmul(f_z, f_z) + c;
+    if(abs2(f_z) > 4.)
+      return false;
+  }
+  return true;
+}
+vec2 lissajous(float lissa, float shift, float t) {
+  return vec2(cos(t - shift*lissa), sin(t - shift));
+} 
+vec3 xxxNew_scene0(vec2 xy, float t) {
+  f_init(15);
+  
+  float cam_a = sin(t)*PI/2.,
+        cam_d = 1.,
+        
+        n = 100., // number of bobs
+  
+        lissa = 1., // 1.0 is a circle
+        amplitude = .25, // of lissjous animation
+        arclen = 1., // 1.0 is full circle
+        lspeed = 1., // of lissajous anmation
+        
+        speed = 1.25, // at which julia parameters are animated
+  
+        roughness = t/10., // scale complex parameter c, 1.0 is on cardioid
+        cangle = 2., // distance the parameter c travels from head to tail
+        
+        column_height = 2.,
+        column_shift = -.1,
+        
+            // julia view
+        radius = 2.,
+        angle = 0.;
+        
+  vec2 center = vec2(0.),
+       r = radius * rotor(angle),
+       c, p;
+
+  vec3 col = vec3(0.),
+       offset;
+  for(float i = 0.; i < n; ++i) {
+    c = cardioid(t*speed + i/n*cangle)*roughness;
+    
+    offset = vec3(amplitude * lissajous(lissa, 2.*PI * i/n * arclen, t*lspeed*2.*PI),
+                  -column_height * (i/n) + column_shift);
+                  
+    vec2 cr = rotor(cam_a);
+    vec3 cam_pos = vec3(0., 0., cam_d); // cot(a)?
+    cam_pos.yz = cmul(cr, cam_pos.yz);
+    vec3 ray = vec3(xy, 1.);
+    ray.yz = cmul(cr, ray.yz);
+    ray = ray * (cam_pos.z - offset.z)/ray.z - cam_pos;
+    vec2 uv = ray.xy - offset.xy;
+    float z = 1.-length(ray);
+
+    uv = cmul(uv, r) - center;
+    //uv = mod(uv+1., 4.*vec2(2.,2.))-1.;
+
+    if(ray.z <= 0.)
+      continue;
+
+    if(f(c, uv))    
+      // inside
+      if(i == 1.)
+        return hsv(1., 0., 1.);
+      else
+        return cmix(vec3(1.), hsv(.6+mod(i, 1.)/10., 1., 1.), i/n)*z;
+        
+    // outside
+   // col += hsv(0.6, 0.5, pow(f_k/f_n, .125/1.));
+   // col += hsv(0.6, 0.5, pow(f_k/f_n, .125/1.));
+  }
+  return col/n;
+}
+
+
+
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
@@ -555,16 +667,11 @@ float flashBang8(float time, float[8] arr){
 const float offset=1.; // audio offset, somehow the track has a 1bpm delay at start
 vec4 mainWrap(vec2 fragCoord,float t){
  
-
-
-    vec4 result=vec4(0.);
-
- 
-
-
+    vec4 result=vec4(0.); 
     vec4 noise=vec4(easeInOutTap(flashBang8(t,beatTrack_4Achtel)));
     float env=env(fract(t));
-  
+
+    vec4 location=locations[int(t)%7];
 //        vec4 scene_1= scene2Mandelbroetchen(fragCoord,t) ;
 //     return scene_1;
 
@@ -621,10 +728,9 @@ vec4 mainWrap(vec2 fragCoord,float t){
         vec4 scene_0=   scene3Cardioid(fragCoord,mix(0.,1.5,cubicInOut(fract(clamp(stepTime,0.,.999)) )  ) );
         result=scene_0;
 if(t-4>=16.){
+        vec4 scene_2= vec4(  xxxNew_scene0(fragCoord,t/6.),1.);//,125.,25., 10.,location,1.3,vec2(5.,-10.)),1.);
 
-    vec4 scene_2=   vec4(
-      scene0JuliaBobs(fragCoord,t, 50.,25.,25.,locations[int(t)%7],1.3,vec2(5.,10.)),3.);
-
+   
     result=mix(result,scene_2,flashBang(t,beatTrack_2));
   //  result+=scene_2;  
   
@@ -783,11 +889,12 @@ result=max(result,mandelTriklops);
 }
     }else
     if(t<4.*52.){        
-      vec4 scene_2=   vec4(scene0JuliaBobs(fragCoord,t, 25.,25., 25.,locations[1],1.3,vec2(5.,-10.)),1.);
+    vec4 scene_2= vec4(  xxxNew_scene0(fragCoord,t/6.),1.);//,125.,25., 10.,location,1.3,vec2(5.,-10.)),1.);
+
 
       result=scene_2;
     }else if(t<4.*58.){        
-      vec4 scene_2=   vec4(scene0JuliaBobs(fragCoord,t, 25.,25., 25.,locations[1],1.3,vec2(5.,-10.)),1.);
+    vec4 scene_2= vec4(  xxxNew_scene0(fragCoord,t/6.),1.);//,125.,25., 10.,location,1.3,vec2(5.,-10.)),1.);
 
       result=scene_2+noise; 
 
