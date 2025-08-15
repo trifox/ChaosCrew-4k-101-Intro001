@@ -414,6 +414,17 @@ bang2=easeInOutTap(fract(t/4.));
 
 bang2+=easeInOutTap(fract((t+2)/4.));
 
+// bob anzahl lassen wir einfach ansteigen
+ nbobs =(sin(t/4)+1)*200+10;
+  // eye seed
+  
+  man_seedEyes=   vec2(-0.35,0.);  
+
+  // mouth seed
+  man_seedMouth= vec2(sin(t*PI*0.5),cos(t*PI*1))*0.3;  
+  // head pos
+  man_headPos=  vec2(0.,0.);
+ 
 
 //  blink = 0.;
 //  blink = pulses(4./1., t) * pulses(4./2., t) * pulses(4./8., t);
@@ -440,7 +451,6 @@ bang2+=easeInOutTap(fract((t+2)/4.));
   }
   else if(t < 4.*24.) // sec3
  {   
-
 juliastep=1;;
   brotVisibilities=vec2(1.,1.);
   // achtung hier clampt die kamera doof, noch anpassen
@@ -454,17 +464,8 @@ juliastep=1;;
 }else if(t<4.*48.){
 location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
 }
-// bob anzahl lassen wir einfach ansteigen
- nbobs =(sin(t/4)+1)*200+10;
-  // eye seed
-  man_seedEyes=  vec2(sin(t*PI)     ,0)*0.01-vec2(0.35,0.);  
-  // mouth seed
-  man_seedMouth= vec2(sin(t*PI*0.5),cos(t*PI*1))*0.3;  
-  // head pos
-  man_headPos=  vec2(0.,0.);
- 
 // am ende lachendes maenneken mit shaky head
- layerVisibilities.z=clamp(smoothstep(0,4*8,t)*sin(t/2)*4.,0.,1.);
+ layerVisibilities.z=t>4*16?clamp(smoothstep(0,4*8,t)*sin(t/2)*4.,0.,1.):0.;
 
 
  layerVisibilities.x=1.;
@@ -474,6 +475,7 @@ location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
   //return cmix(scene0(xy+sway, t), scene1(xy, t), blink);
 
 if(t>4*24){ 
+  man_seedEyes=vec2(-0.5,0.5);
   location=locations[int(t)%16];
   brotVisibilities=vec2(one,one);
 }
