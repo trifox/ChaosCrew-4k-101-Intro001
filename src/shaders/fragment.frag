@@ -1,12 +1,15 @@
 #version 130
 
 uniform int m; // Time in sample player
+const vec2 iResolution= vec2(1920.,1080.);
+out vec4 o;
+
+////////////////////////////////////////////////////////////////
 
 const float PI = radians(180.);
 const float PI2= PI*2.;
 const float HALF_PI=PI/2.;
-const vec2 iResolution= vec2(1920.,1080.);
-const float BAILOUT=256;
+const float BAILOUT=256.;
 const int SIXTEEN=16;
 
 float MAX_ITER = 150.; 
@@ -50,14 +53,13 @@ const float beatTrack_3[16]=float[16](
 const int ANZ_LOCATIONS=7;
 // vec4 real,imag,scale for locations  
 const vec4 locations[ANZ_LOCATIONS] = vec4[ANZ_LOCATIONS](  
- vec4(0.360402,0.614907,0.0116,2.47),
-vec4(-1.8700,0,0.0002674561862707285,0.),
-vec4(-0.52597,0.6969436,0.001252159,-1.41),
-vec4(-0.528326,0.7040732,0.0001073184,-2.04),
-vec4(-0.724136,0.3615743,0.000676235,-0.35),
-vec4(-0.690942,0.465349,0.00832064,2.72),
-vec4(-0.7112999,0.473618246,0.0000614022,-3.08)  
-
+vec4(0.3604,0.61491,0.0116,2.47),
+vec4(-1.87,0.,0.0002675,0.),
+vec4(-0.52597,0.696944,0.001252,-1.41),
+vec4(-0.528326,0.704073,0.0001073,-2.04),
+vec4(-0.724136,0.361574,0.000676,-0.35),
+vec4(-0.69094,0.46535,0.00832,2.72),
+vec4(-0.7113,0.473618,6.14e-05,-3.08)
 );
 vec4 location= locations[0];
 
@@ -216,7 +218,7 @@ vec3 makePal1(float i){
 );
 }
 
-float juliastep=0;
+float juliastep=0.;
 
 vec2 brotVisibilities=vec2(one,zero);
  // minibrote trifox
@@ -237,7 +239,7 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord )
 float vis=beatTrack_1[index]; 
     vec3 ljulia = mandelbrotRenderJulia(v,
     vec4(location.xy,
-         location.z*(juliastep>0?smoothStepCounter(4.-mod(t*1.,4.), 1.,0.2):1.),
+         location.z*(juliastep>0.?smoothStepCounter(4.-mod(t*1.,4.), 1.,0.2):1.),
          location.w+easeInOutTap(fract(t/8.))*(PI/2.)));
 
      vec4 result =brotVisibilities.x*vis*vec4(makePal1(l.z),1.);
@@ -423,17 +425,16 @@ void animate() {
 flash44Hihat=easeInOutTap(fract(t));
 
 
-// kombinierter 4 und `plus irgendwas flash
-bang2=easeInOutTap(fract(t/4.));
-bang2+=easeInOutTap(fract((t+2)/4.));
+bang2+=easeInOutTap(fract((t+2.)/4.));
 
 // bob anzahl lassen wir einfach ansteigen
- nbobs =(sin(t/4)+1)*200+10;
-  // eye seed mandel man, steuert die stimmung, julia jeweils links rechts gespiegelt pro auge  
+ nbobs =(sin(t/4.)+1.)*200.+10.;
+  // eye seed
+  
   man_seedEyes=   vec2(-0.35,0.);  
 
   // mouth seed
-  man_seedMouth= vec2(sin(t*PI*0.5),cos(t*PI*1))*0.3;  
+  man_seedMouth= vec2(sin(t*PI*0.5),cos(t*PI))*0.3;  
   // head pos
   man_headPos=  vec2(0.,0.);
  
@@ -443,8 +444,7 @@ bang2+=easeInOutTap(fract((t+2)/4.));
   sway = vec2(cos(t*PI2/4./2.), sin(t*PI2/4./4.))*.025;
   if(t < 4.*1.)
   {
-    // nitro bereich bevor music losgeht halt 4bpm, also ein takt gedoenst 
-  vignetteScale=150*t/4.;
+  vignetteScale=150.*t/4.;
     MAX_ITER = 80.*t/4.;
     blink = 0.;
   }
@@ -461,14 +461,13 @@ bang2+=easeInOutTap(fract((t+2)/4.));
   man_seedEyes=vec2(-0.2,0.65);
   blink = pulses(8., t) * pulses(12., t);
     
-  MAX_ITER=250;
+  MAX_ITER=250.;
   brotVisibilities=vec2(0.,1.);
     amplitude = zero;
   }
   else if(t < 4.*24.) // sec3
  {   
-  // hier elseif, also achtung aber es triggert VI VA VOR 4*24
-juliastep=1;;
+juliastep=1.;
   brotVisibilities=vec2(1.,1.);
   // achtung hier clampt die kamera doof, noch anpassen
     cam_a = sin(t*PI2/16.)*PI2/8.;
@@ -487,7 +486,7 @@ if(t<4*35)
 // hier halt wechsel position mandelman
  manPos=vec2(1.4,0.5);
 // am ende lachendes maenneken mit shaky head
- layerVisibilities.z=t>4*16?clamp(smoothstep(0,4*8,t)*sin(t/4)*4.,0.,1.):0.;
+ layerVisibilities.z=t>4.*16.?clamp(smoothstep(0.,4.*8.,t)*sin(t/2.)*4.,0.,1.):0.;
 
 
  layerVisibilities.x=1.;
@@ -496,12 +495,12 @@ if(t<4*35)
 // layerVisibilities.z=clamp(sin(t),0.,1.);
   //return cmix(scene0(xy+sway, t), scene1(xy, t), blink);
 
-if(t>4*24){ 
+if(t>4.*24.){ 
   man_seedEyes=vec2(-0.5,0.5);
   location=locations[int(t)%16];
   brotVisibilities=vec2(one,one);
 }
-if(t>4*65)
+if(t>4.*65.)
 {
   manPos=vec2(zero,0.5);
   layerVisibilities=vec3(0,0,1);
@@ -584,10 +583,7 @@ float vignette(vec2 uv){
     return pow(uv.x*uv.y * 15.0, 0.25); // change pow for modifying the extend of the  vignette
 
 }
-out vec4 o;
-void main()
-{
-
+void main() {
   // t is timed to beat
   t = (float(m) / 44100.0)/secsPerBeat;
 
@@ -627,4 +623,3 @@ if(uv.y>0.2 && uv.x<t/256 ) {
   o= rz;
 */
 }
-
