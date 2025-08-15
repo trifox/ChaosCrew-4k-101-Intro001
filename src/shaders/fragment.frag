@@ -117,7 +117,7 @@ bool f(vec2 c, vec2 z0) {
 
 vec3 mandelbrotCore(vec2 c, vec2 z0) {
   f(c, z0);
-  return vec3(f_z.xy, f_k/MAX_ITER);
+  return vec3(f_z.xy,  f_k/MAX_ITER*4. );
 }
 vec2 project(vec2 uv,vec2 center, float scale, float angle ){
   return rotate(center+uv*scale,radians(angle));
@@ -209,12 +209,14 @@ float pal_1_speed=0.;
 vec3 makePal1(float i){
   // return pal(i, vec3(0.3,0.2,0.5),vec3(0.6,0.2,0.8),vec3(2.0,1.0,0.0),vec3(0.5,2.20,0.25) );
  return pal(i,
-    vec3(0.5, 0.2, 0.1),  // Grundton: warm-golden
+    hsv(t,0.6,.8),  // Grundton: warm-golden
     vec3(.25, 0.35, 0.45),   // Amplitude: Gold -> Orange -> Rot
-    vec3(3.0, 4.0,  .50), // Hohe Frequenz: pulsierende Energie
+    vec3(1.0, 2.0,  1.0), // Hohe Frequenz: pulsierende Energie
     vec3(t*2.*pal_1_speed, t/4.*pal_1_speed, t*8.*pal_1_speed)   // Phase für „rollende“ Farbwellen
 );
 }
+
+float juliastep=0;
 
 vec2 brotVisibilities=vec2(one,zero);
  // minibrote trifox
@@ -232,12 +234,12 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord )
 
     vec3 l = mandelbrotRender(v,location  );
 
+float vis=beatTrack_1[index];
     vec3 ljulia = mandelbrotRenderJulia(v,
     vec4(location.xy,
-         location.z*smoothStepCounter(4.-mod(t*1.,4.), 1.,0.2),
+         location.z*(juliastep>0?smoothStepCounter(4.-mod(t*1.,4.), 1.,0.2):1.),
          location.w+easeInOutTap(fract(t/8.))*(PI/2.)));
 
-float vis=beatTrack_1[index];
      vec4 result =brotVisibilities.x*vis*vec4(makePal1(l.z),1.);
           result+=brotVisibilities.y*(1.-vis)*vec4(makePal1(ljulia.z),1.) ;
 
@@ -296,7 +298,7 @@ float
       nbobs = 30.,
   
       lissa = 1., // 1.0 is a circle
-      amplitude = .25, // of lissjous animation
+      amplitude = .5, // of lissjous animation
       arclen = 1., // 1.0 is full circle
       lspeed = 1./4., // of lissajous anmation
         
@@ -309,7 +311,7 @@ float
       column_shift = -.1,
         
       // julia view
-      radius = 2.,
+      radius = 1.,
       angle = 0.;
         
 vec2 center = vec2(0.),
@@ -350,7 +352,7 @@ vec3 col,
     if(f(c, uv))
       // inside
       if(i == 0.)
-        return hsv(1., 1., 1.);
+        return makePal1(0.);
       else
         return hsv(0., 0., 1.-i/nbobs);
         
@@ -387,9 +389,10 @@ float pulses(float w, float t) {
 // 4 44tel slide
 const float ding1[8]=float[8](
   // achtung wird als 8tel takt genutzt!
-    1.,0.,1.,0.,   1.,0.,0.,0.
+    1.,0.,1.,0.,   0.,0.,0.,0.
     ); 
-float flash44tel;
+float flash44MainKick;
+float flash44Hihat;
 vec2 manPos=vec2(-1.4,0.5);
 
 vec4 result=vec4(0.);  
@@ -403,7 +406,8 @@ void animate() {
   cam_a = 0.; // -PI/4.;
   blink = pulses(4./1., t*4.) * pulses(4./2., t);
 
-
+flash44MainKick=flashBang8(t,ding1);
+flash44Hihat=easeInOutTap(fract(t));
 
 //bang2=easeInOutTap(fract(t/4.));
 bang2=easeInOutTap(fract(t/4.));
@@ -444,10 +448,12 @@ bang2+=easeInOutTap(fract((t+2)/4.));
 }
   else if(t < 4.*32.) // Letzter Takt
 {
+  pal_1_speed=1.;
   manPos=vec2(1.4,0.5);
       cam_a = PI2/8.;
 }else if(t<4.*48.){
 location.w=radians(smoothStepCounter(t*10.,0.5,0.2));
+juliastep=1;;
 }
 // bob anzahl lassen wir einfach ansteigen
  nbobs =(sin(t/4)+1)*200+10;
@@ -460,8 +466,10 @@ location.w=radians(smoothStepCounter(t*10.,0.5,0.2));
  
 // am ende lachendes maenneken mit shaky head
  layerVisibilities.z=clamp(smoothstep(0,4*8,t)*sin(t/2)*4.,0.,1.);
- layerVisibilities.x=1.-blink;
- layerVisibilities.y=blink+flash44tel;
+
+
+ layerVisibilities.x=1.;
+ layerVisibilities.y=blink;
 
 // layerVisibilities.z=clamp(sin(t),0.,1.);
   //return cmix(scene0(xy+sway, t), scene1(xy, t), blink);
@@ -497,15 +505,12 @@ vec4 mainWrap(vec2 fragCoord){
 
 /* develop */
 
-  
-
-
+//  layerVisibilities.y=1;
+//brotVisibilities=vec2(1.,1.); 
 vec4 dieMiniBrote=layerVisibilities.y*scene2Mandelbroetchen(fragCoord);
+
 MAX_ITER*=0.75;
-
 vec4 bobs=layerVisibilities.x*vec4(xxxNew_scene0(fragCoord+sway,t),1.);
-
-
 
 
    return  max(bobs,dieMiniBrote);
@@ -535,7 +540,6 @@ Demoi teil von robert
 
 
 */
-
 
 
 return result;
@@ -572,9 +576,8 @@ void main()
 vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2.0-1.0)*2.5+manPos)),1.);   
 
   o=rz*vig;
-  o=max(o,mandelTriklops) ;
-//o=vec4(bang2);
  
+
  
 /*
 if(uv.y>0.2 && uv.x<t/256 ) {
