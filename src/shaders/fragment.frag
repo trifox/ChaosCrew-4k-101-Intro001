@@ -406,13 +406,13 @@ void animate() {
   cam_a = 0.; // -PI/4.;
   blink = pulses(4./1., t*4.) * pulses(4./2., t);
 
-flash44MainKick=flashBang8(t,ding1);
+//flash44MainKick=flashBang8(t,ding1);
 flash44Hihat=easeInOutTap(fract(t));
 
 //bang2=easeInOutTap(fract(t/4.));
 bang2=easeInOutTap(fract(t/4.));
-bang2+=easeInOutTap(fract((t+2)/4.));
 
+bang2+=easeInOutTap(fract((t+2)/4.));
 
 
 //  blink = 0.;
