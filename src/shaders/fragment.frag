@@ -423,6 +423,7 @@ vec3 col,
 }
 
 
+float vignetteScale=116.,vignettePow=.25;
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
@@ -455,8 +456,10 @@ void animate() {
 //  blink = pulses(4./1., t) * pulses(4./2., t) * pulses(4./8., t);
   sway = vec2(cos(t*PI2/4./2.), sin(t*PI2/4./4.))*.025;
   if(t < 4.*1.)
+  {
+  vignetteScale=150*t/4.;
     MAX_ITER = 80.*t/4.;
-    MAX_ITER=50 ;
+  }
   float t0;
   if(t < 4.*1.) // intro
     blink = 0.;
@@ -532,7 +535,7 @@ vec4 mainWrap(vec2 fragCoord,float t){
 /* develop */
 
   
-vec4 mandelTriklops=vec4(layerVisibilities.z*mandelMan(fragCoord*2.5+vec2(1.5,0.5)));   
+vec4 mandelTriklops=vec4(layerVisibilities.z*makePal1(mandelMan(fragCoord*2.5+vec2(1.5,0.5))),1.);   
 
 
 
@@ -584,8 +587,11 @@ return result;
 // Reasoning:
 // out declarations toplevel are not really useful, in c++ world it is the declared output of the shader
 // in glsl this is handled similarly but using that gl_FragColor instead, having the mainWrap() method to be used in html editor
+float vignette(vec2 uv){
+   
+    return pow(uv.x*uv.y * 15.0, 0.25); // change pow for modifying the extend of the  vignette
 
-
+}
 out vec4 o;
 void main()
 {
@@ -596,8 +602,13 @@ void main()
 
 // debug offset
 //t-=0.5;
-  vec4 rz = mainWrap((gl_FragCoord.xy/iResolution)*2.0-1.0,t);
-  o=rz;
+  vec2 uv = gl_FragCoord.xy / iResolution.xy;
+  vec2 uv2 = uv*( 1.0 - uv.yx);   //vec2(1.0)- uv.yx; -> 1.-u.yx; Thanks FabriceNeyret !
+    float vig = uv2.x*uv2.y * vignetteScale; // multiply with sth for intensity
+    vig = pow(vig,vignettePow); // change pow for modifying the extend of the  vignette
+
+  vec4 rz = mainWrap(uv*2.0-1.0,t);
+  o=rz*vig;
   return;
 
 /** Anti Alias 
