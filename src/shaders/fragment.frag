@@ -390,7 +390,7 @@ const float ding1[8]=float[8](
     1.,0.,1.,0.,   1.,0.,0.,0.
     ); 
 float flash44tel;
-
+vec2 manPos=vec2(-1.4,0.5);
 
 vec4 result=vec4(0.);  
 // die sichtbarkeiten der layer, hier haben wir 3 layer daher vec, sind alpha blends quasi
@@ -444,21 +444,22 @@ bang2+=easeInOutTap(fract((t+2)/4.));
 }
   else if(t < 4.*32.) // Letzter Takt
 {
+  manPos=vec2(1.4,0.5);
       cam_a = PI2/8.;
 }else if(t<4.*48.){
-location.w=radians(smoothStepCounter(t,0.5,0.2));
+location.w=radians(smoothStepCounter(t*10.,0.5,0.2));
 }
 // bob anzahl lassen wir einfach ansteigen
  nbobs =(sin(t/4)+1)*200+10;
   // eye seed
   man_seedEyes=  vec2(sin(t*PI)     ,0)*0.01-vec2(0.35,0.);  
   // mouth seed
-  man_seedMouth= vec2(sin(t*PI*1.25),sin(t*PI*0.5))*0.3;  
+  man_seedMouth= vec2(sin(t*PI*0.5),cos(t*PI*1))*0.3;  
   // head pos
   man_headPos=  vec2(0.,0.);
  
 // am ende lachendes maenneken mit shaky head
- layerVisibilities.z=clamp(smoothstep(0,4*8,t)*sin(t),0.,1.);
+ layerVisibilities.z=clamp(smoothstep(0,4*8,t)*sin(t/2)*4.,0.,1.);
  layerVisibilities.x=1.-blink;
  layerVisibilities.y=blink+flash44tel;
 
@@ -467,6 +468,7 @@ location.w=radians(smoothStepCounter(t,0.5,0.2));
 
 if(t>4*65)
 {
+  manPos=vec2(0.,0.5);
   layerVisibilities=vec3(0,0,1);
   man_headPos=vec2(sin(t*PI*2.)*0.1, 0.);
   man_seedMouth= vec2(-0.7,0.);  
@@ -567,11 +569,18 @@ void main()
     vig = pow(vig,vignettePow); // change pow for modifying the extend of the  vignette
 
   vec4 rz = mainWrap(uv*2.0-1.0);
-vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2.0-1.0)*2.5+vec2(1.5,0.5))),1.);   
+vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2.0-1.0)*2.5+manPos)),1.);   
 
   o=rz*vig;
   o=max(o,mandelTriklops) ;
-o=vec4(bang2);
+//o=vec4(bang2);
+ 
+ 
+/*
+if(uv.y>0.2 && uv.x<t/256 ) {
+  o=vec4(0,1.,0.,1.);
+}
+*/
   return;
 
 /** Anti Alias 
