@@ -79,7 +79,7 @@ vec4 location= locations[0];
   // )
   
 float easeInOutTap(float t) {
-    return smoothstep(0.0, 0.2, t) * (1.0 - smoothstep(0.2, 0.5, t));
+    return smoothstep(0.0, 0.01, t) * (1.0 - smoothstep(0.01, 0.25, t));
 } 
 vec2 cmul(vec2 a, vec2 b) { 
   return vec2(a.x*b.x-a.y*b.y,  a.x*b.y+a.y*b.x);
@@ -109,15 +109,15 @@ bool f(vec2 c, vec2 z0) {
   f_z = z0;
   for(f_k = 0.; f_k < MAX_ITER; ++f_k) {
     f_z = cmul(f_z, f_z) + c;
-    if(abs2(f_z) > BAILOUT)
+    if(dot(f_z,f_z) > BAILOUT)
       return false;
   }
   return true;
 }
 
 vec3 mandelbrotCore(vec2 c, vec2 z0) {
-  f(c, z0)
-  return vec3(f_z.xy, i/MAX_ITER);
+  f(c, z0);
+  return vec3(f_z.xy, f_k/MAX_ITER);
 }
 vec2 project(vec2 uv,vec2 center, float scale, float angle ){
   return rotate(center+uv*scale,radians(angle));
@@ -375,7 +375,7 @@ float vignetteScale=116.,vignettePow=.25;
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
- 
+ float bang2=0.;
 float cos1(float x) {
   return -cos(x*PI2)/2.+.5;
 }
@@ -383,15 +383,34 @@ float pulses(float w, float t) {
   //return sin(t/w*PI2)>0. ? 1. : 0.;
   return smoothstep(0., 1., cos1(t/w));
 }
+
+// 4 44tel slide
+const float ding1[8]=float[8](
+  // achtung wird als 8tel takt genutzt!
+    1.,0.,1.,0.,   1.,0.,0.,0.
+    ); 
+float flash44tel;
+
+
 vec4 result=vec4(0.);  
 // die sichtbarkeiten der layer, hier haben wir 3 layer daher vec, sind alpha blends quasi
 vec3 layerVisibilities=vec3(0.);
 vec2 sway;
-void animate() {
+
   float blink;
+void animate() {
   location=locations[6];
   cam_a = 0.; // -PI/4.;
-  blink = pulses(4./1., t) * pulses(4./2., t);
+  blink = pulses(4./1., t*4.) * pulses(4./2., t);
+
+
+
+//bang2=easeInOutTap(fract(t/4.));
+bang2=easeInOutTap(fract(t/4.));
+bang2+=easeInOutTap(fract((t+2)/4.));
+
+
+
 //  blink = 0.;
 //  blink = pulses(4./1., t) * pulses(4./2., t) * pulses(4./8., t);
   sway = vec2(cos(t*PI2/4./2.), sin(t*PI2/4./4.))*.025;
@@ -437,12 +456,11 @@ location.w=radians(smoothStepCounter(t,0.5,0.2));
   man_seedMouth= vec2(sin(t*PI*1.25),sin(t*PI*0.5))*0.3;  
   // head pos
   man_headPos=  vec2(0.,0.);
-
+ 
 // am ende lachendes maenneken mit shaky head
  layerVisibilities.z=clamp(smoothstep(0,4*8,t)*sin(t),0.,1.);
-
- layerVisibilities.x=blink;
- layerVisibilities.y=1.-blink;
+ layerVisibilities.x=1.-blink;
+ layerVisibilities.y=blink+flash44tel;
 
 // layerVisibilities.z=clamp(sin(t),0.,1.);
   //return cmix(scene0(xy+sway, t), scene1(xy, t), blink);
@@ -454,10 +472,10 @@ if(t>4*65)
   man_seedMouth= vec2(-0.7,0.);  
   man_seedEyes=  vec2(sin(t)*0.25-0.75,0.4);  
 }
-
+ 
 }
 
-vec4 mainWrap(vec2 fragCoord,float t){
+vec4 mainWrap(vec2 fragCoord){
  
 
 
@@ -481,7 +499,7 @@ vec4 mainWrap(vec2 fragCoord,float t){
 
 
 vec4 dieMiniBrote=layerVisibilities.y*scene2Mandelbroetchen(fragCoord);
-
+MAX_ITER*=0.75;
 
 vec4 bobs=layerVisibilities.x*vec4(xxxNew_scene0(fragCoord+sway,t),1.);
 
@@ -548,12 +566,12 @@ void main()
     float vig = uv2.x*uv2.y * vignetteScale; // multiply with sth for intensity
     vig = pow(vig,vignettePow); // change pow for modifying the extend of the  vignette
 
-  vec4 rz = mainWrap(uv*2.0-1.0,t);
+  vec4 rz = mainWrap(uv*2.0-1.0);
 vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2.0-1.0)*2.5+vec2(1.5,0.5))),1.);   
 
   o=rz*vig;
-  o=max(o,mandelTriklops);
-
+  o=max(o,mandelTriklops) ;
+o=vec4(bang2);
   return;
 
 /** Anti Alias 
