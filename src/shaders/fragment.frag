@@ -21,9 +21,9 @@ float t;
 const float beatTrack_1[SIXTEEN]=float[SIXTEEN](
     
     1.,0.,1.,1.,
-    0.,0.,0.,0.0, 
+    1.,0.,1.,1.0, 
     1.,0.,1.,1.,
-    0.,0.,0.,0.
+    1.,0.,1.,1.
     ); 
 const float beatTrack_2[SIXTEEN]=float[SIXTEEN](
   // classic paradiddle
@@ -234,14 +234,14 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord )
 
     vec3 l = mandelbrotRender(v,location  );
 
-float vis=beatTrack_1[index];
+float vis=beatTrack_1[index]; 
     vec3 ljulia = mandelbrotRenderJulia(v,
     vec4(location.xy,
          location.z*(juliastep>0?smoothStepCounter(4.-mod(t*1.,4.), 1.,0.2):1.),
          location.w+easeInOutTap(fract(t/8.))*(PI/2.)));
 
      vec4 result =brotVisibilities.x*vis*vec4(makePal1(l.z),1.);
-          result+=brotVisibilities.y*(1.-vis)*vec4(makePal1(ljulia.z),1.) ;
+          result+=brotVisibilities.y*(1.0-vis) *vec4(makePal1(ljulia.z),1.) ;
 
     //    result.x+=beatTrack_1[index]*(1.0-interval);
     //    result.y+=beatTrack_2[index]*(1.0-interval);
@@ -440,8 +440,8 @@ bang2+=easeInOutTap(fract((t+2)/4.));
   }
   else if(t < 4.*24.) // sec3
  {   
-  location= locations[int(t)%ANZ_LOCATIONS ];
 
+juliastep=1;;
   brotVisibilities=vec2(1.,1.);
   // achtung hier clampt die kamera doof, noch anpassen
     cam_a = sin(t*PI2/16.)*PI2/8.;
@@ -452,8 +452,7 @@ bang2+=easeInOutTap(fract((t+2)/4.));
   manPos=vec2(1.4,0.5);
       cam_a = PI2/8.;
 }else if(t<4.*48.){
-location.w=radians(smoothStepCounter(t*10.,0.5,0.2));
-juliastep=1;;
+location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
 }
 // bob anzahl lassen wir einfach ansteigen
  nbobs =(sin(t/4)+1)*200+10;
@@ -474,6 +473,10 @@ juliastep=1;;
 // layerVisibilities.z=clamp(sin(t),0.,1.);
   //return cmix(scene0(xy+sway, t), scene1(xy, t), blink);
 
+if(t>4*24){ 
+  location=locations[int(t)%16];
+  brotVisibilities=vec2(one,one);
+}
 if(t>4*65)
 {
   manPos=vec2(0.,0.5);
@@ -576,6 +579,7 @@ void main()
 vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2.0-1.0)*2.5+manPos)),1.);   
 
   o=rz*vig;
+  o=max(o,mandelTriklops);
  
 
  
