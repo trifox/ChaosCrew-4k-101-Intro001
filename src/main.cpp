@@ -50,23 +50,24 @@ int __cdecl main(int argc, char* argv[])
 		ShowCursor(0);
 		const HWND hwnd = CreateWindow((LPCSTR)0xC018, 0, WS_POPUP  | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
 		const HDC hDC = GetDC(hwnd);
-			#ifdef USE_CLEAN_BLACK_START
-					RECT rect;
-					GetClientRect(hwnd, &rect);
-					HBRUSH blackBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
-					FillRect(hDC, &rect, blackBrush);
-							
-					// 1. Setze Clear Color auf Schwarz
-					glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-					// 2. Lösche den Farb-Puffer (Backbuffer)
-					glClear(GL_COLOR_BUFFER_BIT);
-					// 3. Präsentiere den Frame (flippt Backbuffer in den Frontbuffer)
-					SwapBuffers(hDC);
-					
-					// 5. Fenster sichtbar machen
-					ShowWindow(hwnd, SW_SHOW);
-					UpdateWindow(hwnd);
-			#endif
+		#ifdef USE_CLEAN_BLACK_START
+		// byte size: 
+				RECT rect;
+				GetClientRect(hwnd, &rect);
+				HBRUSH blackBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
+				FillRect(hDC, &rect, blackBrush);
+						
+				// 1. Setze Clear Color auf Schwarz
+				glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+				// 2. Lösche den Farb-Puffer (Backbuffer)
+				glClear(GL_COLOR_BUFFER_BIT);
+				// 3. Präsentiere den Frame (flippt Backbuffer in den Frontbuffer)
+				SwapBuffers(hDC);
+				
+				// 5. Fenster sichtbar machen
+				ShowWindow(hwnd, SW_SHOW);
+				UpdateWindow(hwnd);
+		#endif
 		#else
 		#ifdef EDITOR_CONTROLS
 			HWND window = CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0);
