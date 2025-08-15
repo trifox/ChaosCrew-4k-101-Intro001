@@ -20,10 +20,10 @@ const vec2 cone = vec2(one,zero);
 float t;
 const float beatTrack_1[SIXTEEN]=float[SIXTEEN](
     
-    1.,0.,1.,1.,
-    0.,0.,0.,0.0, 
-    1.,0.,1.,1.,
-    0.,0.,0.,0.
+    1.,0.,0.5,1.,
+    0.,1.,0.,0.5, 
+    .1,0.,1.,0.,
+    0.,0.,0.,1.
     ); 
 const float beatTrack_2[SIXTEEN]=float[SIXTEEN](
   // classic paradiddle
@@ -50,16 +50,17 @@ const float beatTrack_3[16]=float[16](
 const int ANZ_LOCATIONS=7;
 // vec4 real,imag,scale for locations  
 const vec4 locations[ANZ_LOCATIONS] = vec4[ANZ_LOCATIONS](  
- vec4(0.360402,0.614907,0.0116,2.47),
+ 
+vec4(0.360402,0.614907,0.0116,2.47),
 vec4(-1.8700,0,0.0002674561862707285,0.),
-vec4(-0.52597,0.6969436,0.001252159,-1.412),
-vec4(-0.528326,0.7040732,0.0001073184,-2.0375),
-vec4(-0.724136,0.3615743,0.000676235,-0.35356),
-vec4(-0.690942,0.465349,0.00832064,2.71871975),
-vec4(-0.7112999,0.47361824034266,0.0000614022,-3.0772)  
+vec4(-0.52597,0.6969436,0.001252159,-1.41),
+vec4(-0.528326,0.7040732,0.0001073184,-2.04),
+vec4(-0.724136,0.3615743,0.000676235,-0.35),
+vec4(-0.690942,0.465349,0.00832064,2.72),
+vec4(-0.7112999,0.47361824034266,0.0000614022,-3.08)  
 
 );
-vec4 location= locations[int(0)%ANZ_LOCATIONS ];
+vec4 location= locations[0];
 
 // Utility Methods, 
 
@@ -78,42 +79,63 @@ vec4 location= locations[int(0)%ANZ_LOCATIONS ];
   // smoothed iters
   // )
   
- float easeInOutTap(float t) {
+float easeInOutTap(float t) {
     return smoothstep(0.0, 0.2, t) * (1.0 - smoothstep(0.2, 0.5, t));
 } 
 vec2 cmul(vec2 a, vec2 b) { 
   return vec2(a.x*b.x-a.y*b.y,  a.x*b.y+a.y*b.x);
 }
-vec3 mandelbrotCore(vec2 c, vec2 z0) {
-  vec2 z = z0; 
-  float i; 
-  for(i = 0.; i < MAX_ITER; i++) {
-    z = cmul(z, z) + c; 
-    if(dot(z,z) > BAILOUT) break;
-  }
-  
-//  float diff = log2(log2(dot(z,z))) -4.;
-
-  return vec3(z.xy,i/MAX_ITER);
-
-}  
+float arg(vec2 z) {
+  return atan(z.y, z.x);
+}
 vec2 rotor(float a) {
   return vec2(cos(a), sin(a));
 }
-
-// util rotate
 vec2 rotate(vec2 p, float angle) {
     return cmul(p,rotor(angle));
 }
-  
+
+vec3 hsv(float h, float s, float v) {
+  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+  vec3 p = abs(fract(vec3(h,h,h) + K.xyz) * 6.0 - K.www);
+  return v * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), s);
+}
+vec3 cmix(vec3 a, vec3 b, float t) {
+  return sqrt(mix(a*a, b*b, t));
+}
+
+float f_k; 
+vec2 f_z;
+bool f(vec2 c, vec2 z0) {
+  f_z = z0;
+  for(f_k = 0.; f_k < MAX_ITER; ++f_k) {
+    f_z = cmul(f_z, f_z) + c;
+    if(dot(f_z,f_z) > 4.)
+      return false;
+  }
+  return true;
+}
+
+vec3 mandelbrotCore(vec2 c, vec2 z0) {
+  f(c, z0)
+  return vec3(f_z.xy, i/MAX_ITER);
+}
 vec2 project(vec2 uv,vec2 center, float scale, float angle ){
-return rotate(center+uv*scale,radians(angle));
+  return rotate(center+uv*scale,radians(angle));
 }
 float mandelbrotExt(vec2 c,vec2 start,vec2 center, float scale, float angle) {
-return mandelbrotCore(project(c,center,scale,angle),start).z; 
+  return mandelbrotCore(project(c,center,scale,angle),start).z; 
 }
 float juliaExt(vec2 c,vec2 start,vec2 center, float scale, float angle) {
-return mandelbrotCore(start,project(c,center,scale,angle)).z;
+  return mandelbrotCore(start,project(c,center,scale,angle)).z;
+}
+vec3 mandelbrotRender(vec2 c,vec4 loc){
+  c = rotate(c,loc.w) * loc.z + loc.xy;
+  return mandelbrotCore(c,vec2(0.));
+}
+vec3 mandelbrotRenderJulia( vec2 c,vec4 loc){
+  c = rotate(c,loc.w) * loc.z + loc.xy;
+  return mandelbrotCore(loc.xy,c);
 }
 
 float env(float t){
@@ -181,82 +203,17 @@ vec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d )
 }
 
 
-vec3 makePal2(float i){
-return vec3(0.2549,    .8824,0.4118 )*i;
-}
-float pal_1_speed=0.;
 vec3 makePal1(float i){
   // return pal(i, vec3(0.3,0.2,0.5),vec3(0.6,0.2,0.8),vec3(2.0,1.0,0.0),vec3(0.5,2.20,0.25) );
  return pal(i,
     vec3(0.5, 0.2, 0.1),  // Grundton: warm-golden
     vec3(.25, 0.35, 0.45),   // Amplitude: Gold -> Orange -> Rot
     vec3(3.0, 4.0,  .50), // Hohe Frequenz: pulsierende Energie
-    vec3(t*2.*pal_1_speed, t/4.*pal_1_speed, t*8.*pal_1_speed)   // Phase für „rollende“ Farbwellen
+    vec3(t*2., t/4., t*8.)   // Phase für „rollende“ Farbwellen
 );
 }
- 
 
-// refurio cardioid abrollen 
-float arg(vec2 z) {
-  return atan(z.y, z.x);
-} 
-vec2 cdiv(vec2 a, vec2 b) {
-  return vec2(dot(a,b), a.y*b.x-a.x*b.y)/dot(b,b);
-}
-vec2 cinv(vec2 b) {
-  return vec2(b.x, b.y)/dot(b,b);
-}
-vec2 cexp(vec2 z) {
-  float e = exp(z[0]);
-  return vec2(e*cos(z[1]), e*sin(z[1]));
-}
-vec2 cln(vec2 z) {
-  return vec2(log(sqrt(dot(z,z))), arg(z));
-}
-vec2 cpow(vec2 b, vec2 e) {
-  return cexp(cmul(e,cln(b)));
-}
-vec2 csqrt(vec2 z) {
-  return cpow(z, vec2(.5,0.));
-}
- 
-vec4 icolor(int i) {
-  float x = float(i);
-  return vec4(sin(x*100.), sin(x*200.), sin(x*300.), 0.);
-}  
-// Refurio Julia Bobs
-   
-float sqr(float x) {
-  return x*x;
-}
-  
-   
-
-// Exponentielle Interpolation zwischen a und b mit Parameter t in [0,1]
-// t=0 -> a, t=1 -> b
-// Exponentielle Interpolation für positive Werte a,b > 0
-float expInterp(float a, float b, float t) {
-    // t=0 => a, t=1 => b
-    // Interpoliert so, dass die Werte sich *multiplikativ* ändern
-    // (logarithmische lineare Interpolation)
-    return exp(mix(log(a), log(b), t));
-}
-
-vec3 mandelbrotRender( vec2 c,vec4 loc){
-     c = rotate(c,loc.w) * loc.z + loc.xy;
-    return mandelbrotCore(c,vec2(0.));
-}
-vec3 mandelbrotRenderJulia( vec2 c,vec4 loc){
-     c = rotate(c,loc.w) * loc.z + loc.xy;
-    return mandelbrotCore(loc.xy,c);
-}
- 
-float explerp(float v0, float v1, float t) {
-    return exp(mix(log(v0), log(v1), t));
-}
-
-
-vec2 brotVisibilities=vec2(one,zero);
+vec2 brotVisibilities=vec2(zero,one);
  // minibrote trifox
 vec4 scene2Mandelbroetchen(vec2 fragCoord )
 {
@@ -275,9 +232,8 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord )
     vec3 ljulia = mandelbrotRenderJulia(v,
     vec4(location.xy,location.z*smoothStepCounter(4.-mod(t*1.,4.) ,1.,0.2),location.w+easeInOutTap(fract(t/8.))*(PI/2.)));
 
-float vis=beatTrack_1[index];
-     vec4 result =brotVisibilities.x*vis*vec4(makePal1(l.z),1.);
-          result+=brotVisibilities.y*(1.-vis)*vec4(makePal1(ljulia.z),1.) ;
+     vec4 result =brotVisibilities.x*beatTrack_1[index]*vec4(makePal1(l.z),1.);
+          result+=brotVisibilities.y*beatTrack_2[index]*vec4(makePal1(ljulia.z),1.) ;
 
     //    result.x+=beatTrack_1[index]*(1.0-interval);
     //    result.y+=beatTrack_2[index]*(1.0-interval);
@@ -322,35 +278,8 @@ float flashBang8(float time, float[8] arr){
 ////////////// for the sake of code, we have to redo this globall method using
 // an init function for setting the iteration? wtf!
  
-
-
-
- 
-float f_k; 
-vec2 f_z;
-bool f(vec2 c, vec2 z0) {
-  f_z = z0;
-  for(f_k = 0.; f_k < MAX_ITER; ++f_k) {
-    f_z = cmul(f_z, f_z) + c;
-    if(dot(f_z,f_z) > 4.)
-      return false;
-  }
-  return true;
-}
 vec2 lissajous(float lissa, float shift, float t) {
   return vec2(cos(t - shift*lissa), sin(t - shift));
-}
- 
-
-
-
-vec3 hsv(float h, float s, float v) {
-  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-  vec3 p = abs(fract(vec3(h,h,h) + K.xyz) * 6.0 - K.www);
-  return v * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), s);
-}
-vec3 cmix(vec3 a, vec3 b, float t) {
-  return sqrt(mix(a*a, b*b, t));
 }
   
 float radiusRotor = 0.1; 
@@ -428,7 +357,6 @@ vec3 col,
 }
 
 
-float vignetteScale=116.,vignettePow=.25;
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
@@ -448,23 +376,20 @@ float pulses(float w, float t) {
   //return sin(t/w*PI2)>0. ? 1. : 0.;
   return smoothstep(0., 1., cos1(t/w));
 }
-    vec4 result=vec4(0.);  
-    // die sichtbarkeiten der layer, hier haben wir 3 layer daher vec, sind alpha blends quasi
+vec4 result=vec4(0.);  
+// die sichtbarkeiten der layer, hier haben wir 3 layer daher vec, sind alpha blends quasi
 vec3 layerVisibilities=vec3(0.);
 vec2 sway;
 void animate() {
   float blink;
-  location=locations[6];
+  location= locations[int(t)%ANZ_LOCATIONS ];
   cam_a = 0.; // -PI/4.;
+  if(t < 4.*1.)
+    MAX_ITER = 80.*t/4.;
+//  blink = pulses(4./1., t) * pulses(4./2., t) * pulses(4./8., t);
   blink = pulses(4./1., t) * pulses(4./2., t);
 //  blink = 0.;
-//  blink = pulses(4./1., t) * pulses(4./2., t) * pulses(4./8., t);
   sway = vec2(cos(t*PI2/4./2.), sin(t*PI2/4./4.))*.025;
-  if(t < 4.*1.)
-  {
-  vignetteScale=150*t/4.;
-    MAX_ITER = 80.*t/4.;
-  }
   float t0;
   if(t < 4.*1.) // intro
     blink = 0.;
@@ -474,16 +399,13 @@ void animate() {
     speed = -1./2.;
   else if(t < 4.*16.+4.*1.) // sec2
   {
-  blink = pulses(8., t) * pulses(12., t);
     
-  MAX_ITER=250;
-  brotVisibilities=vec2(0.,1.);
+  MAX_ITER=125;
+  brotVisibilities=vec2(1.,0.);
     amplitude = 0.;
   }
   else if(t < 4.*24.) // sec3
- {   
-  location= locations[int(t)%ANZ_LOCATIONS ];
-
+ { 
   brotVisibilities=vec2(1.,1.);
   // achtung hier clampt die kamera doof, noch anpassen
     cam_a = sin(t*PI2/16.)*PI2/8.;
@@ -491,8 +413,6 @@ void animate() {
   else if(t < 4.*32.) // Letzter Takt
 {
       cam_a = PI2/8.;
-}else if(t<4.*48.){
-location.w=radians(smoothStepCounter(t,0.5,0.2));
 }
 // bob anzahl lassen wir einfach ansteigen
  nbobs =(sin(t/4)+1)*200+10;
@@ -507,12 +427,12 @@ location.w=radians(smoothStepCounter(t,0.5,0.2));
  layerVisibilities.z=clamp(smoothstep(0,4*8,t)*sin(t),0.,1.);
 
  layerVisibilities.x=blink;
- layerVisibilities.y=1.-blink;
+ layerVisibilities.y=1-blink;
 
 // layerVisibilities.z=clamp(sin(t),0.,1.);
   //return cmix(scene0(xy+sway, t), scene1(xy, t), blink);
 
-if(t>4*65)
+if(t>4*32)
 {
   layerVisibilities=vec3(0,0,1);
   man_headPos=vec2(sin(t*PI*2.)*0.1, 0.);
@@ -543,17 +463,19 @@ vec4 mainWrap(vec2 fragCoord,float t){
 /* develop */
 
   
+vec4 mandelTriklops=vec4(layerVisibilities.z*mandelMan(fragCoord*2.5+vec2(1.5,0.5)));   
+
 
 
 vec4 dieMiniBrote=layerVisibilities.y*scene2Mandelbroetchen(fragCoord);
 
 
-vec4 bobs=layerVisibilities.x*vec4(xxxNew_scene0(fragCoord+sway,t),1.);
+vec4 bobs=layerVisibilities.x*vec4(xxxNew_scene0(fragCoord+sway,t/4.),1.);
 
 
 
 
-   return  max(bobs,dieMiniBrote);
+   return  max(bobs,max(dieMiniBrote,mandelTriklops));
    
 
 
@@ -593,32 +515,20 @@ return result;
 // Reasoning:
 // out declarations toplevel are not really useful, in c++ world it is the declared output of the shader
 // in glsl this is handled similarly but using that gl_FragColor instead, having the mainWrap() method to be used in html editor
-float vignette(vec2 uv){
-   
-    return pow(uv.x*uv.y * 15.0, 0.25); // change pow for modifying the extend of the  vignette
 
-}
+
 out vec4 o;
 void main()
 {
 
   // t is timed to beat
-  t = (float(m) / 44100.0)/secsPerBeat;
+  t = (float(m) / 44100.0)/secsPerBeat/2.;
 
 
 // debug offset
 //t-=0.5;
-  vec2 uv = gl_FragCoord.xy / iResolution.xy;
-  vec2 uv2 = uv*( 1.0 - uv.yx);   //vec2(1.0)- uv.yx; -> 1.-u.yx; Thanks FabriceNeyret !
-    float vig = uv2.x*uv2.y * vignetteScale; // multiply with sth for intensity
-    vig = pow(vig,vignettePow); // change pow for modifying the extend of the  vignette
-
-  vec4 rz = mainWrap(uv*2.0-1.0,t);
-vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2.0-1.0)*2.5+vec2(1.5,0.5))),1.);   
-
-  o=rz*vig;
-  o=max(o,mandelTriklops);
-
+  vec4 rz = mainWrap((gl_FragCoord.xy/iResolution)*2.0-1.0,t);
+  o=rz;
   return;
 
 /** Anti Alias 
