@@ -20,10 +20,10 @@ const vec2 cone = vec2(one,zero);
 float t;
 const float beatTrack_1[SIXTEEN]=float[SIXTEEN](
     
-    1.,0.,0.5,1.,
-    0.,1.,0.,0.5, 
-    .1,0.,1.,0.,
-    0.,0.,0.,1.
+    1.,0.,1.,1.,
+    0.,0.,0.,0.0, 
+    1.,0.,1.,1.,
+    0.,0.,0.,0.
     ); 
 const float beatTrack_2[SIXTEEN]=float[SIXTEEN](
   // classic paradiddle
@@ -184,13 +184,14 @@ vec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d )
 vec3 makePal2(float i){
 return vec3(0.2549,    .8824,0.4118 )*i;
 }
+float pal_1_speed=0.;
 vec3 makePal1(float i){
   // return pal(i, vec3(0.3,0.2,0.5),vec3(0.6,0.2,0.8),vec3(2.0,1.0,0.0),vec3(0.5,2.20,0.25) );
  return pal(i,
     vec3(0.5, 0.2, 0.1),  // Grundton: warm-golden
     vec3(.25, 0.35, 0.45),   // Amplitude: Gold -> Orange -> Rot
     vec3(3.0, 4.0,  .50), // Hohe Frequenz: pulsierende Energie
-    vec3(t*2., t/4., t*8.)   // Phase für „rollende“ Farbwellen
+    vec3(t*2.*pal_1_speed, t/4.*pal_1_speed, t*8.*pal_1_speed)   // Phase für „rollende“ Farbwellen
 );
 }
  
@@ -255,7 +256,7 @@ float explerp(float v0, float v1, float t) {
 }
 
 
-vec2 brotVisibilities=vec2(zero,one);
+vec2 brotVisibilities=vec2(one,zero);
  // minibrote trifox
 vec4 scene2Mandelbroetchen(vec2 fragCoord )
 {
@@ -274,8 +275,9 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord )
     vec3 ljulia = mandelbrotRenderJulia(v,
     vec4(location.xy,location.z*smoothStepCounter(4.-mod(t*1.,4.) ,1.,0.2),location.w+easeInOutTap(fract(t/8.))*(PI/2.)));
 
-     vec4 result =brotVisibilities.x*beatTrack_1[index]*vec4(makePal1(l.z),1.);
-          result+=brotVisibilities.y*beatTrack_2[index]*vec4(makePal1(ljulia.z),1.) ;
+float vis=beatTrack_1[index];
+     vec4 result =brotVisibilities.x*vis*vec4(makePal1(l.z),1.);
+          result+=brotVisibilities.y*(1.-vis)*vec4(makePal1(ljulia.z),1.) ;
 
     //    result.x+=beatTrack_1[index]*(1.0-interval);
     //    result.y+=beatTrack_2[index]*(1.0-interval);
@@ -472,9 +474,10 @@ void animate() {
     speed = -1./2.;
   else if(t < 4.*16.+4.*1.) // sec2
   {
+  blink = pulses(8., t) * pulses(12., t);
     
   MAX_ITER=250;
-  brotVisibilities=vec2(1.,0.);
+  brotVisibilities=vec2(0.,1.);
     amplitude = 0.;
   }
   else if(t < 4.*24.) // sec3
@@ -488,6 +491,8 @@ void animate() {
   else if(t < 4.*32.) // Letzter Takt
 {
       cam_a = PI2/8.;
+}else if(t<4.*48.){
+location.w=radians(smoothStepCounter(t,0.5,0.2));
 }
 // bob anzahl lassen wir einfach ansteigen
  nbobs =(sin(t/4)+1)*200+10;
@@ -538,8 +543,6 @@ vec4 mainWrap(vec2 fragCoord,float t){
 /* develop */
 
   
-vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan(fragCoord*2.5+vec2(1.5,0.5))),1.);   
-
 
 
 vec4 dieMiniBrote=layerVisibilities.y*scene2Mandelbroetchen(fragCoord);
@@ -550,7 +553,7 @@ vec4 bobs=layerVisibilities.x*vec4(xxxNew_scene0(fragCoord+sway,t),1.);
 
 
 
-   return  max(bobs,max(dieMiniBrote,mandelTriklops));
+   return  max(bobs,dieMiniBrote);
    
 
 
@@ -611,7 +614,11 @@ void main()
     vig = pow(vig,vignettePow); // change pow for modifying the extend of the  vignette
 
   vec4 rz = mainWrap(uv*2.0-1.0,t);
+vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2.0-1.0)*2.5+vec2(1.5,0.5))),1.);   
+
   o=rz*vig;
+  o=max(o,mandelTriklops);
+
   return;
 
 /** Anti Alias 
