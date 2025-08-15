@@ -114,7 +114,7 @@
     <GenerateManifest>
     </GenerateManifest>
     <ExecutablePath>$(SolutionDir);$(ExecutablePath)</ExecutablePath>
-    <TargetName>mandelbrötchen-0001-release</TargetName>
+    <TargetName>mandelbrötchen-0001-release-heavy</TargetName>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
   </PropertyGroup>

@@ -401,23 +401,35 @@ vec3 layerVisibilities=vec3(0.);
 vec2 sway;
 
   float blink;
+  // ß000000000000000000000000000000000000000000000000000000000000000000000000000000
+  // ß000000000000000000000000000000000000000000000000000000000000000000000000000000
+  // marker animate methode
+  // erklaerung:
+  // hier findet die zeitbasierte aktualisierung aller params statt
+  // die engine rendert hier 3 layer wobei jedes layer animationsparameter hat - diese werden im prinzip hier gesetzt
+  // ß000000000000000000000000000000000000000000000000000000000000000000000000000000
+  // ß000000000000000000000000000000000000000000000000000000000000000000000000000000
+  // ß000000000000000000000000000000000000000000000000000000000000000000000000000000
+  // ß000000000000000000000000000000000000000000000000000000000000000000000000000000
 void animate() {
+  // start machen wir location fix ohne anim
   location=locations[6];
+  // bobs one perspektive top down view
   cam_a = 0.; // -PI/4.;
+  // blink schaltet echt die beiden main layer x,y um, als crossfade, kann aber spaeter angepasst werden
   blink = pulses(4./1., t*4.) * pulses(4./2., t);
 
-//flash44MainKick=flashBang8(t,ding1);
+// unkritischer code, kann genutzt werden um halt was mal kurz flashen zu lassen
 flash44Hihat=easeInOutTap(fract(t));
 
-//bang2=easeInOutTap(fract(t/4.));
-bang2=easeInOutTap(fract(t/4.));
 
+// kombinierter 4 und `plus irgendwas flash
+bang2=easeInOutTap(fract(t/4.));
 bang2+=easeInOutTap(fract((t+2)/4.));
 
 // bob anzahl lassen wir einfach ansteigen
  nbobs =(sin(t/4)+1)*200+10;
-  // eye seed
-  
+  // eye seed mandel man, steuert die stimmung, julia jeweils links rechts gespiegelt pro auge  
   man_seedEyes=   vec2(-0.35,0.);  
 
   // mouth seed
@@ -431,18 +443,21 @@ bang2+=easeInOutTap(fract((t+2)/4.));
   sway = vec2(cos(t*PI2/4./2.), sin(t*PI2/4./4.))*.025;
   if(t < 4.*1.)
   {
+    // nitro bereich bevor music losgeht halt 4bpm, also ein takt gedoenst 
   vignetteScale=150*t/4.;
     MAX_ITER = 80.*t/4.;
+    blink = 0.;
   }
   float t0;
-  if(t < 4.*1.) // intro
-    blink = 0.;
   else if(t < 4.*4.) // sec1 first half
+ // naja, ok, was geht hier hab, 4mal4 sind 16 also nen voller 44tel  takt aktion
     speed = 0.;
   else if(t < 4.*8.) // sec1 second half
+  // wegen kleiner gleich haben hier wir irgendwas was nur auf dewn ersten beiden takten aktiv ist
     speed = -1./2.;
-  else if(t < 4.*16.+4.*1.) // sec2
+  else if(t < 4.*17.) // sec2
   {
+    // hier haben wir gedoens was genau am 17ten takt tri tra triggert, also wegen dem <
   man_seedEyes=vec2(-0.2,0.65);
   blink = pulses(8., t) * pulses(12., t);
     
@@ -452,6 +467,7 @@ bang2+=easeInOutTap(fract((t+2)/4.));
   }
   else if(t < 4.*24.) // sec3
  {   
+  // hier elseif, also achtung aber es triggert VI VA VOR 4*24
 juliastep=1;;
   brotVisibilities=vec2(1.,1.);
   // achtung hier clampt die kamera doof, noch anpassen
@@ -459,13 +475,17 @@ juliastep=1;;
 }
   else if(t < 4.*32.) // Letzter Takt
 {
+  // ok, andernfalls halt 32ter takt hier halt gedoenst, ews ist ungefaehr die mitte, max ist 65
   pal_1_speed=1.;
       cam_a = PI2/8.;
 }else if(t<4.*48.){
+  // else nochmal die gute if, hier end eskalation weil hoich
 location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
 }
 
-if(t<4*35)  manPos=vec2(1.4,0.5);
+if(t<4*35) 
+// hier halt wechsel position mandelman
+ manPos=vec2(1.4,0.5);
 // am ende lachendes maenneken mit shaky head
  layerVisibilities.z=t>4*16?clamp(smoothstep(0,4*8,t)*sin(t/4)*4.,0.,1.):0.;
 
