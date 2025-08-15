@@ -50,8 +50,7 @@ const float beatTrack_3[16]=float[16](
 const int ANZ_LOCATIONS=7;
 // vec4 real,imag,scale for locations  
 const vec4 locations[ANZ_LOCATIONS] = vec4[ANZ_LOCATIONS](  
- 
-vec4(0.360402,0.614907,0.0116,2.47),
+ vec4(0.360402,0.614907,0.0116,2.47),
 vec4(-1.8700,0,0.0002674561862707285,0.),
 vec4(-0.52597,0.6969436,0.001252159,-1.412),
 vec4(-0.528326,0.7040732,0.0001073184,-2.0375),
@@ -449,14 +448,15 @@ vec3 layerVisibilities=vec3(0.);
 vec2 sway;
 void animate() {
   float blink;
-  location= locations[int(t)%ANZ_LOCATIONS ];
+  location=locations[6];
   cam_a = 0.; // -PI/4.;
-  if(t < 4.*1.)
-    MAX_ITER = 80.*t/4.;
-//  blink = pulses(4./1., t) * pulses(4./2., t) * pulses(4./8., t);
   blink = pulses(4./1., t) * pulses(4./2., t);
 //  blink = 0.;
+//  blink = pulses(4./1., t) * pulses(4./2., t) * pulses(4./8., t);
   sway = vec2(cos(t*PI2/4./2.), sin(t*PI2/4./4.))*.025;
+  if(t < 4.*1.)
+    MAX_ITER = 80.*t/4.;
+    MAX_ITER=50 ;
   float t0;
   if(t < 4.*1.) // intro
     blink = 0.;
@@ -467,12 +467,14 @@ void animate() {
   else if(t < 4.*16.+4.*1.) // sec2
   {
     
-  MAX_ITER=125;
+  MAX_ITER=250;
   brotVisibilities=vec2(1.,0.);
     amplitude = 0.;
   }
   else if(t < 4.*24.) // sec3
- { 
+ {   
+  location= locations[int(t)%ANZ_LOCATIONS ];
+
   brotVisibilities=vec2(1.,1.);
   // achtung hier clampt die kamera doof, noch anpassen
     cam_a = sin(t*PI2/16.)*PI2/8.;
@@ -494,12 +496,12 @@ void animate() {
  layerVisibilities.z=clamp(smoothstep(0,4*8,t)*sin(t),0.,1.);
 
  layerVisibilities.x=blink;
- layerVisibilities.y=1-blink;
+ layerVisibilities.y=1.-blink;
 
 // layerVisibilities.z=clamp(sin(t),0.,1.);
   //return cmix(scene0(xy+sway, t), scene1(xy, t), blink);
 
-if(t>4*32)
+if(t>4*65)
 {
   layerVisibilities=vec3(0,0,1);
   man_headPos=vec2(sin(t*PI*2.)*0.1, 0.);
@@ -537,7 +539,7 @@ vec4 mandelTriklops=vec4(layerVisibilities.z*mandelMan(fragCoord*2.5+vec2(1.5,0.
 vec4 dieMiniBrote=layerVisibilities.y*scene2Mandelbroetchen(fragCoord);
 
 
-vec4 bobs=layerVisibilities.x*vec4(xxxNew_scene0(fragCoord+sway,t/4.),1.);
+vec4 bobs=layerVisibilities.x*vec4(xxxNew_scene0(fragCoord+sway,t),1.);
 
 
 
@@ -589,7 +591,7 @@ void main()
 {
 
   // t is timed to beat
-  t = (float(m) / 44100.0)/secsPerBeat/2.;
+  t = (float(m) / 44100.0)/secsPerBeat;
 
 
 // debug offset
