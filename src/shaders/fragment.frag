@@ -53,11 +53,11 @@ const vec4 locations[ANZ_LOCATIONS] = vec4[ANZ_LOCATIONS](
  
 vec4(0.360402,0.614907,0.0116,2.47),
 vec4(-1.8700,0,0.0002674561862707285,0.),
-vec4(-0.52597,0.6969436,0.001252159,-1.412),
-vec4(-0.528326,0.7040732,0.0001073184,-2.0375),
-vec4(-0.724136,0.3615743,0.000676235,-0.35356),
-vec4(-0.690942,0.465349,0.00832064,2.71871975),
-vec4(-0.7112999,0.47361824034266,0.0000614022,-3.0772)  
+vec4(-0.52597,0.6969436,0.001252159,-1.41),
+vec4(-0.528326,0.7040732,0.0001073184,-2.04),
+vec4(-0.724136,0.3615743,0.000676235,-0.35),
+vec4(-0.690942,0.465349,0.00832064,2.72),
+vec4(-0.7112999,0.47361824034266,0.0000614022,-3.08)  
 
 );
 vec4 location= locations[0];
@@ -385,8 +385,8 @@ float pulses(float w, float t) {
   //return sin(t/w*PI2)>0. ? 1. : 0.;
   return smoothstep(0., 1., cos1(t/w));
 }
-    vec4 result=vec4(0.);  
-    // die sichtbarkeiten der layer, hier haben wir 3 layer daher vec, sind alpha blends quasi
+vec4 result=vec4(0.);  
+// die sichtbarkeiten der layer, hier haben wir 3 layer daher vec, sind alpha blends quasi
 vec3 layerVisibilities=vec3(0.);
 vec2 sway;
 void animate() {
