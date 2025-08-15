@@ -443,6 +443,7 @@ bang2+=easeInOutTap(fract((t+2)/4.));
     speed = -1./2.;
   else if(t < 4.*16.+4.*1.) // sec2
   {
+  man_seedEyes=vec2(-0.2,0.65);
   blink = pulses(8., t) * pulses(12., t);
     
   MAX_ITER=250;
@@ -451,7 +452,6 @@ bang2+=easeInOutTap(fract((t+2)/4.));
   }
   else if(t < 4.*24.) // sec3
  {   
-  man_seedEyes=vec2(-0.2,0.65);
 juliastep=1;;
   brotVisibilities=vec2(1.,1.);
   // achtung hier clampt die kamera doof, noch anpassen
@@ -460,13 +460,14 @@ juliastep=1;;
   else if(t < 4.*32.) // Letzter Takt
 {
   pal_1_speed=1.;
-  manPos=vec2(1.4,0.5);
       cam_a = PI2/8.;
 }else if(t<4.*48.){
 location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
 }
+
+if(t<4*35)  manPos=vec2(1.4,0.5);
 // am ende lachendes maenneken mit shaky head
- layerVisibilities.z=t>4*16?clamp(smoothstep(0,4*8,t)*sin(t/2)*4.,0.,1.):0.;
+ layerVisibilities.z=t>4*16?clamp(smoothstep(0,4*8,t)*sin(t/4)*4.,0.,1.):0.;
 
 
  layerVisibilities.x=1.;
