@@ -60,7 +60,7 @@ vec4(-0.690942,0.465349,0.00832064,2.71871975),
 vec4(-0.7112999,0.47361824034266,0.0000614022,-3.0772)  
 
 );
-vec4 location= locations[int(0)%ANZ_LOCATIONS ];
+vec4 location= locations[0];
 
 // Utility Methods, 
 
@@ -79,34 +79,40 @@ vec4 location= locations[int(0)%ANZ_LOCATIONS ];
   // smoothed iters
   // )
   
- float easeInOutTap(float t) {
+float easeInOutTap(float t) {
     return smoothstep(0.0, 0.2, t) * (1.0 - smoothstep(0.2, 0.5, t));
 } 
 vec2 cmul(vec2 a, vec2 b) { 
   return vec2(a.x*b.x-a.y*b.y,  a.x*b.y+a.y*b.x);
 }
-vec3 mandelbrotCore(vec2 c, vec2 z0) {
-  vec2 z = z0; 
-  float i; 
-  for(i = 0.; i < MAX_ITER; i++) {
-    z = cmul(z, z) + c; 
-    if(dot(z,z) > BAILOUT) break;
-  }
-  
-//  float diff = log2(log2(dot(z,z))) -4.;
-
-  return vec3(z.xy,i/MAX_ITER);
-
-}  
+float arg(vec2 z) {
+  return atan(z.y, z.x);
+}
 vec2 rotor(float a) {
   return vec2(cos(a), sin(a));
 }
-
-// util rotate
 vec2 rotate(vec2 p, float angle) {
     return cmul(p,rotor(angle));
 }
-  
+
+vec3 hsv(float h, float s, float v) {
+  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+  vec3 p = abs(fract(vec3(h,h,h) + K.xyz) * 6.0 - K.www);
+  return v * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), s);
+}
+vec3 cmix(vec3 a, vec3 b, float t) {
+  return sqrt(mix(a*a, b*b, t));
+}
+
+vec3 mandelbrotCore(vec2 c, vec2 z0) {
+  vec2 z = z0; 
+  float i;
+  for(i = 0.; i < MAX_ITER; i++) {
+    z = cmul(z, z) + c;
+    if(abs2(z) > BAILOUT) break;
+  }
+  return vec3(z.xy,i/MAX_ITER);
+}  
 vec2 project(vec2 uv,vec2 center, float scale, float angle ){
 return rotate(center+uv*scale,radians(angle));
 }
@@ -191,53 +197,6 @@ vec3 makePal1(float i){
     vec3(t*2., t/4., t*8.)   // Phase für „rollende“ Farbwellen
 );
 }
- 
-
-// refurio cardioid abrollen 
-float arg(vec2 z) {
-  return atan(z.y, z.x);
-} 
-vec2 cdiv(vec2 a, vec2 b) {
-  return vec2(dot(a,b), a.y*b.x-a.x*b.y)/dot(b,b);
-}
-vec2 cinv(vec2 b) {
-  return vec2(b.x, b.y)/dot(b,b);
-}
-vec2 cexp(vec2 z) {
-  float e = exp(z[0]);
-  return vec2(e*cos(z[1]), e*sin(z[1]));
-}
-vec2 cln(vec2 z) {
-  return vec2(log(sqrt(dot(z,z))), arg(z));
-}
-vec2 cpow(vec2 b, vec2 e) {
-  return cexp(cmul(e,cln(b)));
-}
-vec2 csqrt(vec2 z) {
-  return cpow(z, vec2(.5,0.));
-}
- 
-vec4 icolor(int i) {
-  float x = float(i);
-  return vec4(sin(x*100.), sin(x*200.), sin(x*300.), 0.);
-}  
-// Refurio Julia Bobs
-   
-float sqr(float x) {
-  return x*x;
-}
-  
-   
-
-// Exponentielle Interpolation zwischen a und b mit Parameter t in [0,1]
-// t=0 -> a, t=1 -> b
-// Exponentielle Interpolation für positive Werte a,b > 0
-float expInterp(float a, float b, float t) {
-    // t=0 => a, t=1 => b
-    // Interpoliert so, dass die Werte sich *multiplikativ* ändern
-    // (logarithmische lineare Interpolation)
-    return exp(mix(log(a), log(b), t));
-}
 
 vec3 mandelbrotRender( vec2 c,vec4 loc){
      c = rotate(c,loc.w) * loc.z + loc.xy;
@@ -247,11 +206,6 @@ vec3 mandelbrotRenderJulia( vec2 c,vec4 loc){
      c = rotate(c,loc.w) * loc.z + loc.xy;
     return mandelbrotCore(loc.xy,c);
 }
- 
-float explerp(float v0, float v1, float t) {
-    return exp(mix(log(v0), log(v1), t));
-}
-
 
 vec2 brotVisibilities=vec2(zero,one);
  // minibrote trifox
@@ -335,18 +289,6 @@ bool f(vec2 c, vec2 z0) {
 }
 vec2 lissajous(float lissa, float shift, float t) {
   return vec2(cos(t - shift*lissa), sin(t - shift));
-}
- 
-
-
-
-vec3 hsv(float h, float s, float v) {
-  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-  vec3 p = abs(fract(vec3(h,h,h) + K.xyz) * 6.0 - K.www);
-  return v * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), s);
-}
-vec3 cmix(vec3 a, vec3 b, float t) {
-  return sqrt(mix(a*a, b*b, t));
 }
   
 float radiusRotor = 0.1; 
