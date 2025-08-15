@@ -110,7 +110,7 @@ bool f(vec2 c, vec2 z0) {
   f_z = z0;
   for(f_k = 0.; f_k < MAX_ITER; ++f_k) {
     f_z = cmul(f_z, f_z) + c;
-    if(dot(f_z,f_z) > 4.)
+    if(abs2(f_z) > BAILOUT)
       return false;
   }
   return true;
@@ -230,10 +230,12 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord )
     vec3 l = mandelbrotRender(v,location  );
 
     vec3 ljulia = mandelbrotRenderJulia(v,
-    vec4(location.xy,location.z*smoothStepCounter(4.-mod(t*1.,4.) ,1.,0.2),location.w+easeInOutTap(fract(t/8.))*(PI/2.)));
+    vec4(location.xy,
+         location.z*smoothStepCounter(4.-mod(t*1.,4.), 1.,0.2),
+         location.w+easeInOutTap(fract(t/8.))*(PI/2.)));
 
      vec4 result =brotVisibilities.x*beatTrack_1[index]*vec4(makePal1(l.z),1.);
-          result+=brotVisibilities.y*beatTrack_2[index]*vec4(makePal1(ljulia.z),1.) ;
+          result+=brotVisibilities.y*beatTrack_2[index]*vec4(makePal1(ljulia.z),1.);
 
     //    result.x+=beatTrack_1[index]*(1.0-interval);
     //    result.y+=beatTrack_2[index]*(1.0-interval);
