@@ -447,7 +447,7 @@ bang2+=easeInOutTap(fract((t+2)/4.));
     
   MAX_ITER=250;
   brotVisibilities=vec2(0.,1.);
-    amplitude = 0.;
+    amplitude = zero;
   }
   else if(t < 4.*24.) // sec3
  {   
@@ -481,9 +481,9 @@ if(t>4*24){
 }
 if(t>4*65)
 {
-  manPos=vec2(0.,0.5);
+  manPos=vec2(zero,0.5);
   layerVisibilities=vec3(0,0,1);
-  man_headPos=vec2(sin(t*PI*2.)*0.1, 0.);
+  man_headPos=vec2(sin(t*PI*2.)*0.1, zero);
   man_seedMouth= vec2(-0.7,0.);  
   man_seedEyes=  vec2(sin(t)*0.25-0.75,0.4);  
 }
