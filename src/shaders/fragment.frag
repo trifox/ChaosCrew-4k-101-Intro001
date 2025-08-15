@@ -104,23 +104,38 @@ vec3 cmix(vec3 a, vec3 b, float t) {
   return sqrt(mix(a*a, b*b, t));
 }
 
-vec3 mandelbrotCore(vec2 c, vec2 z0) {
-  vec2 z = z0; 
-  float i;
-  for(i = 0.; i < MAX_ITER; i++) {
-    z = cmul(z, z) + c;
-    if(abs2(z) > BAILOUT) break;
+float f_k; 
+vec2 f_z;
+bool f(vec2 c, vec2 z0) {
+  f_z = z0;
+  for(f_k = 0.; f_k < MAX_ITER; ++f_k) {
+    f_z = cmul(f_z, f_z) + c;
+    if(dot(f_z,f_z) > 4.)
+      return false;
   }
-  return vec3(z.xy,i/MAX_ITER);
-}  
+  return true;
+}
+
+vec3 mandelbrotCore(vec2 c, vec2 z0) {
+  f(c, z0)
+  return vec3(f_z.xy, i/MAX_ITER);
+}
 vec2 project(vec2 uv,vec2 center, float scale, float angle ){
-return rotate(center+uv*scale,radians(angle));
+  return rotate(center+uv*scale,radians(angle));
 }
 float mandelbrotExt(vec2 c,vec2 start,vec2 center, float scale, float angle) {
-return mandelbrotCore(project(c,center,scale,angle),start).z; 
+  return mandelbrotCore(project(c,center,scale,angle),start).z; 
 }
 float juliaExt(vec2 c,vec2 start,vec2 center, float scale, float angle) {
-return mandelbrotCore(start,project(c,center,scale,angle)).z;
+  return mandelbrotCore(start,project(c,center,scale,angle)).z;
+}
+vec3 mandelbrotRender(vec2 c,vec4 loc){
+  c = rotate(c,loc.w) * loc.z + loc.xy;
+  return mandelbrotCore(c,vec2(0.));
+}
+vec3 mandelbrotRenderJulia( vec2 c,vec4 loc){
+  c = rotate(c,loc.w) * loc.z + loc.xy;
+  return mandelbrotCore(loc.xy,c);
 }
 
 float env(float t){
@@ -198,15 +213,6 @@ vec3 makePal1(float i){
 );
 }
 
-vec3 mandelbrotRender( vec2 c,vec4 loc){
-     c = rotate(c,loc.w) * loc.z + loc.xy;
-    return mandelbrotCore(c,vec2(0.));
-}
-vec3 mandelbrotRenderJulia( vec2 c,vec4 loc){
-     c = rotate(c,loc.w) * loc.z + loc.xy;
-    return mandelbrotCore(loc.xy,c);
-}
-
 vec2 brotVisibilities=vec2(zero,one);
  // minibrote trifox
 vec4 scene2Mandelbroetchen(vec2 fragCoord )
@@ -272,21 +278,6 @@ float flashBang8(float time, float[8] arr){
 ////////////// for the sake of code, we have to redo this globall method using
 // an init function for setting the iteration? wtf!
  
-
-
-
- 
-float f_k; 
-vec2 f_z;
-bool f(vec2 c, vec2 z0) {
-  f_z = z0;
-  for(f_k = 0.; f_k < MAX_ITER; ++f_k) {
-    f_z = cmul(f_z, f_z) + c;
-    if(dot(f_z,f_z) > 4.)
-      return false;
-  }
-  return true;
-}
 vec2 lissajous(float lissa, float shift, float t) {
   return vec2(cos(t - shift*lissa), sin(t - shift));
 }
