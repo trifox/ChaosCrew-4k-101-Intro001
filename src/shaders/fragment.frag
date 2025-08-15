@@ -7,7 +7,7 @@ const float PI2= PI*2.;
 const float HALF_PI=PI/2.;
 const vec2 iResolution= vec2(1920.,1080.);
 const float BAILOUT=256;
- 
+const int SIXTEEN=16;
 
 float MAX_ITER = 150.; 
 const float bpm = 154.0;
@@ -17,14 +17,15 @@ const float zero=0.;
 // complex one
 const vec2 cone = vec2(one,zero);
 
-const float beatTrack_1[16]=float[16](
+float t;
+const float beatTrack_1[SIXTEEN]=float[SIXTEEN](
     
     1.,0.,0.5,1.,
     0.,1.,0.,0.5, 
     .1,0.,1.,0.,
     0.,0.,0.,1.
     ); 
-const float beatTrack_2[16]=float[16](
+const float beatTrack_2[SIXTEEN]=float[SIXTEEN](
   // classic paradiddle
     0.,1.,0.,0.,
     1.,0.,1.,1., 
@@ -45,33 +46,22 @@ const float beatTrack_3[16]=float[16](
     0.,0.,0.,0.
     ); 
 
-// achtelnoten
-const float beatTrack_4_8chtel[32]=float[32](
 
-    1.,0.,1.,0.,1.0,0.,1.,0.,
-    0.,0.,0.,1.,0.0,0.,1.,0.,
-    0.,0.,0.,1.,1.0,0.,0.,0.,
-    0.,1.,1.,1.,0.0,0.,0.,0. 
-
-    ); 
-
-
+const int ANZ_LOCATIONS=7;
 // vec4 real,imag,scale for locations  
-const vec4 locations[7] = vec4[7](  
+const vec4 locations[ANZ_LOCATIONS] = vec4[ANZ_LOCATIONS](  
  
 vec4(-1.870003880829,0,0.0002674561862707285,3.141592653589793),
 vec4(-0.525971082531,-0.696943648552,0.0012521592421613436,-1.4127195914530066),
 vec4(-0.5283268509101,-0.7040732663739,0.00010731840819160572,-2.0375321234958355),
-
-
 vec4(-0.7241362058945,0.3615746809763,0.0006762353967640741,-0.3535661995436758),
-
 vec4(-0.690942897652,0.465349538581,0.008320645697370592,2.718719757271499),
 vec4(-0.71129999537417,0.47361824034266,0.00006140226906652181,-3.0772975283438235),
 vec4(-0.7064983534592,0.4721945038287,0.0006342193550945032,2.9386115579413823)
 
 
 );
+vec4 location= locations[int(0)%ANZ_LOCATIONS ];
 
 // Utility Methods, 
 
@@ -92,10 +82,7 @@ vec4(-0.7064983534592,0.4721945038287,0.0006342193550945032,2.9386115579413823)
   
  float easeInOutTap(float t) {
     return smoothstep(0.0, 0.2, t) * (1.0 - smoothstep(0.2, 0.5, t));
-}
-float abs2(vec2 z) {
-  return dot(z,z);
-}
+} 
 vec2 cmul(vec2 a, vec2 b) { 
   return vec2(a.x*b.x-a.y*b.y,  a.x*b.y+a.y*b.x);
 }
@@ -104,7 +91,7 @@ vec4 mandelbrotCore(vec2 c, vec2 z0) {
   float i; 
   for(i = 0.; i < MAX_ITER; i++) {
     z = cmul(z, z) + c; 
-    if(abs2(z) > BAILOUT) break;
+    if(dot(z,z) > BAILOUT) break;
   }
   
   float diff = log2(log2(dot(z,z))) -4.;
@@ -212,17 +199,17 @@ float arg(vec2 z) {
   return atan(z.y, z.x);
 } 
 vec2 cdiv(vec2 a, vec2 b) {
-  return vec2(dot(a,b), a.y*b.x-a.x*b.y)/abs2(b);
+  return vec2(dot(a,b), a.y*b.x-a.x*b.y)/dot(b,b);
 }
 vec2 cinv(vec2 b) {
-  return vec2(b.x, b.y)/abs2(b);
+  return vec2(b.x, b.y)/dot(b,b);
 }
 vec2 cexp(vec2 z) {
   float e = exp(z[0]);
   return vec2(e*cos(z[1]), e*sin(z[1]));
 }
 vec2 cln(vec2 z) {
-  return vec2(log(sqrt(abs2(z))), arg(z));
+  return vec2(log(sqrt(dot(z,z))), arg(z));
 }
 vec2 cpow(vec2 b, vec2 e) {
   return cexp(cmul(e,cln(b)));
@@ -261,12 +248,7 @@ vec4 mandelbrotRenderJulia( vec2 c,vec4 loc){
      c = rotate(c,loc.w) * loc.z + loc.xy;
     return mandelbrotCore(loc.xy,c);
 }
-
-vec4 getKeyFrame(float t){
-    // Achtung, hier kommt schon auf bpm normalisiertes "t" rein
-    int currentTimeInterval = int(t) % 7;
-    return locations[currentTimeInterval];
-} 
+ 
 float explerp(float v0, float v1, float t) {
     return exp(mix(log(v0), log(v1), t));
 }
@@ -287,7 +269,7 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord )
     // arg allgemeiner winkel, normalisiert dann auf 0..1 also der winkel 0..360
     float arg=(atan( v.x,v.y)+PI)/PI2;
 
-    int index=int(floor(mod(t,16.)));
+    int index=int(t)%SIXTEEN;
 //    int indexAchtel=int(floor(mod(t,32.)));
 //    vec4 keyframe=getKeyFrame(t);
 
@@ -296,11 +278,8 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord )
     vec4 ljulia = mandelbrotRenderJulia(v,
     vec4(location.xy,location.z*smoothStepCounter(4.-mod(t*1.,4.) ,1.,0.2),location.w+easeInOutTap(fract(t/8.))*(PI/2.)));
 
-     vec4 result=vec4(l.zzz,1.);
-
-
-       result+=beatTrack_1[index]*vec4(colorMandelResultIteration(l),1.);
-       result+=beatTrack_2[index]*vec4(colorMandelResultIteration(ljulia),1.) ;
+     vec4 result=beatTrack_1[index]*vec4(colorMandelResultIteration(l),1.);
+      result+=beatTrack_2[index]*vec4(colorMandelResultIteration(ljulia),1.) ;
 
     //    result.x+=beatTrack_1[index]*(1.0-interval);
     //    result.y+=beatTrack_2[index]*(1.0-interval);
@@ -349,17 +328,14 @@ float flashBang8(float time, float[8] arr){
 
 
 
-float f_n;
-float f_k;
-void f_init(int n) {
-  f_n = float(n);
-}
+float f_n=50.;
+float f_k; 
 vec2 f_z;
 bool f(vec2 c, vec2 z0) {
   f_z = z0;
   for(f_k = 0.; f_k < f_n; ++f_k) {
     f_z = cmul(f_z, f_z) + c;
-    if(abs2(f_z) > 4.)
+    if(dot(f_z,f_z) > 4.)
       return false;
   }
   return true;
@@ -379,80 +355,79 @@ vec3 hsv(float h, float s, float v) {
 vec3 cmix(vec3 a, vec3 b, float t) {
   return sqrt(mix(a*a, b*b, t));
 }
- 
-float cam_a= sin(0)*PI/2.;
-float radiusRotor = 0.1;
-vec4 location= locations[int(0)%7 ];
-  float  cam_d = 1.,
-        
-        n = 100., // number of bobs
   
-        lissa = 1., // 1.0 is a circle
-        amplitude = .25, // of lissjous animation
-        arclen = 3., // 1.0 is full circle
-        lspeed = 1., // of lissajous animation
+float radiusRotor = 0.1; 
+float       
+      cam_a = 0.,
+      cam_d = 1.,
         
-        speed = 1.25, // at which julia parameters are animated 
-        cangle = 1., // distance the parameter c travels from head to tail
-        
-        column_height = 1., // (sin(t*30.)/2.+.5)*1.,
-        column_shift = -.1,
-        
-            // julia view
-        radius = 2.,
-        angle = 0.;
-       ;
-vec3 xxxNew_scene0(vec2 xy, float t) {
-  f_init(100);
+      nbobs = 300.,
   
-
-    radius =location.z;
+      lissa = 1., // 1.0 is a circle
+      amplitude = .25, // of lissjous animation
+      arclen = 1., // 1.0 is full circle
+      lspeed = 1./4., // of lissajous anmation
         
-  vec2 center = vec2(0.),
-       r = radius * rotor(angle),
-       c, p;
+      speed = 1./2., // at which julia parameters are animated
+  
+      roughness = 1.2, // of julia pertubation
+      cangle = 1., // distance the parameter c travels from head to tail
+        
+      column_height = 1.,
+      column_shift = -.1,
+        
+      // julia view
+      radius = 2.,
+      angle = 0.;
+        
+vec2 center = vec2(0.),
+     r,
+     c, p ;
 
-  vec3 col = vec3(0.),
-       offset;
-  for(float i = 0.; i < n; ++i) {
-    //c = cardioid(t*speed + i/n*cangle)*roughness;
-    //c = vec2((sin(t*speed)/2.+.5)*(-2. - (-1.))-1., 0.);
-    
-    // minibrot section:
-    // tails shrink:
-    //center = c = locations[g].xy+i/n*.5*rotor(t/2.+i/n*2.)*locations[g].z;
-    center = c = location.xy+radiusRotor*rotor(t/2.+i/n*2.)*location.z;
-    
-    offset = vec3(amplitude * lissajous(lissa, 2.*PI * i/n * arclen, t*lspeed*2.*PI),
-                  -column_height * (i/n) + column_shift);
-                  
-    vec2 cr = rotor(cam_a);
-    vec3 cam_pos = vec3(0., 0., cam_d); // cot(a)?
-    cam_pos.yz = cmul(cr, cam_pos.yz);
-    vec3 ray = vec3(xy, 1.);
+vec3 col,
+     ray,
+     offset;
+ vec3 xxxNew_scene0(vec2 xy, float t)  {
+  radius = location.z;
+  r = radius * rotor(angle);
+  col = vec3(0.);
+  
+  vec2 cr = rotor(cam_a);
+  vec3 cam_pos = vec3(0., 0., cam_d);
+  cam_pos.yz = cmul(cr, cam_pos.yz);
+  
+  vec3 bg;
+
+  for(float i = 0.; i < nbobs; ++i) {
+    vec2 pertubation = .07*roughness*rotor(t*speed*PI2 + i/nbobs*cangle)*radius;
+    center = c = location.xy+pertubation;
+  
+    offset = vec3(amplitude * lissajous(lissa, PI2 * i/nbobs * arclen, t*lspeed*2.*PI),
+                  -column_height * (i/nbobs) + column_shift);
+
+    ray = vec3(xy, 1.);
     ray.yz = cmul(cr, ray.yz);
+    bg = cmix(hsv(.6, .7, .8), vec3(0.), clamp(0., 1., -ray.y));
     ray = ray * (cam_pos.z - offset.z)/ray.z - cam_pos;
-    vec2 uv = ray.xy - offset.xy;
+    if(dot(cam_pos, ray) < 0.)
+      continue;
+    
+    vec2 uv = cmul(ray.xy - offset.xy, r) - center + pertubation;
     float z = 1.-length(ray);
 
-    uv = cmul(uv, r) - center;
-    //uv = mod(uv+1., 4.*vec2(2.,2.))-1.;
-
-    if(ray.z <= 0.)
-      continue;
-
-    if(f(c, uv))    
+    if(f(c, uv))
       // inside
-      if(i == 1.)
-        return hsv(1., 0., 1.);
+      if(i == 0.)
+        return hsv(1., 1., 1.);
       else
-        return cmix(vec3(1.), hsv(.6+mod(i, 1.)/10., 1., 1.), i/n)*z;
+        return hsv(0., 0., 1.-i/nbobs);
         
     // outside
-    col += hsv(0.6, 0.5, pow(f_k/f_n, .125/1.));
+    col += hsv(.6, .5, pow(f_k/f_n, .01));
   }
-  return vec3(0.);
-  return col/n;
+  return bg;
+  //return vec3(0.);
+  return col/nbobs;
 }
 
 
@@ -467,9 +442,7 @@ vec3 xxxNew_scene0(vec2 xy, float t) {
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
-const float offset=0.; // audio offset, somehow the track has a 1bpm delay at start
-
-float t;
+ 
 float cos1(float x) {
   return -cos(x*PI2)/2.+.5;
 }
@@ -483,7 +456,7 @@ vec3 layerVisibilities=vec3(0.);
 vec2 sway;
 void animate() {
   float blink;
-  location= locations[int(t)%7 ];
+  location= locations[int(t)%ANZ_LOCATIONS ];
   cam_a = 0.; // -PI/4.;
   if(t < 4.*1.)
     MAX_ITER = 80.*t/4.;
