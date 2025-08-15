@@ -451,6 +451,7 @@ bang2+=easeInOutTap(fract((t+2)/4.));
   }
   else if(t < 4.*24.) // sec3
  {   
+  man_seedEyes=vec2(-0.2,0.65);
 juliastep=1;;
   brotVisibilities=vec2(1.,1.);
   // achtung hier clampt die kamera doof, noch anpassen
