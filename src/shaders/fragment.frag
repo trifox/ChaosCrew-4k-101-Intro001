@@ -177,10 +177,13 @@ float smoothStepCounter(float t, float stepDuration, float rampFrac)
 // its a and b control aplitude and offset, c and d control frequency and shidft
 vec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d )
 {
-    return a + b*cos( 6.28318*(c*t+d) );
+    return a + b*cos( PI2*(c*t+d) );
 }
 
 
+vec3 makePal2(float i){
+return vec3(0.2549,    .8824,0.4118 )*i;
+}
 vec3 makePal1(float i){
   // return pal(i, vec3(0.3,0.2,0.5),vec3(0.6,0.2,0.8),vec3(2.0,1.0,0.0),vec3(0.5,2.20,0.25) );
  return pal(i,
@@ -535,7 +538,7 @@ vec4 mainWrap(vec2 fragCoord,float t){
 /* develop */
 
   
-vec4 mandelTriklops=vec4(layerVisibilities.z*makePal1(mandelMan(fragCoord*2.5+vec2(1.5,0.5))),1.);   
+vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan(fragCoord*2.5+vec2(1.5,0.5))),1.);   
 
 
 
