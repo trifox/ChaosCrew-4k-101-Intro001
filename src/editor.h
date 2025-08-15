@@ -3,13 +3,13 @@ namespace Leviathan
 	// forward declaration
 	class Song;
 }
-
 namespace Leviathan
 {
 	// simpler wrapper class for the editor functionality
 	class Editor
 	{
 	public:
+	
 		Editor();
 
 		void beginFrame(const unsigned long time);

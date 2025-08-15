@@ -44,6 +44,20 @@ void entrypoint(void)
 int __cdecl main(int argc, char* argv[])
 #endif
 {
+	#ifdef EDITOR_CONTROLS
+	char *endptr;
+    double wert = strtod(argv[1], &endptr);
+
+    if (*endptr != '\0') {
+        printf("Fehler: '%s' ist keine gültige Kommazahl.\n", argv[1]);
+        return 1;
+    }
+
+    printf("Eingegebene Zahl: %f\n", wert);
+
+	SONG_START=wert;
+	
+	#endif
 	// initialize window
 	#if FULLSCREEN
 		ChangeDisplaySettings(&screenSettings, CDS_FULLSCREEN);

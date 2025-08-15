@@ -4,6 +4,8 @@
 #include <dshow.h>
 #pragma warning(default:995)
 
+extern double SONG_START;
+
 namespace Leviathan
 {
 	class Song

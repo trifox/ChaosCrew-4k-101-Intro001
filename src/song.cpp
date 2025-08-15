@@ -8,6 +8,9 @@
 
 using namespace Leviathan;
 
+
+double SONG_START = 0.0; // Definition
+
 Song::Song()
 {
 }
@@ -41,7 +44,8 @@ Song::Song(LPCWSTR path) : playing(false)
 	__int64 position = 0;
 	mediaSeeking->SetPositions(&position, AM_SEEKING_AbsolutePositioning, &position, AM_SEEKING_NoPositioning);
 	pause();
-	//seek(10);
+    printf("Springe start: %f\n", SONG_START);
+	seek(SONG_START);
 }
 
 Song::~Song()
