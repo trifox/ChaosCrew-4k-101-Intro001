@@ -14,11 +14,8 @@ const int SIXTEEN=16;
 
 float MAX_ITER = 150.; 
 const float bpm = 154.0;
-const float secsPerBeat = 60.0 / bpm;
 const float one=1.;
 const float zero=0.;
-// complex one
-const vec2 cone = vec2(one,zero);
 
 float t;
 const float beatTrack_1[SIXTEEN]=float[SIXTEEN](
@@ -585,7 +582,7 @@ float vignette(vec2 uv){
 }
 void main() {
   // t is timed to beat
-  t = (float(m) / 44100.0)/secsPerBeat;
+  t = float(m) / 44100.0 / 60. * bpm;
 
 
 // debug offset
@@ -623,3 +620,5 @@ if(uv.y>0.2 && uv.x<t/256 ) {
   o= rz;
 */
 }
+
+////////////////////////////////////////////////////////////////
