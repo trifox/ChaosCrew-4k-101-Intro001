@@ -142,17 +142,15 @@ float mandelMan(vec2 uvIn)
   vec2 uv = cmul(uvIn,rotor(radians(90.)));
   vec2 center=vec2( 0.5,-0.  );
   float scale=2.;
-  // Mandelbrot 
-  fragColor= mandelbrotExt(uv,man_seedEyes* .25,center+vec2(-1.3,0),scale* .4 ,180.)* .75; 
-  uv+=man_headPos;
   vec2 eyePos=center+vec2(  3.150, 2.40);
-  fragColor += mandelbrotExt(uv,vec2(0.),center,scale*1. ,180.);
-  fragColor -= juliaExt(uv,man_seedEyes ,              center+eyePos,scale*8.,-90.) ;
-  fragColor -= juliaExt(vec2(uv.x, -uv.y),man_seedEyes ,center+eyePos,scale*8.,-90.) ;
-
-  /// den mund, da wollen wir die schwarzen bereiche mit zaehnen also vertikalen streifen rendern
-  float mund= juliaExt(uv,man_seedMouth,center+vec2(   -5.,.0),scale*8.,90.) ;
-  fragColor-=mund;
+  // Mandelbrot 
+  fragColor = mandelbrotExt(uv,man_seedEyes* .25,center+vec2(-1.3,0),scale* .4 ,180.)* .75; 
+  uv+=man_headPos;
+  fragColor += mandelbrotExt(uv,vec2(0.),center,scale*1. ,180.)
+            -  juliaExt(uv,man_seedEyes ,               center+eyePos,scale*8.,-90.)
+            -  juliaExt(vec2(uv.x, -uv.y),man_seedEyes ,center+eyePos,scale*8.,-90.)
+            /// den mund, da wollen wir die schwarzen bereiche mit zaehnen also vertikalen streifen rendern
+            -  juliaExt(uv,man_seedMouth,center+vec2(   -5.,.0),scale*8.,90.);
   return fragColor;
 }
 //////////////////////////
@@ -228,8 +226,8 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord )
          location.z*(juliastep>0.?smoothStepCounter(4.-mod(t*1.,4.), 1.,0.2):1.),
          location.w+easeInOutTap(fract(t/8.))*(PI/2.)));
 
-     vec4 result =brotVisibilities.x*vis*vec4(makePal1(l.z),1.);
-          result+=brotVisibilities.y*(1.0-vis) *vec4(makePal1(ljulia.z),1.) ;
+  vec4 result = brotVisibilities.x*vis*vec4(makePal1(l.z),1.)
+              + brotVisibilities.y*(1.0-vis) *vec4(makePal1(ljulia.z),1.) ;
 
   //    result.x+=beatTrack_1[index]*(1.0-interval);
   //    result.y+=beatTrack_2[index]*(1.0-interval);
@@ -319,7 +317,7 @@ vec3 col,
     vec2 pertubation = .07*roughness*rotor(t*speed*PI2 + i/nbobs*cangle)*radius;
     center = c = location.xy+pertubation;
   
-    offset = vec3(amplitude * lissajous(lissa, PI2 * i/nbobs * arclen, t*lspeed*2.*PI),
+    offset = vec3(amplitude * lissajous(lissa, PI2 * i/nbobs * arclen, t*lspeed*PI2),
                   -column_height * (i/nbobs) + column_shift);
 
     ray = vec3(xy, 1.);
@@ -405,8 +403,8 @@ void animate() {
   // unkritischer code, kann genutzt werden um halt was mal kurz flashen zu lassen
   flash44Hihat=easeInOutTap(fract(t));
 
-bang2=easeInOutTap(fract(t/4.));
-bang2+=easeInOutTap(fract((t+2.)/4.));
+  bang2 = easeInOutTap(fract(t/4.))
+        + easeInOutTap(fract((t+2.)/4.));
 
   // bob anzahl lassen wir einfach ansteigen
   nbobs =(sin(t/4.)+1.)*200.+10.;
@@ -429,7 +427,6 @@ bang2+=easeInOutTap(fract((t+2.)/4.));
     MAX_ITER = 80.*t/4.;
     blink = 0.;
   }
-  float t0;
   if(t < 4.*4.) // sec1 first half
     // naja, ok, was geht hier hab, 4mal4 sind 16 also nen voller 44tel  takt aktion
     speed = 0.;
