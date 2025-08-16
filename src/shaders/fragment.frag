@@ -336,13 +336,13 @@ vec3 xxxNew_scene0(vec2 xy, float t) {
       if(i == 0.)
         return makePal1(0.);
       else
-        return hsv(0., 0., 1.-i/nbobs);
+        return hsv(0., 0., (1.-i/nbobs)*length(ray.z)*2.);
         
     // outside
     col += hsv(.6, .5, pow(f_k/MAX_ITER, .01));
   }
+  return vec3(0.);
   return bg;
-  //return vec3(0.);
   return col/nbobs;
 }
 
