@@ -508,12 +508,10 @@ vec4 mainWrap(vec2 fragCoord){
 
 //  layerVisibilities.y=1;
 //brotVisibilities=vec2(1.,1.); 
-vec4 dieMiniBrote=layerVisibilities.y*scene2Mandelbroetchen(fragCoord);
 
-vec4 bobs=layerVisibilities.x*vec4(xxxNew_scene0(fragCoord+sway,t),1.);
-
-
-   return  max(bobs,dieMiniBrote);
+  return  max(
+    layerVisibilities.x*vec4(xxxNew_scene0(fragCoord+sway,t),1.),
+    layerVisibilities.y*scene2Mandelbroetchen(fragCoord));
    
 
 
