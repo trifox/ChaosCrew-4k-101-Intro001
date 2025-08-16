@@ -424,7 +424,6 @@ vec4 mainWrap(vec2 fragCoord) {
     MAX_ITER *= t/4.;
     blink = 0.;
   }
-<<<<<<< HEAD
   float t0;
   if(t < 4.*4.) // sec1 first half
  // naja, ok, was geht hier hab, 4mal4 sind 16 also nen voller 44tel  takt aktion
@@ -502,8 +501,6 @@ vec4 mainWrap(vec2 fragCoord){
 // ... grundgeruest, nach intro faengt spring und locationwechsel an
 
   animate();
-=======
->>>>>>> 0536b862a26eff2e7ccaf0e14b7e1ebe680b12c7
   
   // sec1 second half
 //  if(t > 4.*4.)
