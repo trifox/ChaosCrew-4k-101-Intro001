@@ -425,37 +425,39 @@ void animate() {
     MAX_ITER = 80.*t/4.;
     blink = 0.;
   }
-  if(t < 4.*4.) // sec1 first half
-    // naja, ok, was geht hier hab, 4mal4 sind 16 also nen voller 44tel  takt aktion
-    speed = 0.;
-  else if(t < 4.*8.) // sec1 second half
-    // wegen kleiner gleich haben hier wir irgendwas was nur auf dewn ersten beiden takten aktiv ist
-    speed = -1./2.;
-  else if(t < 4.*17.) // sec2
-  {
-    // hier haben wir gedoens was genau am 17ten takt tri tra triggert, also wegen dem <
-    man_seedEyes=vec2(-0.2,0.65);
-    blink = pulses(8., t) * pulses(12., t);
-    
-    brotVisibilities=vec2(0.,1.);
-    amplitude = zero;
+  if(t > 4.*1.) {
+    vignetteScale=116.;
   }
-  else if(t < 4.*24.) // sec3
-  {   
-    juliastep=1.;
-    brotVisibilities=vec2(1.,1.);
-    // achtung hier clampt die kamera doof, noch anpassen
-    cam_a = sin(t*PI2/16.)*PI2/8.;
+  
+  // sec1 second half
+  if(t > 4.*4.) {    
   }
-  else if(t < 4.*32.) // Letzter Takt
-  {
-    // ok, andernfalls halt 32ter takt hier halt gedoenst, ews ist ungefaehr die mitte, max ist 65
-    pal_1_speed=1.;
-    cam_a = PI2/8.;
-  } else if(t<4.*48.){
-    // else nochmal die gute if, hier end eskalation weil hoich
-    location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
+  
+  // sec2
+  if(t > 4.*8.) {
+    if(t < 4.*17.) {
+      // hier haben wir gedoens was genau am 17ten takt tri tra triggert, also wegen dem <
+      man_seedEyes=vec2(-0.2,0.65);
+      blink = pulses(8., t) * pulses(12., t);
+      brotVisibilities=vec2(0.,1.);
+      amplitude = zero;
+    }
   }
+  
+  if(t > 4.*17.) {
+    if(t < 4.*24.) { // sec3
+      juliastep=1.;
+      brotVisibilities=vec2(1.,1.);
+      // achtung hier clampt die kamera doof, noch anpassen
+    }
+    else if(t < 4.*32.) { // Letzter Takt
+      // ok, andernfalls halt 32ter takt hier halt gedoenst, ews ist ungefaehr die mitte, max ist 65
+      pal_1_speed=1.;
+    }
+    else if(t<4.*48.) {
+      // else nochmal die gute if, hier end eskalation weil hoich
+      location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
+    }
   }
 
   if(t<4.*35.) 
