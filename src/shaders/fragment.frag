@@ -5,6 +5,7 @@ const vec2 iResolution= vec2(1920.,1080.);
 out vec4 o;
 
 ////////////////////////////////////////////////////////////////
+
 const float PI = radians(180.);
 const float PI2= PI*2.;
 const float HALF_PI=PI/2.;
@@ -18,9 +19,8 @@ const float zero=0.;
 
 float t;
 const float beatTrack_1[SIXTEEN]=float[SIXTEEN](
-    
     1.,0.,1.,1.,
-    1.,0.,1.,1.0, 
+    1.,0.,1.,1., 
     1.,0.,1.,1.,
     1.,0.,1.,1.
     );
@@ -81,9 +81,6 @@ float easeInOutTap(float t) {
 } 
 vec2 cmul(vec2 a, vec2 b) { 
   return vec2(a.x*b.x-a.y*b.y,  a.x*b.y+a.y*b.x);
-}
-float arg(vec2 z) {
-  return atan(z.y, z.x);
 }
 vec2 rotor(float a) {
   return vec2(cos(a), sin(a));
@@ -163,10 +160,11 @@ float smoothStepCounter(float t, float stepDuration, float rampFrac)
     float totalSteps = t / stepDuration;   // float step counter
     float base = floor(totalSteps);        // aktueller Ganzzahlwert
     float phase = fract(totalSteps);       // 0..1 innerhalb des Schritts
+    float ramp;
 
     if (phase < rampFrac) {
         // Im Ramp-Bereich → sanft hochziehen
-        float ramp = smoothstep(0.0, rampFrac, phase);
+        ramp = smoothstep(0.0, rampFrac, phase);
         return base + ramp;
     } else {
         // Plateau → konstanter Wert
@@ -210,18 +208,16 @@ vec2 brotVisibilities=vec2(one,zero);
 vec4 scene2Mandelbroetchen(vec2 fragCoord )
 {
   MAX_ITER=250.;
-  float interval = fract(t); 
+  int index=int(t)%SIXTEEN;
+  float interval = fract(t);
+  float vis=beatTrack_1[index]; 
   vec2 v = fragCoord; // to -1 +1 real,imag
   // arg allgemeiner winkel, normalisiert dann auf 0..1 also der winkel 0..360
-  float arg=(atan( v.x,v.y)+PI)/PI2;
 
-  int index=int(t)%SIXTEEN;
 //    int indexAchtel=int(floor(mod(t,32.)));
 //    vec4 keyframe=getKeyFrame(t);
 
   vec3 l = mandelbrotRender(v);
-
-  float vis=beatTrack_1[index]; 
   vec3 ljulia = mandelbrotRenderJulia(v,
     vec4(location.xy,
          location.z*(juliastep>0.?smoothStepCounter(4.-mod(t*1.,4.), 1.,0.2):1.),
@@ -296,19 +292,20 @@ float
         
 vec2 center = vec2(0.),
      r,
-     c, p ;
+     c, p,
+     cr, pertubation, uv;
 
 vec3 col,
      ray,
-     offset;
+     offset,
+     cam_pos;
      
 vec3 xxxNew_scene0(vec2 xy, float t) {
   r = location.z/scale * rotor(angle);
   col = vec3(0.);
-  
-  vec2 cr = rotor(-cam_a),
-       pertubation, uv;
-  vec3 cam_pos = vec3(0., 0., cam_d);
+
+  cr = rotor(-cam_a);
+  cam_pos = vec3(0., 0., cam_d);
   cam_pos.yz = cmul(cr, cam_pos.yz);
   
   for(float i = 0.; i < nbobs; ++i) {
@@ -351,7 +348,7 @@ float vignetteScale=116.,vignettePow=.25;
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 ///////////////////////////////////////////////////
- float bang2=0.;
+float bang2=0.;
 float cos1(float x) {
   return -cos(x*PI2)/2.+.5;
 }
