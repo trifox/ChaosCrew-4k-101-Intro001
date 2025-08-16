@@ -494,19 +494,19 @@ if(t<4*35)
 
 // layerVisibilities.z=clamp(sin(t),0.,1.);
   //return cmix(scene0(xy+sway, t), scene1(xy, t), blink);
-
+  // achtung; ihier faengt >= bereich an, also sachen die ab dann leben
 if(t>4.*24.){ 
   man_seedEyes=vec2(-0.5,0.5);
   location=locations[int(t)%16];
   brotVisibilities=vec2(one,one);
 }
 if(t>4.*65.)
-{
+{ 
   manPos=vec2(zero,0.5);
   layerVisibilities=vec3(0,0,1);
   man_headPos=vec2(sin(t*PI*2.)*0.1, zero);
   man_seedMouth= vec2(-0.7,0.);  
-  man_seedEyes=  vec2(sin(t)*0.25-0.75,0.4);  
+  man_seedEyes=  vec2(sin(t*2.)*0.25-0.65,0.4);  
 }
  
 }
