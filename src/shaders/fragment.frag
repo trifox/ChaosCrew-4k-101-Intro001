@@ -89,9 +89,6 @@ float arg(vec2 z) {
 vec2 rotor(float a) {
   return vec2(cos(a), sin(a));
 }
-vec2 rotate(vec2 p, float angle) {
-    return cmul(p,rotor(angle));
-}
 
 vec3 hsv(float h, float s, float v) {
   vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
@@ -119,7 +116,7 @@ vec3 mandelbrotCore(vec2 c, vec2 z0) {
   return vec3(f_z.xy,  f_k/MAX_ITER*4. );
 }
 vec2 project(vec2 uv,vec2 center, float scale, float angle ){
-  return rotate(center+uv*scale,radians(angle));
+  return cmul(center+uv*scale,rotor(radians(angle)));
 }
 float mandelbrotExt(vec2 c,vec2 start,vec2 center, float scale, float angle) {
   return mandelbrotCore(project(c,center,scale,angle),start).z; 
@@ -127,17 +124,11 @@ float mandelbrotExt(vec2 c,vec2 start,vec2 center, float scale, float angle) {
 float juliaExt(vec2 c,vec2 start,vec2 center, float scale, float angle) {
   return mandelbrotCore(start,project(c,center,scale,angle)).z;
 }
-vec3 mandelbrotRender(vec2 c,vec4 loc){
-  c = rotate(c,loc.w) * loc.z + loc.xy;
-  return mandelbrotCore(c,vec2(0.));
+vec3 mandelbrotRender(vec2 c){
+  return mandelbrotCore(cmul(c,rotor(location.w)) * location.z + location.xy, vec2(0.));
 }
 vec3 mandelbrotRenderJulia( vec2 c,vec4 loc){
-  c = rotate(c,loc.w) * loc.z + loc.xy;
-  return mandelbrotCore(loc.xy,c);
-}
-
-float env(float t){
-  return sin(t*PI);
+  return mandelbrotCore(loc.xy, cmul(c,rotor(loc.w)) * loc.z + loc.xy);
 }
 
 vec2 man_seedEyes=vec2(0.);
@@ -148,7 +139,7 @@ float mandelMan(vec2 uvIn)
 {
   float fragColor=0.;
   // Normalized pixel coordinates (from 0 to 1)
-  vec2 uv = rotate(uvIn,radians(90.));
+  vec2 uv = cmul(uvIn,rotor(radians(90.)));
   vec2 center=vec2( 0.5,-0.  );
   float scale=2.;
   // Mandelbrot 
