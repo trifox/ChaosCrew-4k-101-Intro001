@@ -12,7 +12,7 @@ const float HALF_PI=PI/2.;
 const float BAILOUT=256.;
 const int SIXTEEN=16;
 
-float MAX_ITER = 150.; 
+float MAX_ITER = 60.; 
 const float bpm = 154.0;
 const float one=1.;
 const float zero=0.;
@@ -137,6 +137,7 @@ vec2 man_headPos;
 
 float mandelMan(vec2 uvIn)
 {
+  MAX_ITER=250.;
   float fragColor=0.;
   // Normalized pixel coordinates (from 0 to 1)
   vec2 uv = cmul(uvIn,rotor(radians(90.)));
@@ -209,6 +210,7 @@ vec2 brotVisibilities=vec2(one,zero);
  // minibrote trifox
 vec4 scene2Mandelbroetchen(vec2 fragCoord )
 {
+  MAX_ITER=250.;
   float interval = fract(t); 
   vec2 v = fragCoord; // to -1 +1 real,imag
   // arg allgemeiner winkel, normalisiert dann auf 0..1 also der winkel 0..360
