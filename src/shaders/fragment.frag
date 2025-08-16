@@ -293,7 +293,7 @@ float
       column_shift = -.1,
         
       // julia view
-      radius = 1.,
+      scale = .1,
       angle = 0.;
         
 vec2 center = vec2(0.),
@@ -303,9 +303,9 @@ vec2 center = vec2(0.),
 vec3 col,
      ray,
      offset;
- vec3 xxxNew_scene0(vec2 xy, float t)  {
-  radius = location.z;
-  r = radius * rotor(angle);
+     
+vec3 xxxNew_scene0(vec2 xy, float t) {
+  r = location.z/scale * rotor(angle);
   col = vec3(0.);
   
   vec2 cr = rotor(cam_a);
@@ -315,7 +315,7 @@ vec3 col,
   vec3 bg;
 
   for(float i = 0.; i < nbobs; ++i) {
-    vec2 pertubation = .07*roughness*rotor(t*speed*PI2 + i/nbobs*cangle)*radius;
+    vec2 pertubation = .07*roughness*rotor(t*speed*PI2 + i/nbobs*cangle)*location.z/scale;
     center = c = location.xy+pertubation;
   
     offset = vec3(amplitude * lissajous(lissa, PI2 * i/nbobs * arclen, t*lspeed*PI2),
