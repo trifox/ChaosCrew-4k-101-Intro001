@@ -284,7 +284,7 @@ float
       arclen = 1., // 1.0 is full circle
       lspeed = 1./4., // of lissajous anmation
         
-      speed = 0., // at which julia parameters are animated
+      speed = .125, // at which julia parameters are animated
       roughness = 1.5, // of julia pertubation
       cangle = 0., // angle pertubation changes from head to tail
       
@@ -357,8 +357,7 @@ float cos1(float x) {
   return -cos(x*PI2)/2.+.5;
 }
 float pulses(float w, float t) {
-  //return sin(t/w*PI2)>0. ? 1. : 0.;
-  return pow(smoothstep(0., 1., cos1(t/w)), .1);
+  return sin(t/w*PI2)>0. ? 1. : 0.;
 }
 
 // 4 44tel slide
@@ -373,7 +372,6 @@ vec2 manPos=vec2(1.4,0.5);
 vec4 result=vec4(0.);  
 // die sichtbarkeiten der layer, hier haben wir 3 layer daher vec, sind alpha blends quasi
 vec3 layerVisibilities=vec3(0.);
-vec2 sway;
 
 float blink;
 
@@ -418,8 +416,7 @@ vec4 mainWrap(vec2 fragCoord) {
   man_headPos=  vec2(0.,0.);
 
   blink = pulses(1./1., t) * pulses(4./2., t);
-
-  sway = vec2(cos(t*PI2/4./2.), sin(t*PI2/4./4.))/40.;
+  roughness = sin(t)*.2+1.1;
 
   // sec 1
   // short intro
@@ -435,13 +432,12 @@ vec4 mainWrap(vec2 fragCoord) {
   // sec2
   if(t > 4.*8.) {
     cangle = smoothstep(0., 1., (t-4.*8.)/8.);
-    speed = .125;
-    roughness = sin(t)*.2+1.1;
     if(t < 4.*17.) {
       // hier haben wir gedoens was genau am 17ten takt tri tra triggert, also wegen dem <
       man_seedEyes=vec2(-0.2,0.65);
       blink = pulses(4./1., t) * pulses(4./2., t) * pulses(4./8., t);
       brotVisibilities=vec2(0.,1.);
+      speed = 0.;
     }
   }
   
@@ -449,19 +445,20 @@ vec4 mainWrap(vec2 fragCoord) {
   layerVisibilities = vec3(1., blink,
     t>4.*16.?clamp(smoothstep(0.,4.*8.,t)*sin(t/2.)*4.,0.,1.):0.);
 // layerVisibilities.z=clamp(sin(t),0.,1.);
-  //return cmix(scene0(xy+sway, t), scene1(xy, t), blink);
+  //return cmix(scene0(xy, t), scene1(xy, t), blink);
     
   if(t > 4.*17.) {
-    cam_a = smoothstep(0., 1., (t-4.*17.)/8.)*PI/4.;
+    amplitude = 1.;
   }
 
   if(t>4.*24.){ 
+    cam_a = smoothstep(0., 1., (t-4.*24.)/8.)*PI/4.;
     man_seedEyes=vec2(-0.5,0.5);
     location=locations[int(t)%NLOCATIONS];
-    brotVisibilities=vec2(one,one);
   }
   
   if(t>4.*32.) {
+    nbobs = 10.;
     pal_1_speed=1.;
     // hier halt wechsel position mandelman
     manPos=vec2(-1.4,0.5);
@@ -494,7 +491,7 @@ vec4 mainWrap(vec2 fragCoord) {
 //brotVisibilities=vec2(1.,1.); 
 
   return  max(
-    layerVisibilities.x*vec4(xxxNew_scene0(fragCoord+sway,t),1.),
+    layerVisibilities.x*vec4(xxxNew_scene0(fragCoord,t),1.),
     layerVisibilities.y*scene2Mandelbroetchen(fragCoord));
 }
 
