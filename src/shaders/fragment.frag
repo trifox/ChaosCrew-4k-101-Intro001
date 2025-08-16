@@ -406,10 +406,7 @@ void animate() {
   bang2 = easeInOutTap(fract(t/4.))
         + easeInOutTap(fract((t+2.)/4.));
 
-  // bob anzahl lassen wir einfach ansteigen
-  nbobs =(sin(t/4.)+1.)*200.+10.;
   // eye seed
-  
   man_seedEyes=   vec2(-0.35,0.);  
 
   // mouth seed
@@ -462,11 +459,10 @@ void animate() {
   if(t<4.*35.) 
     // hier halt wechsel position mandelman
     manPos=vec2(1.4,0.5);
+    
   // am ende lachendes maenneken mit shaky head
-  layerVisibilities.z=t>4.*16.?clamp(smoothstep(0.,4.*8.,t)*sin(t/2.)*4.,0.,1.):0.;
-
-  layerVisibilities.x=1.;
-  layerVisibilities.y=blink;
+  layerVisibilities = vec3(1., blink,
+    t>4.*16.?clamp(smoothstep(0.,4.*8.,t)*sin(t/2.)*4.,0.,1.):0.);
 
 // layerVisibilities.z=clamp(sin(t),0.,1.);
   //return cmix(scene0(xy+sway, t), scene1(xy, t), blink);
