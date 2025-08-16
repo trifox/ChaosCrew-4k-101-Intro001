@@ -108,7 +108,7 @@ bool f(vec2 c, vec2 z0) {
   f_z = z0;
   for(f_k = 0.; f_k < MAX_ITER; ++f_k) {
     f_z = cmul(f_z, f_z) + c;
-    if(dot(f_z,f_z) > BAILOUT)
+    if(dot(f_z, f_z) > BAILOUT)
       return false;
   }
   return true;
@@ -146,24 +146,23 @@ vec2 man_headPos;
 
 float mandelMan(vec2 uvIn)
 {
-float fragColor=0.;
-    // Normalized pixel coordinates (from 0 to 1)
-vec2 uv = rotate(uvIn,radians(90.));
-vec2 center=vec2( 0.5,-0.  );
-float scale=2.;
-// Mandelbrot 
-fragColor= mandelbrotExt(uv,man_seedEyes* .25,center+vec2(-1.3,0),scale* .4 ,180.)* .75; 
-uv+=man_headPos;
-vec2 eyePos=center+vec2(  3.150, 2.40);
-fragColor += mandelbrotExt(uv,vec2(0.),center,scale*1. ,180.);
-fragColor -= juliaExt(uv,man_seedEyes ,              center+eyePos,scale*8.,-90.) ;
-fragColor -= juliaExt(vec2(uv.x, -uv.y),man_seedEyes ,center+eyePos,scale*8.,-90.) ;
+  float fragColor=0.;
+  // Normalized pixel coordinates (from 0 to 1)
+  vec2 uv = rotate(uvIn,radians(90.));
+  vec2 center=vec2( 0.5,-0.  );
+  float scale=2.;
+  // Mandelbrot 
+  fragColor= mandelbrotExt(uv,man_seedEyes* .25,center+vec2(-1.3,0),scale* .4 ,180.)* .75; 
+  uv+=man_headPos;
+  vec2 eyePos=center+vec2(  3.150, 2.40);
+  fragColor += mandelbrotExt(uv,vec2(0.),center,scale*1. ,180.);
+  fragColor -= juliaExt(uv,man_seedEyes ,              center+eyePos,scale*8.,-90.) ;
+  fragColor -= juliaExt(vec2(uv.x, -uv.y),man_seedEyes ,center+eyePos,scale*8.,-90.) ;
 
-/// den mund, da wollen wir die schwarzen bereiche mit zaehnen also vertikalen streifen rendern
-float mund= juliaExt(uv,man_seedMouth,center+vec2(   -5.,.0),scale*8.,90.) ;
-fragColor-=mund;
-return fragColor;
-
+  /// den mund, da wollen wir die schwarzen bereiche mit zaehnen also vertikalen streifen rendern
+  float mund= juliaExt(uv,man_seedMouth,center+vec2(   -5.,.0),scale*8.,90.) ;
+  fragColor-=mund;
+  return fragColor;
 }
 //////////////////////////
 float smoothStepCounter(float t, float stepDuration, float rampFrac)
@@ -221,20 +220,19 @@ vec2 brotVisibilities=vec2(one,zero);
  // minibrote trifox
 vec4 scene2Mandelbroetchen(vec2 fragCoord )
 {
- 
-    float interval = fract(t); 
-    vec2 v = fragCoord; // to -1 +1 real,imag
-    // arg allgemeiner winkel, normalisiert dann auf 0..1 also der winkel 0..360
-    float arg=(atan( v.x,v.y)+PI)/PI2;
+  float interval = fract(t); 
+  vec2 v = fragCoord; // to -1 +1 real,imag
+  // arg allgemeiner winkel, normalisiert dann auf 0..1 also der winkel 0..360
+  float arg=(atan( v.x,v.y)+PI)/PI2;
 
-    int index=int(t)%SIXTEEN;
+  int index=int(t)%SIXTEEN;
 //    int indexAchtel=int(floor(mod(t,32.)));
 //    vec4 keyframe=getKeyFrame(t);
 
-    vec3 l = mandelbrotRender(v,location  );
+  vec3 l = mandelbrotRender(v);
 
-float vis=beatTrack_1[index]; 
-    vec3 ljulia = mandelbrotRenderJulia(v,
+  float vis=beatTrack_1[index]; 
+  vec3 ljulia = mandelbrotRenderJulia(v,
     vec4(location.xy,
          location.z*(juliastep>0.?smoothStepCounter(4.-mod(t*1.,4.), 1.,0.2):1.),
          location.w+easeInOutTap(fract(t/8.))*(PI/2.)));
@@ -242,9 +240,9 @@ float vis=beatTrack_1[index];
      vec4 result =brotVisibilities.x*vis*vec4(makePal1(l.z),1.);
           result+=brotVisibilities.y*(1.0-vis) *vec4(makePal1(ljulia.z),1.) ;
 
-    //    result.x+=beatTrack_1[index]*(1.0-interval);
-    //    result.y+=beatTrack_2[index]*(1.0-interval);
-    //    result.z+=beatTrack_4_8chtel[indexAchtel]*(1.0-interval);
+  //    result.x+=beatTrack_1[index]*(1.0-interval);
+  //    result.y+=beatTrack_2[index]*(1.0-interval);
+  //    result.z+=beatTrack_4_8chtel[indexAchtel]*(1.0-interval);
 
 /*
      if(l.z<1.0){
@@ -256,12 +254,7 @@ float vis=beatTrack_1[index];
         result.z+=tap*beatTrack_4_8chtel[indexAchtel]*0.6*sin(arg*arg*PI2 +.23);
      }}*/
 
-
-
-    return  result; 
-
-
-
+  return  result; 
 }
 float cubicIn(float t) {
   return t * t  ;
@@ -418,14 +411,14 @@ void animate() {
   // blink schaltet echt die beiden main layer x,y um, als crossfade, kann aber spaeter angepasst werden
   blink = pulses(4./1., t*4.) * pulses(4./2., t);
 
-// unkritischer code, kann genutzt werden um halt was mal kurz flashen zu lassen
-flash44Hihat=easeInOutTap(fract(t));
+  // unkritischer code, kann genutzt werden um halt was mal kurz flashen zu lassen
+  flash44Hihat=easeInOutTap(fract(t));
 
 bang2=easeInOutTap(fract(t/4.));
 bang2+=easeInOutTap(fract((t+2.)/4.));
 
-// bob anzahl lassen wir einfach ansteigen
- nbobs =(sin(t/4.)+1.)*200.+10.;
+  // bob anzahl lassen wir einfach ansteigen
+  nbobs =(sin(t/4.)+1.)*200.+10.;
   // eye seed
   
   man_seedEyes=   vec2(-0.35,0.);  
@@ -436,76 +429,74 @@ bang2+=easeInOutTap(fract((t+2.)/4.));
   man_headPos=  vec2(0.,0.);
  
 
-//  blink = 0.;
-//  blink = pulses(4./1., t) * pulses(4./2., t) * pulses(4./8., t);
+  //  blink = 0.;
+  //  blink = pulses(4./1., t) * pulses(4./2., t) * pulses(4./8., t);
   sway = vec2(cos(t*PI2/4./2.), sin(t*PI2/4./4.))*.025;
   if(t < 4.*1.)
   {
-  vignetteScale=150.*t/4.;
+    vignetteScale=150.*t/4.;
     MAX_ITER = 80.*t/4.;
     blink = 0.;
   }
   float t0;
   if(t < 4.*4.) // sec1 first half
- // naja, ok, was geht hier hab, 4mal4 sind 16 also nen voller 44tel  takt aktion
+    // naja, ok, was geht hier hab, 4mal4 sind 16 also nen voller 44tel  takt aktion
     speed = 0.;
   else if(t < 4.*8.) // sec1 second half
-  // wegen kleiner gleich haben hier wir irgendwas was nur auf dewn ersten beiden takten aktiv ist
+    // wegen kleiner gleich haben hier wir irgendwas was nur auf dewn ersten beiden takten aktiv ist
     speed = -1./2.;
   else if(t < 4.*17.) // sec2
   {
     // hier haben wir gedoens was genau am 17ten takt tri tra triggert, also wegen dem <
-  man_seedEyes=vec2(-0.2,0.65);
-  blink = pulses(8., t) * pulses(12., t);
+    man_seedEyes=vec2(-0.2,0.65);
+    blink = pulses(8., t) * pulses(12., t);
     
-  MAX_ITER=250.;
-  brotVisibilities=vec2(0.,1.);
+    MAX_ITER=250.;
+    brotVisibilities=vec2(0.,1.);
     amplitude = zero;
   }
   else if(t < 4.*24.) // sec3
- {   
-juliastep=1.;
-  brotVisibilities=vec2(1.,1.);
-  // achtung hier clampt die kamera doof, noch anpassen
+  {   
+    juliastep=1.;
+    brotVisibilities=vec2(1.,1.);
+    // achtung hier clampt die kamera doof, noch anpassen
     cam_a = sin(t*PI2/16.)*PI2/8.;
-}
+  }
   else if(t < 4.*32.) // Letzter Takt
-{
-  // ok, andernfalls halt 32ter takt hier halt gedoenst, ews ist ungefaehr die mitte, max ist 65
-  pal_1_speed=1.;
-      cam_a = PI2/8.;
-}else if(t<4.*48.){
-  // else nochmal die gute if, hier end eskalation weil hoich
-location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
-}
+  {
+    // ok, andernfalls halt 32ter takt hier halt gedoenst, ews ist ungefaehr die mitte, max ist 65
+    pal_1_speed=1.;
+    cam_a = PI2/8.;
+  } else if(t<4.*48.){
+    // else nochmal die gute if, hier end eskalation weil hoich
+    location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
+  }
 
-if(t<4*35) 
-// hier halt wechsel position mandelman
- manPos=vec2(1.4,0.5);
-// am ende lachendes maenneken mit shaky head
- layerVisibilities.z=t>4.*16.?clamp(smoothstep(0.,4.*8.,t)*sin(t/2.)*4.,0.,1.):0.;
+  if(t<4.*35.) 
+    // hier halt wechsel position mandelman
+    manPos=vec2(1.4,0.5);
+  // am ende lachendes maenneken mit shaky head
+  layerVisibilities.z=t>4.*16.?clamp(smoothstep(0.,4.*8.,t)*sin(t/2.)*4.,0.,1.):0.;
 
-
- layerVisibilities.x=1.;
- layerVisibilities.y=blink;
+  layerVisibilities.x=1.;
+  layerVisibilities.y=blink;
 
 // layerVisibilities.z=clamp(sin(t),0.,1.);
   //return cmix(scene0(xy+sway, t), scene1(xy, t), blink);
-
-if(t>4.*24.){ 
-  man_seedEyes=vec2(-0.5,0.5);
-  location=locations[int(t)%16];
-  brotVisibilities=vec2(one,one);
-}
-if(t>4.*65.)
-{
-  manPos=vec2(zero,0.5);
-  layerVisibilities=vec3(0,0,1);
-  man_headPos=vec2(sin(t*PI*2.)*0.1, zero);
-  man_seedMouth= vec2(-0.7,0.);  
-  man_seedEyes=  vec2(sin(t)*0.25-0.75,0.4);  
-}
- 
+  
+  if(t>4.*24.){ 
+    man_seedEyes=vec2(-0.5,0.5);
+    location=locations[int(t)%16];
+    brotVisibilities=vec2(one,one);
+  }
+  if(t>4.*65.)
+  {
+    manPos=vec2(zero,0.5);
+    layerVisibilities=vec3(0,0,1);
+    man_headPos=vec2(sin(t*PI2)*0.1, zero);
+    man_seedMouth= vec2(-0.7,0.);  
+    man_seedEyes=  vec2(sin(t)*0.25-0.75,0.4);  
+  }
 }
 
 vec4 mainWrap(vec2 fragCoord){
