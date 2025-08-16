@@ -273,7 +273,6 @@ vec2 lissajous(float lissa, float shift, float t) {
   return vec2(cos(t - shift*lissa), sin(t - shift));
 }
   
-float radiusRotor = 0.1; 
 float       
       cam_a = 0.,
       cam_d = 1.,
@@ -398,7 +397,6 @@ void animate() {
   // start machen wir location fix ohne anim
   location=locations[6];
   // bobs one perspektive top down view
-  cam_a = 0.; // -PI/4.;
   // blink schaltet echt die beiden main layer x,y um, als crossfade, kann aber spaeter angepasst werden
   blink = pulses(4./1., t*4.) * pulses(4./2., t);
 
@@ -441,7 +439,6 @@ void animate() {
     man_seedEyes=vec2(-0.2,0.65);
     blink = pulses(8., t) * pulses(12., t);
     
-    MAX_ITER=250.;
     brotVisibilities=vec2(0.,1.);
     amplitude = zero;
   }
@@ -513,7 +510,6 @@ vec4 mainWrap(vec2 fragCoord){
 //brotVisibilities=vec2(1.,1.); 
 vec4 dieMiniBrote=layerVisibilities.y*scene2Mandelbroetchen(fragCoord);
 
-MAX_ITER*=0.75;
 vec4 bobs=layerVisibilities.x*vec4(xxxNew_scene0(fragCoord+sway,t),1.);
 
 
