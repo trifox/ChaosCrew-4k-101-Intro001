@@ -5,7 +5,6 @@ const vec2 iResolution= vec2(1920.,1080.);
 out vec4 o;
 
 ////////////////////////////////////////////////////////////////
-
 const float PI = radians(180.);
 const float PI2= PI*2.;
 const float HALF_PI=PI/2.;
@@ -282,7 +281,7 @@ float
       lissa = 1., // 1.0 is a circle
       amplitude = .0, // of lissjous animation
       arclen = 1., // 1.0 is full circle
-      lspeed = 1./4., // of lissajous anmation
+      lspeed = 1./16., // of lissajous anmation
         
       speed = .125, // at which julia parameters are animated
       roughness = 1.5, // of julia pertubation
@@ -437,7 +436,7 @@ vec4 mainWrap(vec2 fragCoord) {
       man_seedEyes=vec2(-0.2,0.65);
       blink = pulses(4./1., t) * pulses(4./2., t) * pulses(4./8., t);
       brotVisibilities=vec2(0.,1.);
-      speed = 0.;
+      speed = smoothstep(0., 1., (t-4.*8.)/4.)/8.;
     }
   }
   
@@ -448,7 +447,7 @@ vec4 mainWrap(vec2 fragCoord) {
   //return cmix(scene0(xy, t), scene1(xy, t), blink);
     
   if(t > 4.*17.) {
-    amplitude = 1.;
+    amplitude = .5;
   }
 
   if(t>4.*24.){ 
@@ -467,6 +466,7 @@ vec4 mainWrap(vec2 fragCoord) {
   if(t>4.*40.) {
     juliastep=1.;
     brotVisibilities=vec2(1.,1.);
+    amplitude = smoothstep(0., 1., (t-4.*48.)/16.);
   }
   if(t>4.*48.) {
     location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
