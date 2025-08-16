@@ -418,8 +418,9 @@ void animate() {
   //  blink = 0.;
   //  blink = pulses(4./1., t) * pulses(4./2., t) * pulses(4./8., t);
   sway = vec2(cos(t*PI2/4./2.), sin(t*PI2/4./4.))*.025;
-  if(t < 4.*1.)
-  {
+
+  // sec1 first half
+  if(t < 4.*1.) {
     vignetteScale=150.*t/4.;
     MAX_ITER = 80.*t/4.;
     blink = 0.;
@@ -455,6 +456,7 @@ void animate() {
     // else nochmal die gute if, hier end eskalation weil hoich
     location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
   }
+  }
 
   if(t<4.*35.) 
     // hier halt wechsel position mandelman
@@ -482,7 +484,7 @@ void animate() {
   }
 }
 
-vec4 mainWrap(vec2 fragCoord){
+vec4 mainWrap(vec2 fragCoord) {
  
 
 
