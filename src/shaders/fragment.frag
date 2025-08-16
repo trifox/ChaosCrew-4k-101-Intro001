@@ -424,7 +424,7 @@ void animate() {
 // unkritischer code, kann genutzt werden um halt was mal kurz flashen zu lassen
 flash44Hihat=easeInOutTap(fract(t));
 
-
+bang2=easeInOutTap(fract(t/4.));
 bang2+=easeInOutTap(fract((t+2.)/4.));
 
 // bob anzahl lassen wir einfach ansteigen
