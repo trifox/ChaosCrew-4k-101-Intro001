@@ -449,7 +449,7 @@ bang2+=easeInOutTap(fract((t+2.)/4.));
     blink = 0.;
   }
   float t0;
-  else if(t < 4.*4.) // sec1 first half
+  if(t < 4.*4.) // sec1 first half
  // naja, ok, was geht hier hab, 4mal4 sind 16 also nen voller 44tel  takt aktion
     speed = 0.;
   else if(t < 4.*8.) // sec1 second half
