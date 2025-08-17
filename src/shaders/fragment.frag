@@ -7,23 +7,21 @@ uniform int m; // Time in sample player
 out vec4 o;
 ////////////////////////////////////////////////////////////////
 
-const float PI = radians(180);
+const float PI = acos(-1.);
 const float PI2= PI*2;
 const float HALF_PI=PI/2;
 const float BAILOUT=256;
 const int SIXTEEN=16;
 
 float MAX_ITER = 70; 
-const float bpm = 154;
-const float one=1;
-const float zero=0;
+const float bpm = 154;  
 
 float t;
 const float beatTrack_1[SIXTEEN]=float[SIXTEEN](
-    one,0,one,one,
-    one,0,one,one, 
-    one,0,one,one,
-    one,0,one,one
+    1,0,1,1,
+    1,0,1,1, 
+    1,0,1,1,
+    1,0,1,1
     );
 const float beatTrack_2[SIXTEEN]=float[SIXTEEN](
   // classic paradiddle
@@ -50,13 +48,13 @@ const float beatTrack_3[16]=float[16](
 const int NLOCATIONS=7;
 // vec4 real,imag,scale for locations  
 const vec4 locations[] = vec4[NLOCATIONS](  
-vec4(0.3604,0.61491,0.0116,2.47),
-vec4(-1.87,0.,0.0002675,0.),
-vec4(-0.52597,0.696944,0.001252,-1.41),
-vec4(-0.528326,0.704073,0.0001073,-2.04),
-vec4(-0.724136,0.361574,0.000676,-0.35),
-vec4(-0.69094,0.46535,0.00832,2.72),
-vec4(-0.7113,0.473618,6.14e-05,-3.08)
+vec4(.3604,.61491,0.0116,2.47),
+vec4(-1.87,0,0.0002675,0),
+vec4(-.52597,.696944,0.001252,-1.41),
+vec4(-.528326,.704073,0.0001073,-2.04),
+vec4(-.724136,.361574,0.000676,-.35),
+vec4(-.69094,.46535,0.00832,2.72),
+vec4(-.7113,.473618,6.14e-05,-3.08)
 );
 vec4 location = locations[4];
 
@@ -78,7 +76,7 @@ vec4 location = locations[4];
   // )
   
 float easeInOutTap(float t) {
-    return smoothstep(zero, 0.01, t) * (one- smoothstep(0.01, 0.25, t));
+    return smoothstep(0, 0.01, t) * (1- smoothstep(0.01, 0.25, t));
 } 
 vec2 cmul(vec2 a, vec2 b) { 
   return vec2(a.x*b.x-a.y*b.y,  a.x*b.y+a.y*b.x);
@@ -88,9 +86,9 @@ vec2 rotor(float a) {
 }
 
 vec3 hsv(float h, float s, float v) {
-  vec4 K = vec4(one, 2.0 / 3.0, one / 3.0, 3.0);
-  vec3 p = abs(fract(vec3(h,h,h) + K.xyz) * 6.0 - K.www);
-  return v * mix(K.xxx, clamp(p - K.xxx, 0.0, one), s);
+  vec4 K = vec4(1, 2 / 3, 1 / 3, 3);
+  vec3 p = abs(fract(vec3(h,h,h) + K.xyz) * 6 - K.www);
+  return v * mix(K.xxx, clamp(p - K.xxx, 0, 1), s);
 }
 vec3 cmix(vec3 a, vec3 b, float t) {
   return sqrt(mix(a*a, b*b, t));
@@ -110,7 +108,7 @@ bool f(vec2 c, vec2 z0) {
 
 vec3 mandelbrotCore(vec2 c, vec2 z0) {
   f(c, z0);
-  return vec3(f_z.xy,  f_k/MAX_ITER*4. );
+  return vec3(f_z.xy,  f_k/MAX_ITER*4 );
 }
 vec2 project(vec2 uv,vec2 center, float scale, float angle ){
   return cmul(center+uv*scale,rotor(radians(angle)));
@@ -128,27 +126,27 @@ vec3 mandelbrotRenderJulia( vec2 c,vec4 loc){
   return mandelbrotCore(loc.xy, cmul(c,rotor(loc.w)) * loc.z + loc.xy);
 }
 
-vec2 man_seedEyes=vec2(0.);
+vec2 man_seedEyes=vec2(0);
 vec2 man_seedMouth;
 vec2 man_headPos;
 
 float mandelMan(vec2 uvIn)
 {
-  MAX_ITER=250.;
+  MAX_ITER=250;
   float fragColor=0.;
   // Normalized pixel coordinates (from 0 to 1)
-  vec2 uv = cmul(uvIn,rotor(radians(90.)));
-  vec2 center=vec2( 0.5,zero  );
+  vec2 uv = cmul(uvIn,rotor(radians(9)));
+  vec2 center=vec2( .5,0  );
   float scale=2.;
-  vec2 eyePos=center+vec2(  3.150, 2.40);
+  vec2 eyePos=center+vec2(  3.15, 2.4);
   // Mandelbrot 
-  fragColor = mandelbrotExt(uv,man_seedEyes* .25,center+vec2(-1.3,0),scale* .4 ,180.)* .75; 
+  fragColor = mandelbrotExt(uv,man_seedEyes* .25,center+vec2(-1.3,0),scale* .4 ,180)* .75; 
   uv+=man_headPos;
-  fragColor += mandelbrotExt(uv,vec2(0.),center,scale*1. ,180.)
-            -  juliaExt(uv,man_seedEyes ,               center+eyePos,scale*8.,-90.)
-            -  juliaExt(vec2(uv.x, -uv.y),man_seedEyes ,center+eyePos,scale*8.,-90.)
+  fragColor += mandelbrotExt(uv,vec2(0.),center,scale*1. ,180)
+            -  juliaExt(uv,man_seedEyes ,               center+eyePos,scale*8,-90)
+            -  juliaExt(vec2(uv.x, -uv.y),man_seedEyes ,center+eyePos,scale*8,-90)
             /// den mund, da wollen wir die schwarzen bereiche mit zaehnen also vertikalen streifen rendern
-            -  juliaExt(uv,man_seedMouth,center+vec2(   -5.,.0),scale*8.,90.);
+            -  juliaExt(uv,man_seedMouth,center+vec2(   -5,0),scale*8,90);
   return fragColor;
 }
 //////////////////////////
@@ -165,11 +163,11 @@ float smoothStepCounter(float t, float stepDuration, float rampFrac)
 
     if (phase < rampFrac) {
         // Im Ramp-Bereich → sanft hochziehen
-        ramp = smoothstep(zero, rampFrac, phase);
+        ramp = smoothstep(0, rampFrac, phase);
         return base + ramp;
     } else {
         // Plateau → konstanter Wert
-        return base + 1.0;
+        return base + 1;
     }
 }
 // A simple anf really efficient way to create color variation.
@@ -189,7 +187,7 @@ vec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d )
 
 
 vec3 makePal2(float i){
-return vec3(0.2549,    .8824,0.4118 )*i;
+return vec3(.2549,    .8824,.4118 )*i;
 }
 float pal_1_speed=0.;
 vec3 makePal1(float i){
@@ -204,11 +202,11 @@ vec3 makePal1(float i){
 
 float juliastep=0.;
 
-vec2 brotVisibilities=vec2(one,zero);
+vec2 brotVisibilities=vec2(1,0);
  // minibrote trifox
 vec4 scene2Mandelbroetchen(vec2 fragCoord )
 {
-  MAX_ITER=250.;
+  MAX_ITER=250;
   int index=int(t)%SIXTEEN;
   float interval = fract(t);
   float vis=beatTrack_1[index]; 
@@ -221,7 +219,7 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord )
   vec3 l = mandelbrotRender(v);
   vec3 ljulia = mandelbrotRenderJulia(v,
     vec4(location.xy,
-         location.z*(juliastep>0.?smoothStepCounter(4.-mod(t*one,4), 1,0.2):1),
+         location.z*(juliastep>0.?smoothStepCounter(4.-mod(t*1,4), 1,0.2):1),
          location.w+easeInOutTap(fract(t/8.))*(PI/2.)));
 
   vec4 result = brotVisibilities.x*vis*vec4(makePal1(l.z),1)
@@ -249,7 +247,7 @@ float cubicIn(float t) {
 float cubicInOut(float t) {
   return t < 5
     ? 4 * t * t * t
-    : .5 * pow(2 * t - 2, 3) + one;
+    : .5 * pow(2 * t - 2, 3) + 1;
 }
 float backIn(float t) {
   return pow(t, 3) - t * sin(t * PI);
@@ -316,7 +314,7 @@ vec3 xxxNew_scene0(vec2 xy, float t) {
     offset = vec3(amplitude * lissajous(lissa, PI2 * i/nbobs * arclen, t*lspeed*PI2),
                   -column_height * (i/nbobs) + column_shift);
 
-    ray = vec3(xy, 1.);
+    ray = vec3(xy, 1);
     ray.yz = cmul(cr, ray.yz);
     ray = ray * (cam_pos.z - offset.z)/ray.z - cam_pos;
     
@@ -366,9 +364,9 @@ float flash44MainKick;
 float flash44Hihat;
 vec2 manPos=vec2(1.4,0.5);
 
-vec4 result=vec4(0.);  
+vec4 result=vec4(0);  
 // die sichtbarkeiten der layer, hier haben wir 3 layer daher vec, sind alpha blends quasi
-vec3 layerVisibilities=vec3(zero);
+vec3 layerVisibilities=vec3(0);
 
 float blink;
 
@@ -395,22 +393,22 @@ vec4 mainWrap(vec2 fragCoord) {
   // animate()
   // void animate() {
 
-  // bobs one perspektive top down view
+  // bobs 1 perspektive top down view
   // blink schaltet echt die beiden main layer x,y um, als crossfade, kann aber spaeter angepasst werden
 
   // unkritischer code, kann genutzt werden um halt was mal kurz flashen zu lassen
   flash44Hihat=easeInOutTap(fract(t));
 
-  bang2 = easeInOutTap(fract(t/4.))
-        + easeInOutTap(fract((t+2.)/4.));
+  bang2 = easeInOutTap(fract(t/4))
+        + easeInOutTap(fract((t+2)/4));
 
   // eye seed
-  man_seedEyes=   vec2(-0.35,zero);  
+  man_seedEyes=   vec2(-0.35,0);  
 
   // mouth seed
   man_seedMouth= vec2(sin(t*PI*0.5),cos(t*PI))*0.3;  
   // head pos
-  man_headPos=  vec2(zero);
+  man_headPos=  vec2(0);
 
   blink = pulses(1/1, t) * pulses(4/2, t);
   roughness = sin(t)*.2+1.1;
@@ -469,9 +467,9 @@ vec4 mainWrap(vec2 fragCoord) {
     location.w=radians(smoothStepCounter(t*2,0.5,0.2));
   
   if(t>4*65) {
-    manPos=vec2(zero,0.5);
+    manPos=vec2(0,0.5);
     layerVisibilities=vec3(0,0,1);
-    man_headPos=vec2(sin(t*PI2)*0.1, zero);
+    man_headPos=vec2(sin(t*PI2)*0.1, 0);
     man_seedMouth= vec2(-0.7,0);  
     man_seedEyes=  vec2(sin(t)*0.25-0.75,0.4);  
   }
@@ -520,7 +518,7 @@ void main() {
 // debug offset
 //t-=0.5;
   vec2 uv = gl_FragCoord.xy / iResolution.xy;
-  vec2 uv2 = uv*( one - uv.yx);   //vec2(1.0)- uv.yx; -> 1.-u.yx; Thanks FabriceNeyret !
+  vec2 uv2 = uv*( 1 - uv.yx);   //vec2(1.0)- uv.yx; -> 1.-u.yx; Thanks FabriceNeyret !
     float vig = uv2.x*uv2.y * vignetteScale; // multiply with sth for intensity
     vig = pow(vig,vignettePow); // change pow for modifying the extend of the  vignette
 

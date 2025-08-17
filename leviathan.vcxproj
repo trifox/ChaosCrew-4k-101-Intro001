@@ -192,7 +192,7 @@
     <PreBuildEvent>
       <Command>shader_minifier.exe -v -o src\shaders\fragment.inl src\shaders\fragment.frag
 </Command>
-      <Message>Minify user-supplied shader files.</Message>
+      <Message>Minify user-supplied shader files. mess1</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Editor|Win32'">
@@ -268,7 +268,7 @@
     <PreBuildEvent>
       <Command>shader_minifier.exe -v -o src\shaders\fragment.inl src\shaders\fragment.frag
        </Command>
-      <Message>Minify user-supplied shader files.</Message>
+      <Message>Minify user-supplied shader files. mess2</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -359,7 +359,7 @@
     <PreBuildEvent>
       <Command>shader_minifier.exe -v -o src\shaders\fragment.inl src\shaders\fragment.frag
  </Command>
-      <Message>Minify user-supplied shader files.</Message>
+      <Message>Minify user-supplied shader files. mess3</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Heavy Release|Win32'">
@@ -452,7 +452,7 @@
     </ProjectReference>
     <PreBuildEvent>
       <Command>shader_minifier.exe -v -o src\shaders\fragment.inl src\shaders\fragment.frag</Command>
-      <Message>Minify user-supplied shader files.</Message>
+      <Message>Minify user-supplied shader files. mess4</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Snapshot|Win32'">
@@ -552,7 +552,7 @@
     <PreBuildEvent>
       <Command>shader_minifier.exe -v -o src\shaders\fragment.inl src\shaders\fragment.frag
  </Command>
-      <Message>Minify user-supplied shader files.</Message>
+      <Message>Minify user-supplied shader files. mess 5</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

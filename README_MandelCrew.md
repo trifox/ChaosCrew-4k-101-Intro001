@@ -53,10 +53,11 @@ Pattern = 4 Takt
 
 - use float without dot notation, casting works in glsl mode we use here
 
-   1.  = 1 or one
-   1.0 = 1 or one
-   0.0 = 0 or zero
-   .0  = 0 or zero
-   0.  = 0 or zero
+   1.  = 1 
+   1.0 = 1 
+   0.0 = 0 
+   .0  = 0 
+   0.  = 0 
+
 
 
