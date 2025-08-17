@@ -1,48 +1,49 @@
 #version 130
+const vec2 iResolution=vec2(1920,1080);
+#define gl_FragCoord _gl_FragCoord 
+vec2 _gl_FragCoord;
 
-uniform int m; // Time in sample player
-const vec2 iResolution= vec2(1920.,1080.);
+uniform int m; // Time in sample player 
 out vec4 o;
-
 ////////////////////////////////////////////////////////////////
 
-const float PI = radians(180.);
-const float PI2= PI*2.;
-const float HALF_PI=PI/2.;
-const float BAILOUT=256.;
+const float PI = radians(180);
+const float PI2= PI*2;
+const float HALF_PI=PI/2;
+const float BAILOUT=256;
 const int SIXTEEN=16;
 
-float MAX_ITER = 70.; 
-const float bpm = 154.0;
-const float one=1.;
-const float zero=0.;
+float MAX_ITER = 70; 
+const float bpm = 154;
+const float one=1;
+const float zero=0;
 
 float t;
 const float beatTrack_1[SIXTEEN]=float[SIXTEEN](
-    1.,0.,1.,1.,
-    1.,0.,1.,1., 
-    1.,0.,1.,1.,
-    1.,0.,1.,1.
+    one,0,one,one,
+    one,0,one,one, 
+    one,0,one,one,
+    one,0,one,one
     );
 const float beatTrack_2[SIXTEEN]=float[SIXTEEN](
   // classic paradiddle
-    0.,1.,0.,0.,
-    1.,0.,1.,1., 
-    0.,1.,0.,0.,
-    1.,0.,1.,1.
+    0,1,0,0,
+    1,0,1,1, 
+    0,1,0,0,
+    1,0,1,1
     ); 
 
 const float beatTrack_4Achtel[8]=float[8](
   // achtung wird als 8tel takt genutzt!
-    0.,0.,0.,1.,   0.,1.,1.,1.
+    0,0,0,1,0,1,1,1
     ); 
 
 // cowbell
 const float beatTrack_3[16]=float[16](
-    0.,0.,0.,0.,
-    0.,0.,0.,0., 
-    0.,0.,0.,0.,
-    0.,0.,0.,0.
+    0,0,0,0,
+    0,0,0,0, 
+    0,0,0,0,
+    0,0,0,0
     ); 
 
 
@@ -77,7 +78,7 @@ vec4 location = locations[4];
   // )
   
 float easeInOutTap(float t) {
-    return smoothstep(0.0, 0.01, t) * (1.0 - smoothstep(0.01, 0.25, t));
+    return smoothstep(zero, 0.01, t) * (one- smoothstep(0.01, 0.25, t));
 } 
 vec2 cmul(vec2 a, vec2 b) { 
   return vec2(a.x*b.x-a.y*b.y,  a.x*b.y+a.y*b.x);
@@ -87,9 +88,9 @@ vec2 rotor(float a) {
 }
 
 vec3 hsv(float h, float s, float v) {
-  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+  vec4 K = vec4(one, 2.0 / 3.0, one / 3.0, 3.0);
   vec3 p = abs(fract(vec3(h,h,h) + K.xyz) * 6.0 - K.www);
-  return v * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), s);
+  return v * mix(K.xxx, clamp(p - K.xxx, 0.0, one), s);
 }
 vec3 cmix(vec3 a, vec3 b, float t) {
   return sqrt(mix(a*a, b*b, t));
@@ -137,7 +138,7 @@ float mandelMan(vec2 uvIn)
   float fragColor=0.;
   // Normalized pixel coordinates (from 0 to 1)
   vec2 uv = cmul(uvIn,rotor(radians(90.)));
-  vec2 center=vec2( 0.5,-0.  );
+  vec2 center=vec2( 0.5,zero  );
   float scale=2.;
   vec2 eyePos=center+vec2(  3.150, 2.40);
   // Mandelbrot 
@@ -164,7 +165,7 @@ float smoothStepCounter(float t, float stepDuration, float rampFrac)
 
     if (phase < rampFrac) {
         // Im Ramp-Bereich → sanft hochziehen
-        ramp = smoothstep(0.0, rampFrac, phase);
+        ramp = smoothstep(zero, rampFrac, phase);
         return base + ramp;
     } else {
         // Plateau → konstanter Wert
@@ -195,8 +196,8 @@ vec3 makePal1(float i){
   // return pal(i, vec3(0.3,0.2,0.5),vec3(0.6,0.2,0.8),vec3(2.0,1.0,0.0),vec3(0.5,2.20,0.25) );
  return pal(i,
     hsv(t,0.6,.8),  // Grundton: warm-golden
-    vec3(.25, 0.35, 0.45),   // Amplitude: Gold -> Orange -> Rot
-    vec3(1.0, 2.0,  1.0), // Hohe Frequenz: pulsierende Energie
+    vec3(.25, .35, .45),   // Amplitude: Gold -> Orange -> Rot
+    vec3(1, 2,  1), // Hohe Frequenz: pulsierende Energie
     vec3(t*2.*pal_1_speed, t/4.*pal_1_speed, t*8.*pal_1_speed)   // Phase für „rollende“ Farbwellen
 );
 }
@@ -220,11 +221,11 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord )
   vec3 l = mandelbrotRender(v);
   vec3 ljulia = mandelbrotRenderJulia(v,
     vec4(location.xy,
-         location.z*(juliastep>0.?smoothStepCounter(4.-mod(t*1.,4.), 1.,0.2):1.),
+         location.z*(juliastep>0.?smoothStepCounter(4.-mod(t*one,4), 1,0.2):1),
          location.w+easeInOutTap(fract(t/8.))*(PI/2.)));
 
-  vec4 result = brotVisibilities.x*vis*vec4(makePal1(l.z),1.)
-              + brotVisibilities.y*(1.0-vis) *vec4(makePal1(ljulia.z),1.) ;
+  vec4 result = brotVisibilities.x*vis*vec4(makePal1(l.z),1)
+              + brotVisibilities.y*(1-vis) *vec4(makePal1(ljulia.z),1) ;
 
   //    result.x+=beatTrack_1[index]*(1.0-interval);
   //    result.y+=beatTrack_2[index]*(1.0-interval);
@@ -246,12 +247,12 @@ float cubicIn(float t) {
   return t * t  ;
 } 
 float cubicInOut(float t) {
-  return t < 0.5
-    ? 4.0 * t * t * t
-    : 0.5 * pow(2.0 * t - 2.0, 3.0) + 1.0;
+  return t < 5
+    ? 4 * t * t * t
+    : .5 * pow(2 * t - 2, 3) + one;
 }
 float backIn(float t) {
-  return pow(t, 3.0) - t * sin(t * PI);
+  return pow(t, 3) - t * sin(t * PI);
 }
 float flashBang(float time, float[16] arr){
   return easeInOutTap(fract(time)) * arr[ int(time)%16];
@@ -269,28 +270,28 @@ vec2 lissajous(float lissa, float shift, float t) {
 }
 
 float       
-      cam_a = 0.,
-      cam_d = 1.,
+      cam_a = 0,
+      cam_d = 1,
         
-      nbobs = 100.,
+      nbobs = 100,
   
-      lissa = 1., // 1.0 is a circle
-      amplitude = .0, // of lissjous animation
-      arclen = 1., // 1.0 is full circle
-      lspeed = 1./16., // of lissajous anmation
+      lissa = 1, // 1.0 is a circle
+      amplitude = 0, // of lissjous animation
+      arclen = 1, // 1.0 is full circle
+      lspeed = 1/16, // of lissajous anmation
         
       speed = .125, // at which julia parameters are animated
       roughness = 1.5, // of julia pertubation
-      cangle = 0., // angle pertubation changes from head to tail
+      cangle = 0, // angle pertubation changes from head to tail
       
-      column_height = 1.,
-      column_shift = -.1,
+      column_height = 1,
+      column_shift = -1,
         
       // julia view
-      scale = 1.,
-      angle = 0.;
+      scale = 1,
+      angle = 0;
         
-vec2 center = vec2(0.),
+vec2 center = vec2(0),
      r,
      c, p,
      cr, pertubation, uv;
@@ -302,13 +303,13 @@ vec3 col,
      
 vec3 xxxNew_scene0(vec2 xy, float t) {
   r = location.z/scale * rotor(angle);
-  col = vec3(0.);
+  col = vec3(0);
 
   cr = rotor(-cam_a);
-  cam_pos = vec3(0., 0., cam_d);
+  cam_pos = vec3(0, 0, cam_d);
   cam_pos.yz = cmul(cr, cam_pos.yz);
   
-  for(float i = 0.; i < nbobs; ++i) {
+  for(float i = 0; i < nbobs; ++i) {
     pertubation = .07*roughness*rotor((t*speed + i/nbobs*cangle)*PI2)*location.z/scale;
     center = c = location.xy+pertubation;
   
@@ -320,17 +321,17 @@ vec3 xxxNew_scene0(vec2 xy, float t) {
     ray = ray * (cam_pos.z - offset.z)/ray.z - cam_pos;
     
     uv = cmul(ray.xy - offset.xy, r) - center + pertubation;
-    float z = 1.-length(ray);
+    float z = 1-length(ray);
 
     if(f(c, uv))
       // inside
-      if(i == 0.)
-        return makePal1(0.);
+      if(i == 0)
+        return makePal1(0);
       else
-        return hsv(0., 0., (1.-i/nbobs)*z*1.)+col/nbobs;
+        return hsv(0, 0, (1-i/nbobs)*z*1)+col/nbobs;
         
     // outside
-    col += hsv(.6, .5, pow(f_k/MAX_ITER, 2.));
+    col += hsv(.6, .5, pow(f_k/MAX_ITER, 2));
   }
   return col/nbobs;
 }
@@ -350,16 +351,16 @@ float vignetteScale=116.,vignettePow=.25;
 ///////////////////////////////////////////////////
 float bang2=0.;
 float cos1(float x) {
-  return -cos(x*PI2)/2.+.5;
+  return -cos(x*PI2)/2+.5;
 }
 float pulses(float w, float t) {
-  return sin(t/w*PI2)>0. ? 1. : 0.;
+  return sin(t/w*PI2)>0. ? 1 : 0;
 }
 
 // 4 44tel slide
 const float ding1[8]=float[8](
   // achtung wird als 8tel takt genutzt!
-    1.,0.,1.,0.,   0.,0.,0.,0.
+    1,0,1,0,   0,0,0,0
     ); 
 float flash44MainKick;
 float flash44Hihat;
@@ -367,7 +368,7 @@ vec2 manPos=vec2(1.4,0.5);
 
 vec4 result=vec4(0.);  
 // die sichtbarkeiten der layer, hier haben wir 3 layer daher vec, sind alpha blends quasi
-vec3 layerVisibilities=vec3(0.);
+vec3 layerVisibilities=vec3(zero);
 
 float blink;
 
@@ -404,151 +405,74 @@ vec4 mainWrap(vec2 fragCoord) {
         + easeInOutTap(fract((t+2.)/4.));
 
   // eye seed
-  man_seedEyes=   vec2(-0.35,0.);  
+  man_seedEyes=   vec2(-0.35,zero);  
 
   // mouth seed
   man_seedMouth= vec2(sin(t*PI*0.5),cos(t*PI))*0.3;  
   // head pos
-  man_headPos=  vec2(0.,0.);
+  man_headPos=  vec2(zero);
 
-  blink = pulses(1./1., t) * pulses(4./2., t);
+  blink = pulses(1/1, t) * pulses(4/2, t);
   roughness = sin(t)*.2+1.1;
 
   // sec 1
   // short intro
-  if(t < 4.*1.) {
-    vignetteScale=150.*t/4.;
-    MAX_ITER *= t/4.;
-    blink = 0.;
+  if(t < 4*1) {
+    vignetteScale=150*t/4;
+    MAX_ITER *= t/4;
+    blink = 0;
   }
-  float t0;
-  if(t < 4.*4.) // sec1 first half
- // naja, ok, was geht hier hab, 4mal4 sind 16 also nen voller 44tel  takt aktion
-    speed = 0.;
-  else if(t < 4.*8.) // sec1 second half
-  // wegen kleiner gleich haben hier wir irgendwas was nur auf dewn ersten beiden takten aktiv ist
-    speed = -1./2.;
-  else if(t < 4.*17.) // sec2
-  {
-    // hier haben wir gedoens was genau am 17ten takt tri tra triggert, also wegen dem <
-  man_seedEyes=vec2(-0.2,0.65);
-  blink = pulses(8., t) * pulses(12., t);
-    
-  MAX_ITER=250.;
-  brotVisibilities=vec2(0.,1.);
-    amplitude = zero;
-  }
-  else if(t < 4.*24.) // sec3
- {   
-juliastep=1.;
-  brotVisibilities=vec2(1.,1.);
-  // achtung hier clampt die kamera doof, noch anpassen
-    cam_a = sin(t*PI2/16.)*PI2/8.;
-}
-  else if(t < 4.*32.) // Letzter Takt
-{
-  // ok, andernfalls halt 32ter takt hier halt gedoenst, ews ist ungefaehr die mitte, max ist 65
-  pal_1_speed=1.;
-      cam_a = PI2/8.;
-}else if(t<4.*48.){
-  // else nochmal die gute if, hier end eskalation weil hoich
-location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
-}
-
-if(t<4*35) 
-// hier halt wechsel position mandelman
- manPos=vec2(1.4,0.5);
-// am ende lachendes maenneken mit shaky head
- layerVisibilities.z=t>4.*16.?clamp(smoothstep(0.,4.*8.,t)*sin(t/2.)*4.,0.,1.):0.;
-
-
- layerVisibilities.x=1.;
- layerVisibilities.y=blink;
-
-// layerVisibilities.z=clamp(sin(t),0.,1.);
-  //return cmix(scene0(xy+sway, t), scene1(xy, t), blink);
-  // achtung; ihier faengt >= bereich an, also sachen die ab dann leben
-if(t>4.*24.){ 
-  man_seedEyes=vec2(-0.5,0.5);
-  location=locations[int(t)%16];
-  brotVisibilities=vec2(one,one);
-}
-if(t>4.*65.)
-{ 
-  manPos=vec2(zero,0.5);
-  layerVisibilities=vec3(0,0,1);
-  man_headPos=vec2(sin(t*PI*2.)*0.1, zero);
-  man_seedMouth= vec2(-0.7,0.);  
-  man_seedEyes=  vec2(sin(t*2.)*0.25-0.65,0.4);  
-}
- 
-}
-
-vec4 mainWrap(vec2 fragCoord){
- 
-
-
-/// achtung hier die methode direkt zu returnen
-// unten werden aber alle 4 auch aufgerufen, man sollte also 
-// hier die params fuer unten festlegen
-
- 
-    
-//    column_height=(sin(t*30.)/2.+.5)*1.;
-// ... grundgeruest, nach intro faengt spring und locationwechsel an
-
-  animate();
   
   // sec1 second half
 //  if(t > 4.*4.)
   
   // sec2
-  if(t > 4.*8.) {
-    cangle = smoothstep(0., 1., (t-4.*8.)/8.);
-    if(t < 4.*17.) {
+  if(t > 4*8) {
+    cangle = smoothstep(0, 1, (t-4*8)/8);
+    if(t < 4*17) {
       // hier haben wir gedoens was genau am 17ten takt tri tra triggert, also wegen dem <
       man_seedEyes=vec2(-0.2,0.65);
-      blink = pulses(4./1., t) * pulses(4./2., t) * pulses(4./8., t);
+      blink = pulses(4/1, t) * pulses(4/2, t) * pulses(4/8, t);
       brotVisibilities=vec2(0.,1.);
-      speed = smoothstep(0., 1., (t-4.*8.)/4.)/8.;
+      speed = smoothstep(0, 1, (t-4*8)/4)/8;
     }
   }
   
   // am ende lachendes maenneken mit shaky head
-  layerVisibilities = vec3(1., blink,
-    t>4.*16.?clamp(smoothstep(0.,4.*8.,t)*sin(t/2.)*4.,0.,1.):0.);
+  layerVisibilities = vec3(1, blink,
+    t>4*16?clamp(smoothstep(0,4*8,t)*sin(t/2)*4,0,1):0);
 // layerVisibilities.z=clamp(sin(t),0.,1.);
   //return cmix(scene0(xy, t), scene1(xy, t), blink);
     
-  if(t > 4.*17.)
+  if(t > 4*17)
     amplitude = .5;
 
-  if(t>4.*24.){ 
-    cam_a = smoothstep(0., 1., (t-4.*24.)/8.)*PI/4.;
+  if(t>4*24){ 
+    cam_a = smoothstep(0, 1, (t-4*24)/8)*PI/4;
     man_seedEyes=vec2(-0.5,0.5);
     location=locations[int(t)%NLOCATIONS];
   }
   
-  if(t>4.*32.) {
-    nbobs = 10.;
-    pal_1_speed<=1.;
+  if(t>4*32) {
+    nbobs = 10;
+    pal_1_speed<=1;
     // hier halt wechsel position mandelman
     manPos=vec2(-1.4,0.5);
   }
 
-  if(t>4.*40.) {
-    juliastep=1.;
-    brotVisibilities=vec2(1.,1.);
-    amplitude = smoothstep(0., 1., (t-4.*48.)/16.);
+  if(t>4*40) {
+    juliastep=1;
+    brotVisibilities=vec2(1,1);
+    amplitude = smoothstep(0, 1, (t-4*48)/16);
   }
-  if(t>4.*48.)
-    location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
+  if(t>4*48)
+    location.w=radians(smoothStepCounter(t*2,0.5,0.2));
   
-  if(t>4.*65.) {
+  if(t>4*65) {
     manPos=vec2(zero,0.5);
     layerVisibilities=vec3(0,0,1);
     man_headPos=vec2(sin(t*PI2)*0.1, zero);
-    man_seedMouth= vec2(-0.7,0.);  
+    man_seedMouth= vec2(-0.7,0);  
     man_seedEyes=  vec2(sin(t)*0.25-0.75,0.4);  
   }
 
@@ -561,7 +485,7 @@ vec4 mainWrap(vec2 fragCoord){
 //brotVisibilities=vec2(1.,1.); 
 
   return  max(
-    layerVisibilities.x*vec4(xxxNew_scene0(fragCoord,t),1.),
+    layerVisibilities.x*vec4(xxxNew_scene0(fragCoord,t),1),
     layerVisibilities.y*scene2Mandelbroetchen(fragCoord));
 }
 
@@ -574,36 +498,45 @@ vec4 mainWrap(vec2 fragCoord){
 // in glsl this is handled similarly but using that gl_FragColor instead, having the mainWrap() method to be used in html editor
 float vignette(vec2 uv){
    
-    return pow(uv.x*uv.y * 15.0, 0.25); // change pow for modifying the extend of the  vignette
+    return pow(uv.x*uv.y * 15, 0.25); // change pow for modifying the extend of the  vignette
 
-}
+} 
+
+
+
+//EOE/////////////////////////////////////////////////////////////////////////////////////////////////////// 
+//
+// This is c++ call wrap header, ommit this when editing it in the editor
+//
+// Reasoning:
+// out declarations toplevel are not really useful, in c++ world it is the declared output of the shader
+// in glsl this is handled similarly but using that gl_FragColor instead, having the mainWrap() method to be used in html editor
+
 void main() {
   // t is timed to beat
-  t = float(m) / 44100.0 / 60. * bpm;
+  t = float(m) / 44100 / 60 * bpm;
 
 
 // debug offset
 //t-=0.5;
   vec2 uv = gl_FragCoord.xy / iResolution.xy;
-  vec2 uv2 = uv*( 1.0 - uv.yx);   //vec2(1.0)- uv.yx; -> 1.-u.yx; Thanks FabriceNeyret !
+  vec2 uv2 = uv*( one - uv.yx);   //vec2(1.0)- uv.yx; -> 1.-u.yx; Thanks FabriceNeyret !
     float vig = uv2.x*uv2.y * vignetteScale; // multiply with sth for intensity
     vig = pow(vig,vignettePow); // change pow for modifying the extend of the  vignette
 
-  vec4 rz = mainWrap(uv*2.0-1.0);
-vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2.0-1.0)*2.5+manPos)),1.);   
+  vec4 rz = mainWrap(uv*2-1);
+vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2-1)*2.5+manPos)),1);   
 
   o=rz*vig;
   o=max(o,mandelTriklops);
  
 
- 
+ o=vec4(1,0,0,1);
 /*
 if(uv.y>0.2 && uv.x<t/256 ) {
   o=vec4(0,1.,0.,1.);
 }
-*/
-  return;
-
+*/ 
 /** Anti Alias 
   
   for (float i=0.; i<4.; i++) 

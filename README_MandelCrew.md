@@ -47,3 +47,16 @@ Pattern = 4 Takt
 20 bis 32 kommt lange sequence also 2 zusammen
 32 bis 50 lange sequence
 50 bis 52 dann outtro
+
+
+## minimize tips
+
+- use float without dot notation, casting works in glsl mode we use here
+
+   1.  = 1 or one
+   1.0 = 1 or one
+   0.0 = 0 or zero
+   .0  = 0 or zero
+   0.  = 0 or zero
+
+
