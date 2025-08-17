@@ -520,9 +520,8 @@ vec4 mainWrap(vec2 fragCoord){
 // layerVisibilities.z=clamp(sin(t),0.,1.);
   //return cmix(scene0(xy, t), scene1(xy, t), blink);
     
-  if(t > 4.*17.) {
+  if(t > 4.*17.)
     amplitude = .5;
-  }
 
   if(t>4.*24.){ 
     cam_a = smoothstep(0., 1., (t-4.*24.)/8.)*PI/4.;
@@ -532,7 +531,7 @@ vec4 mainWrap(vec2 fragCoord){
   
   if(t>4.*32.) {
     nbobs = 10.;
-    pal_1_speed=1.;
+    pal_1_speed<=1.;
     // hier halt wechsel position mandelman
     manPos=vec2(-1.4,0.5);
   }
@@ -542,13 +541,10 @@ vec4 mainWrap(vec2 fragCoord){
     brotVisibilities=vec2(1.,1.);
     amplitude = smoothstep(0., 1., (t-4.*48.)/16.);
   }
-  if(t>4.*48.) {
+  if(t>4.*48.)
     location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
-  }
-  if(t>4.*56.)
   
-  if(t>4.*65.)
-  {
+  if(t>4.*65.) {
     manPos=vec2(zero,0.5);
     layerVisibilities=vec3(0,0,1);
     man_headPos=vec2(sin(t*PI2)*0.1, zero);
