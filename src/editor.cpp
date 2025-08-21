@@ -96,7 +96,7 @@ void Editor::updateShaders(int* mainShaderPID, int* postShaderPID, bool force_up
 			// use for fragment editing 
 			int newPID = reloadShaderSource("../src/shaders/fragment.frag");
 			// use for minimized debugging 
-			/// int newPID = reloadShaderSource("../src/shaders/fragment_develop_minimized.frag");
+			// int newPID = reloadShaderSource("../src/shaders/fragment_develop_minimized.frag");
 			if (newPID > 0)
 				*mainShaderPID = newPID;
 
