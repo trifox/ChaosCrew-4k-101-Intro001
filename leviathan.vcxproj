@@ -103,7 +103,7 @@
     <GenerateManifest>
     </GenerateManifest>
     <ExecutablePath>$(SolutionDir);$(ExecutablePath)</ExecutablePath>
-    <TargetName>mandelbrötchen-0001-release</TargetName>
+    <TargetName>mandelbrötchen-0002-release</TargetName>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Heavy Release|Win32'">
@@ -114,7 +114,7 @@
     <GenerateManifest>
     </GenerateManifest>
     <ExecutablePath>$(SolutionDir);$(ExecutablePath)</ExecutablePath>
-    <TargetName>mandelbrötchen-0001-release</TargetName>
+    <TargetName>mandelbrötchen-0002-release</TargetName>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
   </PropertyGroup>
@@ -324,7 +324,7 @@
     <Link>
       <AdditionalOptions>/CRINKLER  /RANGE:opengl32 /HASHTRIES:300 /COMPMODE:SLOW /ORDERTRIES:9000 /REPORT:out.html /PROGRESSGUI /HASHSIZE:1000 /UNSAFEIMPORT /UNALIGNCODE /SATURATE /NOINITIALIZERS /TRANSFORM:CALLS /TRUNCATEFLOATS:32 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>opengl32.lib;winmm.lib;src/4klang/4klang.obj;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>out\mandelbrötchen-0001-release.exe</OutputFile>
+      <OutputFile>out\mandelbrötchen-0002-release.exe</OutputFile>
       <SuppressStartupBanner>
       </SuppressStartupBanner>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
@@ -416,7 +416,7 @@
     <Link>
       <AdditionalOptions>/CRINKLER  /RANGE:opengl32 /HASHTRIES:1000 /COMPMODE:VERYSLOW /ORDERTRIES:30000 /REPORT:out.html /PROGRESSGUI /HASHSIZE:1000 /UNSAFEIMPORT /UNALIGNCODE /SATURATE /NOINITIALIZERS /TRANSFORM:CALLS %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>opengl32.lib;winmm.lib;src/4klang/4klang.obj;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>out\mandelbrötchen-0001-release.exe</OutputFile>
+      <OutputFile>out\mandelbrötchen-0002-release.exe</OutputFile>
       <SuppressStartupBanner>
       </SuppressStartupBanner>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>

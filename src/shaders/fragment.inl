@@ -175,7 +175,7 @@ const char *fragment_frag =
    "if(y>68)"
      "B=.5;"
    "if(y>96)"
-     "l=smoothstep(0,1,(y-96)/8.)*s/4,b=vec2(-.5,.5),a=m[int(y)%7];"
+     "l=smoothstep(0,1,(y-96)/8)*s/4,b=vec2(-.5,.5),a=m[int(y)%7];"
    "if(y>128)"
      "A=10,W=vec2(-1.4,.5);"
    "if(y>160)"
