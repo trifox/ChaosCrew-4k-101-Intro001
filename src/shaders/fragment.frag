@@ -481,8 +481,30 @@ float vignette(vec2 uv){
 
 } 
 
+// returns vignette intensity at uv for a given rectangular area
+vec2 vigCenter=vec2(0.2,0.5);
+vec2 vigSize=vec2(0.4,0.3);
+float vigIntensity=110.;
+float vigPower=.25;
 
-
+float vignetteRect(vec2 uv )
+{
+    // map uv into rectangle coords [0..1]
+    vec2 rel = (uv - (vigCenter - vigSize * .5)) / vigSize;
+    
+    // clamp to rectangle range
+    rel = clamp(rel, 0, 1);
+    
+    // same trick: stronger near edges
+    vec2 f = rel * (1 - rel);
+    
+    float vig = f.x * f.y * vigIntensity;
+    
+    // control falloff
+    vig = pow(vig, vigPower);
+    
+    return vig;
+}
 //EOE/////////////////////////////////////////////////////////////////////////////////////////////////////// 
 //
 // This is c++ call wrap header, ommit this when editing it in the editor
@@ -498,14 +520,11 @@ void main() {
 // debug offset
 //t-=0.5;
   vec2 uv = gl_FragCoord.xy / iResolution.xy;
-  vec2 uv2 = uv*( 1 - uv.yx);   //vec2(1.0)- uv.yx; -> 1.-u.yx; Thanks FabriceNeyret !
-    float vig = uv2.x*uv2.y * vignetteScale; // multiply with sth for intensity
-    vig = pow(vig,vignettePow); // change pow for modifying the extend of the  vignette
-
+  
   vec4 rz = mainWrap(uv*2-1);
   vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2-1)*2.5+manPos)),1);   
 
-  o=rz*vig;
+  o=rz*vignetteRect(uv);
   o=max(o,mandelTriklops);
 
  
