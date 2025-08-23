@@ -13,6 +13,11 @@ const int SIXTEEN=16;
 
 float MAX_ITER = 70; 
 const float bpm = 154; 
+// returns vignette intensity at uv for a given rectangular area
+vec2 vigCenter=vec2(0.7,0.65 );
+vec2 vigSize=vec2(0.3*1.5 ,0.4*1.5);
+float vigIntensity=110.;
+float vigPower=1.25;
 
 float t;
 const float beatTrack_1[SIXTEEN]=float[SIXTEEN](
@@ -347,7 +352,7 @@ vec2 manPos=vec2(1.4,.5);
 
 vec4 result=vec4(0.);  
 // die sichtbarkeiten der layer, hier haben wir 3 layer daher vec, sind alpha blends quasi
-vec3 layerVisibilities=vec3(0);
+vec3 layerVisibilities=vec3(0,0,1);
 
 float blink;
 
@@ -399,7 +404,8 @@ vec4 mainWrap(vec2 fragCoord) {
   if(t < 4*1) {
     vignetteScale=150*t/4;
     MAX_ITER *= t/4;
-    blink = 0;
+    blink = 0;  
+    
   }
   
   // sec1 second half
@@ -481,11 +487,7 @@ float vignette(vec2 uv){
 
 } 
 
-// returns vignette intensity at uv for a given rectangular area
-vec2 vigCenter=vec2(0.2,0.5);
-vec2 vigSize=vec2(0.4,0.3);
-float vigIntensity=110.;
-float vigPower=.25;
+
 
 float vignetteRect(vec2 uv )
 {
