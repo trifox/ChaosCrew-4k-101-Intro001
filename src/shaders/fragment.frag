@@ -352,7 +352,7 @@ vec2 manPos=vec2(1.4,.5);
 
 vec4 result=vec4(0.);  
 // die sichtbarkeiten der layer, hier haben wir 3 layer daher vec, sind alpha blends quasi
-vec3 layerVisibilities=vec3(0,0,1);
+vec3 layerVisibilities=vec3(0,1,1);
 
 float blink;
 
@@ -424,10 +424,7 @@ vec4 mainWrap(vec2 fragCoord) {
   }
   
   // am ende lachendes maenneken mit shaky head
-  layerVisibilities = vec3(1, blink,
-    t>4*16?clamp(smoothstep(0,4*8,t)*sin(t/2)*4,0,1):0);
-// layerVisibilities.z=clamp(sin(t),0.,1.);
-  //return cmix(scene0(xy, t), scene1(xy, t), blink);
+  // layerVisibilities = vec3(1, blink, t>4*16?clamp(smoothstep(0,4*8,t)*sin(t/2)*4,0,1):0);  
     
   if(t > 4*17)
     amplitude = .5;
@@ -465,8 +462,7 @@ vec4 mainWrap(vec2 fragCoord) {
 //     return scene_1;
 
 /* develop */
-
-//  layerVisibilities.y=1;
+ 
 //brotVisibilities=vec2(1.,1.); 
 
   return  max(
