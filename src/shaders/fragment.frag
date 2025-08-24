@@ -116,8 +116,8 @@ vec3 mandelbrotRenderJulia( vec2 c,vec4 loc){
 }
 
 vec2 man_seedEyes=vec2(0);
-vec2 man_seedMouth;
-vec2 man_headPos;
+vec2 man_seedMouth=vec2(0);
+vec2 man_headPos=vec2(0);
 
 float mandelMan(vec2 uvIn)
 {
@@ -129,7 +129,8 @@ float mandelMan(vec2 uvIn)
   float scale=2.;
   vec2 eyePos=center+vec2(  3.150, 2.40);
   // Mandelbrot 
-  fragColor = mandelbrotExt(uv,man_seedEyes* .25,center+vec2(-1.3,0),scale* .4 ,180)* .75; 
+  fragColor = mandelbrotExt(uv ,man_seedMouth*  .5,center+vec2(-1.3,0),scale* .4 ,180)* .75;  
+ 
   uv+=man_headPos;
   fragColor += mandelbrotExt(uv,vec2(0.),center,scale*1 ,180)
             -  juliaExt(uv,man_seedEyes ,               center+eyePos,scale*8.,-90)
@@ -394,7 +395,7 @@ vec4 mainWrap(vec2 fragCoord) {
   // mouth seed
   man_seedMouth= vec2(sin(t*PI*.5),cos(t*PI))*.3;  
   // head pos
-  man_headPos=  vec2(0,0);
+  man_headPos=  vec2(-0.1,0);
 
   blink = pulses(1, t) * pulses(4/2, t);
   roughness = sin(t)*.2+1.1;
@@ -520,6 +521,8 @@ void main() {
   vec2 uv = gl_FragCoord.xy / iResolution.xy;
   
   vec4 rz = mainWrap(uv*2-1);
+
+
   vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2-1)*2.5+manPos)),1);   
 
   o=rz*vignetteRect(uv);

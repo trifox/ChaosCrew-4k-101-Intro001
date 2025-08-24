@@ -48,9 +48,9 @@ void Editor::printFrameStatistics()
 }
 
 double Editor::handleEvents(Leviathan::Song* track, double position)
-{
+{ 
 	if (GetAsyncKeyState(VK_MENU))
-	{
+	{	 
 		double seek = 0.0;
 		if (GetAsyncKeyState(VK_DOWN))
 		{
@@ -100,10 +100,10 @@ void Editor::updateShaders(int* mainShaderPID, int* postShaderPID, bool force_up
 			if (newPID > 0)
 				*mainShaderPID = newPID;
 
-				/*
+				
 			newPID = reloadShaderSource("../src/shaders/post.frag");
 			if (newPID > 0)
-				*postShaderPID = newPID;*/
+				*postShaderPID = newPID; 
 		}
 
 		previousUpdateTime = timeGetTime();

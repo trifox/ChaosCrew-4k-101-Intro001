@@ -11,7 +11,7 @@
 	#define BREAK_COMPATIBILITY 0
 #endif
 
-#define POST_PASS    0
+#define POST_PASS    1
 #define USE_MIPMAPS  0
 #define USE_VSYNC    0 /* vsync dangerous, make sure you never exceeed 60fps when using */
 #define USE_CLEAN_BLACK_START    0 /* ensures windows and gl buffers are properly cleared at start to avoid flicker */
@@ -54,6 +54,11 @@ int __cdecl main(int argc, char* argv[])
     }
 
     printf("Eingegebene Zahl: %f\n", wert);
+    printf("Editor Controls Hint: \n");
+    printf("WINDOWS KEY = MENU \n");
+    printf("MENU + UP/DOWN: Play/Pause\n");
+    printf("MENU + LEFT/RIGHT: time +/- 0.1sec \n");
+    printf("MENU + SHIFT LEFT/RIGHT: time +/- 1sec \n");
 
 	SONG_START=wert;
 	
@@ -106,7 +111,7 @@ int __cdecl main(int argc, char* argv[])
 	// create and compile shader programs
 	pidMain = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment_frag);
 	#if POST_PASS
-		pidPost = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post);
+		pidPost = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post_frag);
 	#endif
 
 	
@@ -177,7 +182,17 @@ int __cdecl main(int argc, char* argv[])
 			#endif
 			((PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture"))(GL_TEXTURE0);
 			((PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram"))(pidPost);
-			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, 0);
+
+
+			#ifdef EDITOR_CONTROLS
+				// for editing position of time is provided in post pass
+				position = track.getTime();
+				((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, (static_cast<int>(position*44100.0)));
+			#else
+				// warning post process is expensive, setting time as well
+				//waveOutGetPosition(hWaveOut, &MMTime, sizeof(MMTIME)); 
+				((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, MMTime.u.sample);
+			#endif
 			glRects(-1, -1, 1, 1);
 		#endif
 
