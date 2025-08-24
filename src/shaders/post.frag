@@ -32,17 +32,33 @@ const int marker[NUM_MARKER]=int[NUM_MARKER](
 10*4, // buuhmm,
 12*4, // buuhmm,
 14*4, // buuhmm,
-16*4, // buuhmm,
-17*4  ,
-32*4 ,
+16*4, // buuhmm, der bum geht weiter aber wird schwaecher
+18*4, // buum hier geht aber dann galopperei los 
+34*4 ,
 40*4 ,
 48*4 ,
 65*4 
 ); 
+
+vec3 hsv(float h, float s, float v) {
+  vec4 K = vec4(1, 2 / 3, 1 / 3, 3);
+  vec3 p = abs(fract(vec3(h,h,h) + K.xyz) * 6 - K.www);
+  return v * mix(K.xxx, clamp(p - K.xxx, 0, 1), s);
+}
+// track hat start und ende als auch ein colorindex 
+const int NUM_TRACKS=2;
+const vec4 tracks[NUM_TRACKS]=vec4[NUM_TRACKS](
+    // start beat, end beat, hsv index
+    vec4(0,6*4,0.5,0.),
+    vec4(18*4,34*4,0.2,0.)
+);
+
+
 void main()
 {
- float iTime = float(m) / 44100 ; 
-    vec2 uv = (gl_FragCoord.xy / iResolution.xy);
+ float iTime = float(m) / 44100 ;  
+ iTime+=1.3;
+     vec2 uv = (gl_FragCoord.xy / iResolution.xy);
 
 // restore image
 i=texture(o,uv);
@@ -56,7 +72,7 @@ i=texture(o,uv);
     vec2 grid = uv * vec2(cols, rows);
 
     // Aktueller Beat
-    float bps = bpm / 60.0;
+    float bps = bpm / 60.0; 
     float beat = iTime * bps;
     float stepIndex = mod(floor(beat), cols);        // Spalte (aktueller Step)
     float rowIndex  = mod(floor(beat / cols), rows); // Zeile (aktuelles Pattern)
@@ -93,13 +109,29 @@ if(fract(beat)<0.5){
         }
     }
     
+    // beatmarker
     int pos=cellX+(pat*seq)*cellY;
     for(int k =0;k<NUM_MARKER;k++){
     if(marker[k]==pos){  
-    col = vec3( .2, 1.0, 0.2); // Knallgruen
+    col += vec3( .2, 1.0, 0.2); // Knallgruen
     
     }
     }
+
+// tracks
+    if(cell.y>0.4&&cell.y<0.6)
+    {
+        for(int k =0;k<NUM_TRACKS;k++)
+        {
+            if(tracks[k].y>pos && tracks[k].x<pos )
+            {  
+                col += hsv(tracks[k].z,0.5, .60); // Knallgruen
+            }
+        }
+    }
+
+
+// ende markierung
     if(pos>numpatterns*seq*pat){
         col=vec3(0);
     }

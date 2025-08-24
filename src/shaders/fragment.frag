@@ -4,7 +4,7 @@ const vec2 iResolution=vec2(1920,1080);
 uniform int m; // Time in sample player 
 out vec4 o; 
 ////////////////////////////////////////////////////////////////
-
+float man_Size=2.5;
 const float PI = acos(-1.);
 const float PI2= PI*2;
 const float HALF_PI=PI/2;
@@ -65,7 +65,7 @@ vec4 location = locations[4];
   // )
   
 float easeInOutTap(float t) {
-    return smoothstep(.0, .01, t) * (1.0 - smoothstep(.01, .25, t));
+    return smoothstep(.0, .25, t) * (1.0 - smoothstep(.01, .25, t));
 } 
 vec2 cmul(vec2 a, vec2 b) { 
   return vec2(a.x*b.x-a.y*b.y,  a.x*b.y+a.y*b.x);
@@ -183,9 +183,9 @@ float pal_1_speed=0.;
 vec3 makePal1(float i){
   // return pal(i, vec3(0.3,0.2,0.5),vec3(0.6,0.2,0.8),vec3(2.0,1.0,0.0),vec3(0.5,2.20,0.25) );
  return pal(i,
-    hsv(t,.6,.8),  // Grundton: warm-golden
+    hsv(.7,.7,.8),  // Grundton: warm-golden
     vec3(.25, .35, .45),   // Amplitude: Gold -> Orange -> Rot
-    vec3(1, 2,  1), // Hohe Frequenz: pulsierende Energie
+    vec3(1, 2,  3), // Hohe Frequenz: pulsierende Energie
     vec3(t*2*pal_1_speed, t/4*pal_1_speed, t*8*pal_1_speed)   // Phase für „rollende“ Farbwellen
 );
 }
@@ -199,7 +199,7 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord )
   MAX_ITER=250;
   int index=int(t)%SIXTEEN;
   float interval = fract(t);
-  float vis=beatTrack_1[index]; 
+//  float vis=beatTrack_1[index]; 
   vec2 v = fragCoord; // to -1 +1 real,imag
   // arg allgemeiner winkel, normalisiert dann auf 0..1 also der winkel 0..360
 
@@ -212,8 +212,8 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord )
          location.z*(juliastep>0.?smoothStepCounter(4.-mod(t*1.,4.), 1.,0.2):1.),
          location.w+easeInOutTap(fract(t/8.))*(PI/2.)));
 
-  vec4 result = brotVisibilities.x*vis*vec4(makePal1(l.z),1.)
-              + brotVisibilities.y*(1.0-vis) *vec4(makePal1(ljulia.z),1.) ;
+  vec4 result = brotVisibilities.x*vec4(makePal1(l.z),1.)
+              + brotVisibilities.y*vec4(makePal1(ljulia.z),1.) ;
 
   //    result.x+=beatTrack_1[index]*(1.0-interval);
   //    result.y+=beatTrack_2[index]*(1.0-interval);
@@ -353,7 +353,7 @@ vec2 manPos=vec2(1.4,.5);
 
 vec4 result=vec4(0.);  
 // die sichtbarkeiten der layer, hier haben wir 3 layer daher vec, sind alpha blends quasi
-vec3 layerVisibilities=vec3(0,1,1);
+vec3 layerVisibilities=vec3(0,0,1);
 
 float blink;
 
@@ -397,16 +397,19 @@ vec4 mainWrap(vec2 fragCoord) {
   // head pos
   man_headPos=  vec2(-0.1,0);
 
-  blink = pulses(1, t) * pulses(4/2, t);
+  blink = pulses(1, t) * pulses(4/2, t); 
   roughness = sin(t)*.2+1.1;
 
   // sec 1
   // short intro
-  if(t < 4*1) {
+  if(t < 8*1) {
     vignetteScale=150*t/4;
     MAX_ITER *= t/4;
     blink = 0;  
+    layerVisibilities=vec3(0,easeInOutTap(fract(t*2.)),0);
+  }else{
     
+    layerVisibilities=vec3(0,1,1);
   }
   
   // sec1 second half
@@ -414,21 +417,29 @@ vec4 mainWrap(vec2 fragCoord) {
   
   // sec2
   if(t > 4*8) {
-    cangle = smoothstep(0, 1, (t-4*8)/8);
+    cangle = smoothstep(0, 1, (t-4*8)/8); 
     if(t < 4*17) {
       // hier haben wir gedoens was genau am 17ten takt tri tra triggert, also wegen dem <
       man_seedEyes=vec2(-.2,.65);
       blink = pulses(4/1, t) * pulses(4/2, t) * pulses(4/8, t);
       brotVisibilities=vec2(0,1);
       speed = smoothstep(0, 1, (t-4*8)/4)/8;
+    }else{
+      brotVisibilities=vec2(1,0);
+      
+     vigSize=vec2(0.3*2.5 ,0.4*2.5);
+     vigCenter=vec2(0.5,0.5 );; 
+     man_Size=1.5;
+     manPos=vec2(0.5,0.5);
     }
   }
   
   // am ende lachendes maenneken mit shaky head
   // layerVisibilities = vec3(1, blink, t>4*16?clamp(smoothstep(0,4*8,t)*sin(t/2)*4,0,1):0);  
     
-  if(t > 4*17)
+  if(t > 4*17){
     amplitude = .5;
+  }
 
   if(t>4*24){ 
     cam_a = smoothstep(0, 1, (t-4*24)/8)*PI/4;
@@ -436,11 +447,12 @@ vec4 mainWrap(vec2 fragCoord) {
     location=locations[int(t)%NLOCATIONS];
   }
   
-  if(t>4*32) {
+  if(t>4*34) {
     nbobs = 10;
     pal_1_speed<=1;
     // hier halt wechsel position mandelman
     manPos=vec2(-1.4,0.5);
+    layerVisibilities=vec3(1,0,1);
   }
 
   if(t>4*40) {
@@ -448,9 +460,10 @@ vec4 mainWrap(vec2 fragCoord) {
     brotVisibilities=vec2(1,1);
     amplitude = smoothstep(0, 1, (t-4*48)/16);
   }
-  if(t>4.*48.)
+  if(t>4.*48.){
     location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
-  
+    layerVisibilities=vec3(1,0,1);
+  }  
   if(t>4.*65.) {
     manPos=vec2(0,.5);
     layerVisibilities=vec3(0,0,1);
@@ -465,6 +478,33 @@ vec4 mainWrap(vec2 fragCoord) {
 /* develop */
  
 //brotVisibilities=vec2(1.,1.); 
+
+
+if(t>40){
+
+float thing=mod(int(t-16),8);
+man_headPos.x+=thing<2?easeInOutTap(fract(t))*0.5:0;
+
+}
+if(t>16){
+
+// kleiner tackt beat
+man_headPos.x+=easeInOutTap(fract(t))*0.1;
+
+}
+
+if(t>48){
+float thing=mod(int(t-32),8);
+man_headPos.y+=thing>4&& thing<7?easeInOutTap(fract(t))*0.2:0;
+
+}
+
+// hier passen wir die vignette an die location an
+//location.x-=vigCenter.x*location.z*0.05;
+fragCoord.xy-=vigCenter.xy*0.5;
+fragCoord.xy*= 1/vigSize*1.;
+
+
 
   return  max(
     layerVisibilities.x*vec4(xxxNew_scene0(fragCoord,t),1),
@@ -514,7 +554,8 @@ float vignetteRect(vec2 uv )
 
 void main() {
   // t is timed to beat
-  t = float(m) / 44100 / 60 * bpm;
+ float offset=.0;
+  t = (float(m) / 44100+ offset)/ 60 * bpm;
  
 // debug offset
 //t-=0.5;
@@ -523,7 +564,8 @@ void main() {
   vec4 rz = mainWrap(uv*2-1);
 
 
-  vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2-1)*2.5+manPos)),1);   
+  vec4 mandelTriklopsBg=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2-1)*man_Size+manPos)),1);   
+  vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2-1)*man_Size+manPos)),1);   
 
   o=rz*vignetteRect(uv);
   o=max(o,mandelTriklops);
