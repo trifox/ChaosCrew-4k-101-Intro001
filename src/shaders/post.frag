@@ -136,7 +136,7 @@ if(fract(beat)<0.5){
         col=vec3(0);
     }
 
-    i =mix(i, vec4(col, 1.0),0.7);
+    i =mix(i, vec4(col, 1.0),0.2);
 
 
 

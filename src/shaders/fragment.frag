@@ -192,7 +192,7 @@ vec3 makePal1(float i){
 
 float juliastep=0;
 
-vec2 brotVisibilities=vec2(0,1);
+vec2 brotVisibilities=vec2(1,0);
  // minibrote trifox
 vec4 scene2Mandelbroetchen(vec2 fragCoord )
 {
@@ -422,10 +422,11 @@ vec4 mainWrap(vec2 fragCoord) {
       // hier haben wir gedoens was genau am 17ten takt tri tra triggert, also wegen dem <
       man_seedEyes=vec2(-.2,.65);
       blink = pulses(4/1, t) * pulses(4/2, t) * pulses(4/8, t);
-      brotVisibilities=vec2(0,1);
-      speed = smoothstep(0, 1, (t-4*8)/4)/8;
-    }else{
       brotVisibilities=vec2(1,0);
+      speed = smoothstep(0, 1, (t-4*8)/4)/8;
+    location=locations[int(t/4)%NLOCATIONS];
+    }else{
+      brotVisibilities=vec2(0,1);
       
      vigSize=vec2(0.3*2.5 ,0.4*2.5);
      vigCenter=vec2(0.5,0.5 );; 
@@ -462,7 +463,7 @@ vec4 mainWrap(vec2 fragCoord) {
   }
   if(t>4.*48.){
     location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
-    layerVisibilities=vec3(1,0,1);
+    layerVisibilities=vec3(1,1,1);
   }  
   if(t>4.*65.) {
     manPos=vec2(0,.5);
