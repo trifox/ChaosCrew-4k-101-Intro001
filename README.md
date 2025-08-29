@@ -70,3 +70,15 @@ Fork your own and submit a pull request, ideas always welcome. Please don't add 
 * Mentor and Blueberry for Crinkler.
 * LLB for Shader Minifier. This fork is used in the framework: https://github.com/armak/Shader_Minifier.
 * Numerous people for various resources and information: auld, ps, cce, msqrt, ferris, yzi, las to name a few.
+
+
+
+
+skript irgendwo
+
+
+..... sound analyse womit wir arbeiten
+
+
+erster takt also vier beats macht im 3ten beat wieder anschlag
+dann 4 4tel

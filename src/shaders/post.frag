@@ -18,26 +18,18 @@ i=texture(o,uv)*0.75;
 // BPM Raster Visualizer mit Pattern-Farben
 // Seltsamer Attraktor 🪩
 
-const float bpm = 154.0;   // Beats per Minute
+const float bpm = 127.0;   // Beats per Minute
 const int seq  = 4;        // Schritte pro Pattern
 const int pat  = 4;        // Patterns pro Reihe
-const int numpatterns =17; // Zeilen (Pattern Sets)
+const int numpatterns =13; // Zeilen (Pattern Sets)
 
-const int NUM_MARKER=13;
+const int NUM_MARKER=3;
 const int marker[NUM_MARKER]=int[NUM_MARKER](
-2*4,// start beat buumm,
-4*4, // buuhmm,
-6*4,// buuhmm,
-8*4, // buuhmm,
-10*4, // buuhmm,
-12*4, // buuhmm,
-14*4, // buuhmm,
-16*4, // buuhmm, der bum geht weiter aber wird schwaecher
-18*4, // buum hier geht aber dann galopperei los 
-34*4 ,
-40*4 ,
-48*4 ,
-65*4 
+3, // start song
+1*4, // start beat buumm,
+ 
+1*4+4*4 // start beat buumm,
+ 
 ); 
 
 vec3 hsv(float h, float s, float v) {
@@ -46,18 +38,19 @@ vec3 hsv(float h, float s, float v) {
   return v * mix(K.xxx, clamp(p - K.xxx, 0, 1), s);
 }
 // track hat start und ende als auch ein colorindex 
-const int NUM_TRACKS=2;
+const int NUM_TRACKS=3;
 const vec4 tracks[NUM_TRACKS]=vec4[NUM_TRACKS](
     // start beat, end beat, hsv index
-    vec4(0,6*4,0.5,0.),
-    vec4(18*4,34*4,0.2,0.)
+    vec4(4,7*4,0.5,0.), // anfang, danach geht vibe los,aber uebrigens in 2ter halbnote danach
+    vec4(16*4,21*4,0.2,0.), // am anfang findet dieser dopüpelschlag in der musik , zum ersten mal statt, ende ist wo dannping pong anfaengt
+vec4(25*4,31*4,0.2,0) // davor war ping-pong
 );
 
 
 void main()
 {
  float iTime = float(m) / 44100 ;  
- iTime+=1.3;
+ //iTime-=1.3;
      vec2 uv = (gl_FragCoord.xy / iResolution.xy);
 
 // restore image

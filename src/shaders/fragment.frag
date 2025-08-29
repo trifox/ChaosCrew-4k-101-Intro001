@@ -12,7 +12,8 @@ const float BAILOUT=256;
 const int SIXTEEN=16;
 
 float MAX_ITER = 70; 
-const float bpm = 154; 
+const float bpm = 127; // forcompletion beats per minute
+const float spb =60/bpm; // derived seconds per beat
 // returns vignette intensity at uv for a given rectangular area
 vec2 vigCenter=vec2(0.7,0.65 );
 vec2 vigSize=vec2(0.3*1.5 ,0.4*1.5);
@@ -31,6 +32,20 @@ const float beatTrack_1[SIXTEEN]=float[SIXTEEN](
 const float beatTrack_4Achtel[8]=float[8](
   // achtung wird als 8tel takt genutzt!
     0,0,0,1,   0,1,1,1
+    ); 
+
+// schnitter
+const float beatTrack_schnitter_nimm_beat3[16]=float[16](
+  // achtung wird als 8tel takt genutzt!
+    0,0, 0,0,    0,0, 0,0,    0,0, 0,0,    0,0, 1,0
+    ); 
+
+
+
+const float beatTrack_4Achtel2[16]=float[16](
+  // das sind die halben noten,
+  // daher acht, man trift die mitte eines beats damit, zur not kann man auch wiederverwenden fuer viertel, aber dann halt aufpassen mit skalierung
+    0,0,0,0,    1,0,1,0,    1,0, 0,0,    0,0, 0,0
     ); 
 
 
@@ -118,6 +133,7 @@ vec3 mandelbrotRenderJulia( vec2 c,vec4 loc){
 vec2 man_seedEyes=vec2(0);
 vec2 man_seedMouth=vec2(0);
 vec2 man_headPos=vec2(0);
+float manFace=0;
 
 float mandelMan(vec2 uvIn)
 {
@@ -133,10 +149,10 @@ float mandelMan(vec2 uvIn)
  
   uv+=man_headPos;
   fragColor += mandelbrotExt(uv,vec2(0.),center,scale*1 ,180)
-            -  juliaExt(uv,man_seedEyes ,               center+eyePos,scale*8.,-90)
-            -  juliaExt(vec2(uv.x, -uv.y),man_seedEyes ,center+eyePos,scale*8.,-90)
+            -  juliaExt(uv,man_seedEyes ,               center+eyePos,scale*8.,-90)*manFace
+            -  juliaExt(vec2(uv.x, -uv.y),man_seedEyes ,center+eyePos,scale*8.,-90)*manFace
             /// den mund, da wollen wir die schwarzen bereiche mit zaehnen also vertikalen streifen rendern
-            -  juliaExt(uv,man_seedMouth,center+vec2(   -5.,.0),scale*8.,90.);
+            -  juliaExt(uv,man_seedMouth,center+vec2(   -5.,.0),scale*8.*manFace,90.);
   return fragColor;
 }
 //////////////////////////
@@ -368,6 +384,10 @@ float blink;
   // ß000000000000000000000000000000000000000000000000000000000000000000000000000000
   // ß000000000000000000000000000000000000000000000000000000000000000000000000000000
 
+
+float triSin(float x){
+  return (sin(x*1)+sin(x*2)+sin(x*4))/3;
+}
 vec4 mainWrap(vec2 fragCoord) {
 
 /// achtung hier die methode direkt zu returnen
@@ -393,25 +413,71 @@ vec4 mainWrap(vec2 fragCoord) {
   man_seedEyes=   vec2(-0.35,0);  
 
   // mouth seed
-  man_seedMouth= vec2(sin(t*PI*.5),cos(t*PI))*.3;  
+  //man_seedMouth= vec2(sin(t*PI*.5),cos(t*PI))*.3;  
+  man_seedMouth= vec2(-1,0);  
   // head pos
   man_headPos=  vec2(-0.1,0);
 
   blink = pulses(1, t) * pulses(4/2, t); 
   roughness = sin(t)*.2+1.1;
+float beat1=t; // ganze note
+float beat2=t*2; // halbe noten
+float beat3=beat2*2; // viertel noten
 
+
+
+/*
   // sec 1
   // short intro
-  if(t < 8*1) {
-    vignetteScale=150*t/4;
+  if(beat2 >=0) {
+  //  vignetteScale=150*beat2/3;
     MAX_ITER *= t/4;
     blink = 0;  
-    layerVisibilities=vec3(0,easeInOutTap(fract(t*2.)),0);
-  }else{
-    
-    layerVisibilities=vec3(0,1,1);
+    layerVisibilities=vec3(0,0,0);
   }
   
+  
+  if(int(beat2)==7){
+    
+    layerVisibilities=vec3(0,
+    easeInOutTap(fract(beat2  )),
+    easeInOutTap(0));
+  } 
+*/
+// beat flacker
+
+if(beat1>=0){
+ 
+
+layerVisibilities.y=flashBang(beat1 ,beatTrack_4Achtel2);
+}
+
+
+if(beat1>4*6) {
+
+//deedup, da machen wir rotatrrion rein
+location.w=sin(beat1);
+
+}
+  /*
+
+  if(beat2>8){
+// ruhe im katon
+
+
+ layerVisibilities=vec3(0,smoothstep(0,1,beat2-8),0);
+  }
+  if(beat2>12){
+// ruhe im katon 
+ layerVisibilities=vec3(0,1,1);
+  }
+
+if(beat2>20){
+  manFace=1;
+}
+   
+  
+  /*
   // sec1 second half
 //  if(t > 4.*4.)
   
@@ -465,7 +531,10 @@ vec4 mainWrap(vec2 fragCoord) {
     location.w=radians(smoothStepCounter(t*2.,0.5,0.2));
     layerVisibilities=vec3(1,1,1);
   }  
-  if(t>4.*65.) {
+
+*/
+
+  if(t>4.*12*4.) {
     manPos=vec2(0,.5);
     layerVisibilities=vec3(0,0,1);
     man_headPos=vec2(sin(t*PI2)*0.1, 0);
@@ -479,8 +548,7 @@ vec4 mainWrap(vec2 fragCoord) {
 /* develop */
  
 //brotVisibilities=vec2(1.,1.); 
-
-
+/*
 if(t>40){
 
 float thing=mod(int(t-16),8);
@@ -499,7 +567,7 @@ float thing=mod(int(t-32),8);
 man_headPos.y+=thing>4&& thing<7?easeInOutTap(fract(t))*0.2:0;
 
 }
-
+*/
 // hier passen wir die vignette an die location an
 //location.x-=vigCenter.x*location.z*0.05;
 fragCoord.xy-=vigCenter.xy*0.5;
@@ -555,8 +623,7 @@ float vignetteRect(vec2 uv )
 
 void main() {
   // t is timed to beat
- float offset=.0;
-  t = (float(m) / 44100+ offset)/ 60 * bpm;
+   t = (float(m) / 44100)/spb;
  
 // debug offset
 //t-=0.5;
