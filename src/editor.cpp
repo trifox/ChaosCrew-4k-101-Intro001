@@ -40,11 +40,16 @@ void Editor::printFrameStatistics()
 	fps += 1.0f / static_cast<float>(frameTime);
 	fps *= 1000.0f / static_cast<float>(windowSize);
 
-	printf("%s: %0.2i:%0.2i (%i%%), frame duration: %i ms (running fps average: %2.2f) \r",
+	printf("%s: %0.2i:%0.2i (%i%%), frame duration: %i ms (running fps average: %2.2f) Beat1> %4.0f BeatHalve> %4.0f BeatQuad> %4.0f      \r",
 		state == Playing ? "Playing" : " Paused",
 		// assuming y'all won't be making intros more than an hour long
 		int(trackPosition/60.0), int(trackPosition) % 60, int(100.0f*trackPosition/trackEnd),
-		frameTime, fps);
+		frameTime, fps,
+		(trackPosition)/(60./127.),
+		(trackPosition*2.)/(60./127.),
+		(trackPosition*4.)/(60./127.)
+	
+	) ;
 }
 
 double Editor::handleEvents(Leviathan::Song* track, double position)

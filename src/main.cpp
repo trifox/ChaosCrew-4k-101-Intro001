@@ -53,14 +53,15 @@ int __cdecl main(int argc, char* argv[])
         return 1;
     }
 
-    printf("Eingegebene Zahl: %f\n", wert);
+    printf("Bpm: %f Secs Per Beat %f\n",BPM,60./BPM);
+    printf("Eingegebener Beat: %f\n", wert);
     printf("Editor Controls Hint: \n");
     printf("WINDOWS KEY = MENU \n");
     printf("MENU + UP/DOWN: Play/Pause\n");
     printf("MENU + LEFT/RIGHT: time +/- 0.1sec \n");
-    printf("MENU + SHIFT LEFT/RIGHT: time +/- 1sec \n");
+    printf("MENU + SHIFT LEFT/RIGHT: time +/- 1sec \n"); 
 
-	SONG_START=wert;
+	SONG_START=wert*(60./BPM);
 	
 	#endif
 	// initialize window
@@ -119,6 +120,8 @@ int __cdecl main(int argc, char* argv[])
 	#ifndef EDITOR_CONTROLS
 		#if USE_AUDIO
 			CreateThread(0, 0, (LPTHREAD_START_ROUTINE)_4klang_render, lpSoundBuffer, 0, 0);
+			// sleep a bit to let music render
+			Sleep(768);
 			waveOutOpen(&hWaveOut, WAVE_MAPPER, &WaveFMT, NULL, 0, CALLBACK_NULL);
 			waveOutPrepareHeader(hWaveOut, &WaveHDR, sizeof(WaveHDR));
 			waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));

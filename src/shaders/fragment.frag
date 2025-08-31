@@ -51,7 +51,18 @@ const float beatTrack_4Achtel2[16]=float[16](
 
 const int NLOCATIONS=7;
 // vec4 real,imag,scale for locations  
-const vec4 locations[NLOCATIONS] = vec4[NLOCATIONS](  
+const vec4 locations[NLOCATIONS] = vec4[NLOCATIONS]( 
+   vec4(-1.0301458244292,-0.39277957424159,0.000046293166901589214,-0.36852256578915304),
+vec4(-1.028969519024,-0.3863120832165,0.0005718870946621375,-0.1160432481275296),
+vec4(0.46459922147737,0.39285394575863,0.00009661017497567272,2.299939965276117),
+
+
+vec4(-0.0622479300708,0.9943595314843,0.0008759774131568184,2.353293554818721),
+vec4(-0.07447045138,0.9705421369,0.010314690139435465,-0.28392165026872535),
+vec4(-0.12749997355,0.98746090949,0.019406683999726282,2.7550577413926),
+vec4(-1.7698773230722,0.05572268594288,0.000027767848216979985,1.4849970462434485) 
+/// alte coords
+/*
 vec4(0.3604,.61491,0.0116,2.47),
 vec4(-1.87,0.,.0002675,0),
 vec4(-0.52597,.696944,0.001252,-1.41),
@@ -59,6 +70,7 @@ vec4(-0.528326,.704073,0.0001073,-2.04),
 vec4(-0.724136,.361574,0.000676,-0.35),
 vec4(-0.69094,.46535,0.00832,2.72),
 vec4(-0.7113,.473618,6.14e-05,-3.08)
+*/
 );
 vec4 location = locations[4];
 
@@ -79,6 +91,17 @@ vec4 location = locations[4];
   // smoothed iters
   // )
   
+// Exponentielle Interpolation zwischen a und b mit Parameter t in [0,1]
+// t=0 -> a, t=1 -> b
+// Exponentielle Interpolation für positive Werte a,b > 0
+float expInterp(float a, float b, float t) {
+    // t=0 => a, t=1 => b
+    // Interpoliert so, dass die Werte sich *multiplikativ* ändern
+    // (logarithmische lineare Interpolation)
+    return exp(mix(log(a), log(b), t));
+}
+
+
 float easeInOutTap(float t) {
     return smoothstep(.0, .25, t) * (1.0 - smoothstep(.01, .25, t));
 } 
@@ -112,7 +135,7 @@ bool f(vec2 c, vec2 z0) {
 
 vec3 mandelbrotCore(vec2 c, vec2 z0) {
   f(c, z0);
-  return vec3(f_z.xy,  f_k/MAX_ITER*4. );
+  return vec3(f_z.xy,  f_k/MAX_ITER  );
 }
 vec2 project(vec2 uv,vec2 center, float scale, float angle ){
   return cmul(center+uv*scale,rotor(radians(angle)));
@@ -133,8 +156,9 @@ vec3 mandelbrotRenderJulia( vec2 c,vec4 loc){
 vec2 man_seedEyes=vec2(0);
 vec2 man_seedMouth=vec2(0);
 vec2 man_headPos=vec2(0);
-float manFace=0;
-
+float manFace=1;
+float manEyesOpen=0.0; // eyes open 0 = outside closed 
+float manEyesSymmetry=.9; // eyes open 0 = outside closed 
 float mandelMan(vec2 uvIn)
 {
   MAX_ITER=250.;
@@ -145,12 +169,12 @@ float mandelMan(vec2 uvIn)
   float scale=2.;
   vec2 eyePos=center+vec2(  3.150, 2.40);
   // Mandelbrot 
-  fragColor = mandelbrotExt(uv ,man_seedMouth*  .5,center+vec2(-1.3,0),scale* .4 ,180)* .75;  
+  fragColor = mandelbrotExt(uv ,man_seedMouth*  .25,center+vec2(-1.3,0),scale* .4 ,180)* .75;  
  
   uv+=man_headPos;
   fragColor += mandelbrotExt(uv,vec2(0.),center,scale*1 ,180)
-            -  juliaExt(uv,man_seedEyes ,               center+eyePos,scale*8.,-90)*manFace
-            -  juliaExt(vec2(uv.x, -uv.y),man_seedEyes ,center+eyePos,scale*8.,-90)*manFace
+            -  juliaExt(uv,man_seedEyes-vec2(manEyesOpen*manEyesSymmetry,0) ,               center+eyePos,scale*8.,-90)*manFace
+            -  juliaExt(vec2(uv.x, -uv.y),man_seedEyes-vec2(manEyesOpen,0)  ,center+eyePos,scale*8.,-90)*manFace
             /// den mund, da wollen wir die schwarzen bereiche mit zaehnen also vertikalen streifen rendern
             -  juliaExt(uv,man_seedMouth,center+vec2(   -5.,.0),scale*8.*manFace,90.);
   return fragColor;
@@ -262,6 +286,13 @@ float flashBang(float time, float[16] arr){
   return easeInOutTap(fract(time)) * arr[ int(time)%16];
 }  
 
+float flashBang4(float time, float[4] arr){
+  return easeInOutTap(fract(time)) * arr[ int(time)%4];
+}  
+float flashBang8(float time, float[8] arr){
+  return easeInOutTap(fract(time)) * arr[ int(time)%8];
+}  
+
 ///////////////////
 ////////////// for the sake of code, we have to redo this globall method using
 // an init function for setting the iteration? wtf!
@@ -269,7 +300,18 @@ float flashBang(float time, float[16] arr){
 vec2 lissajous(float lissa, float shift, float t) {
   return vec2(cos(t - shift*lissa), sin(t - shift));
 }
+ 
+float sqr(float x) {
+  return x*x;
+}
 
+
+vec2 cardioid(float a, float radius) {
+  vec2 r = rotor(a)*radius;
+  return vec2(1.-(sqr(r.x-1.)-sqr(r.y)),
+              -2.*(r.x-1.)*r.y
+             )/4.;
+}
 float       
       cam_a = 0.,
       cam_d = 1.,
@@ -277,20 +319,20 @@ float
       nbobs = 100.,
   
       lissa = 1., // 1.0 is a circle
-      amplitude = .0, // of lissjous animation
-      arclen = 1., // 1.0 is full circle
+      amplitude =  .0, // of lissjous animation
+      arclen =  .1, // 1.0 is full circle
       lspeed = 1./16., // of lissajous anmation
         
-      speed = .125, // at which julia parameters are animated
-      roughness = 1.5, // of julia pertubation
-      cangle = 0., // angle pertubation changes from head to tail
+      speed =  .125, // at which julia parameters are animated
+      roughness = .5, // of julia pertubation
+      cangle = 10., // angle pertubation changes from head to tail
       
       column_height = 1.,
       column_shift = -.1,
         
       // julia view
-      scale = 1.,
-      angle = 0.;
+      scale = 1;
+      //angle = 0.;
         
 vec2 center = vec2(0.),
      r,
@@ -303,7 +345,7 @@ vec3 col,
      cam_pos;
      
 vec3 xxxNew_scene0(vec2 xy, float t) {
-  r = location.z/scale * rotor(angle);
+  r = location.z/scale * rotor(location.w);
   col = vec3(0.);
 
   cr = rotor(-cam_a);
@@ -325,18 +367,101 @@ vec3 xxxNew_scene0(vec2 xy, float t) {
     float z = 1.-length(ray);
 
     if(f(c, uv))
-      // inside
-      if(i == 0.)
-        return makePal1(0.);
-      else
-        return hsv(0., 0., (1.-i/nbobs)*z*1.)+col/nbobs;
-        
+   {
+      // inside 
+          col+= makePal2(1)*0.5; 
+  }
     // outside
-    col += hsv(.6, .5, pow(f_k/MAX_ITER, 2.));
+    col+=makePal1(pow(f_k/MAX_ITER, 2.))*0.1;
+   // col += hsv(.6, .5, pow(f_k/MAX_ITER, 2.));
   }
   return col/nbobs;
 }
 
+
+
+vec3 camera(float a, float d, vec3 v) {
+  v.yz = cmul(v.yz, rotor(a));
+  //v.xy *= (-1.-d)/(v.z-1.-d);
+  v.xy *= (d-1.)/(v.z+1.+d);
+  return v;
+}
+float osc(float lo, float hi, float t) {
+  return (sin(t*2.*PI)/2.+.5)*(hi-lo) + lo;
+}
+vec3 scene0_NEU(vec2 xy, float t) {  
+  float cam_a = -.5,
+        cam_d = 2.,
+        
+        n = 100., // number of bobs
+  
+        lissa = 1., // 1.0 is a circle
+        amplitude = .0, // of lissjous animation
+        arclen = 1., // 1.0 is full circle
+        lspeed = 1., // of lissajous anmation
+        
+        speed = 1.25, // at which julia parameters are animated
+  
+        roughness = t/10., // scale complex parameter c, 1.0 is on cardioid
+        cangle = 1., // distance the parameter c travels from head to tail
+        
+        column_height = 3.,
+        column_shift = sin(t),
+        
+            // julia view
+        radius = 1.,
+        angle = 0.;
+        
+  vec4 loc = vec4(0., 0., 2., 0.);
+  
+  //radius = loc.z;
+  vec2 center = vec2(0.),
+       r = radius * rotor(angle)/2.,
+       c, p;
+
+  vec3 col = vec3(0.),
+       offset;
+
+  for(float i = 0.; i < n; ++i) {
+    center = loc.xy;
+    
+    offset = vec3(0., -.75,
+                  -column_height * (i/n) + column_shift);
+                  
+    vec2 cr = rotor(cam_a);
+    vec3 cam_pos = vec3(0., 0., cam_d); // cot(a)?
+    cam_pos.yz = cmul(cr, cam_pos.yz);
+    vec3 ray = vec3(xy, 1.);
+    ray.yz = cmul(cr, ray.yz);
+    ray = ray * (cam_pos.z - offset.z)/ray.z - cam_pos;
+    vec2 uv = cmul(ray.xy, r) + offset.xy;
+    float z = 1.-length(ray);
+
+    uv = cmul(uv, r) - center;
+
+    if(length(ray) <= 0.)
+      continue;
+
+    c = cardioid(+t/16.-i/n/4., osc(0.995, 1.009, 1.-i/n));
+//    c = cardioid(t/8.-i/n/4., osc(1.05, 0.99, i/n));
+//    c = mix(vec2(.25, 0.), vec2(.26, 0.), i/n*sin(t));
+    if(f(c, uv)) {
+      // inside
+      col += 1.;
+      //return vec3(1.-i/n);
+    }
+    else
+//      col += vec3(pow(f_k/f_n, .0125));
+//      col += 1.-i/n*spectrum(f_k/f_n);
+//      return vec3(f_k/f_n)-col/i/2.;
+      return hsv(.6, f_k/MAX_ITER, 1.-i/n)/length(ray);
+//      return 1.-vec3(pow(f_k/f_n,1.));
+    // outside
+    //col += hsv(0.6, 0.5, pow(f_k/f_n, 1.));
+  }
+//  return vec3(0.);
+  return vec3(0.,0.,.15);
+}
 
 float vignetteScale=116.,vignettePow=.25;
 ///////////////////////////////////////////////////
@@ -385,8 +510,19 @@ float blink;
   // ß000000000000000000000000000000000000000000000000000000000000000000000000000000
 
 
-float triSin(float x){
-  return (sin(x*1)+sin(x*2)+sin(x*4))/3;
+float sin3(float x){
+  return (sin(x*1)+sin(x*2)+sin(x*3))/3;
+}
+float sin2(float x){
+  return (sin(x*1)+sin(x*2) )/2;
+}
+float easeOutQuad(float t) {
+    return 1.0f - (1.0f - t) * (1.0f - t);
+}
+float easeInOutQuad(float t) {
+    return t < 0.5f
+        ? 2.0f * t * t
+        : 1.0f - pow(-2.0f * t + 2.0f, 2.0f) / 2.0f;
 }
 vec4 mainWrap(vec2 fragCoord) {
 
@@ -445,20 +581,97 @@ float beat3=beat2*2; // viertel noten
   } 
 */
 // beat flacker
+if(int(beat2)==7){
 
-if(beat1>=0){
- 
+layerVisibilities.y=easeInOutTap(fract(beat2))  ; 
+}
 
-layerVisibilities.y=flashBang(beat1 ,beatTrack_4Achtel2);
+ if(beat1>4){
+ layerVisibilities.y=smoothstep(0,2,beat1-4);//flashBang8(beat2,float[8]( 1,0,1,0,.5,0,.5,0))   ; 
+ } 
+
+if (beat1<3){
+
+    manPos=manPos+vec2((1-beat1/3)*3., 0.)*easeOutQuad(1-beat1/3);
+}
+if (beat1>3 && beat1<4){
+
+    man_seedMouth=man_seedMouth+vec2((1-fract(beat1) )* .5, 0.)*easeOutQuad(1-fract(beat1) );
 }
 
 
-if(beat1>4*6) {
+// blinzeln
+    manEyesOpen=flashBang8(beat1 ,float[8](3,2,1,0,0,0,0,0));
+
+if(beat1>8) {  
+    location=locations[int((beat1)/4)%NLOCATIONS];
+}
+
+
+if(beat1>29) {  
+
+// origiinal vec2 vigSize=vec2(0.3*1.5 ,0.4*1.5);
+    location=locations[int((beat1)/4)%NLOCATIONS];
+ vigCenter=vec2(0.7,0.6 );
+ vigSize=vec2(0.3*1.6 ,0.4*1.6);
+// manPos+=vec2(-0.4,0.1);
+man_Size=2;
+} 
+
+//location=locations[int((beat2+1)/2)%NLOCATIONS];
+
+if(beat2>4*24) {
 
 //deedup, da machen wir rotatrrion rein
 location.w=sin(beat1);
 
 }
+
+
+
+if(beat2>14*4+2){
+  brotVisibilities=vec2(0,1);
+//  manFace=1;
+//  man_seedMouth=vec2(0);
+}
+if(beat1>16*4 && int(beat1/4)%3==1){
+  // zoom reinballern
+  location.z=expInterp(location.z,location.z*.5,easeInOutQuad(fract(beat1/4 )));
+}
+
+
+if(beat1>4*20) {  
+    location=locations[int((beat1)/4)%NLOCATIONS];
+ vigCenter=vec2(0.6,0.5 );
+ vigSize=vec2(0.3*2 ,0.4*2);
+man_Size=1.8;
+ //manPos+=vec2(0,0.2);
+} 
+if(beat1>4*20){
+  // main transition zum haupt effect
+float ease=easeOutQuad(fract(beat1));
+layerVisibilities=vec3(ease,1-ease,1);
+
+}
+
+// phase main effect
+
+if(beat1>4*25) {  
+layerVisibilities=vec3(1,0,0);
+ vigCenter=vec2(0.5,0.5 );
+ vigSize=vec2(1,1);
+ //manPos+=vec2(0,0.2);
+} 
+
+if(beat1>4*30){
+  MAX_ITER=121;
+  nbobs=3;
+//  amplitude=sin(beat1*PI)*0.1+1;
+    //cam_a= PI/4;
+  //cam_d=sin(beat1)+3;
+  //cangle=sin(beat1/4*PI);
+}
+
   /*
 
   if(beat2>8){
@@ -472,9 +685,6 @@ location.w=sin(beat1);
  layerVisibilities=vec3(0,1,1);
   }
 
-if(beat2>20){
-  manFace=1;
-}
    
   
   /*
@@ -576,7 +786,7 @@ fragCoord.xy*= 1/vigSize*1.;
 
 
   return  max(
-    layerVisibilities.x*vec4(xxxNew_scene0(fragCoord,t),1),
+    layerVisibilities.x*vec4(scene0_NEU(fragCoord,t),1),
     layerVisibilities.y*scene2Mandelbroetchen(fragCoord));
 }
 

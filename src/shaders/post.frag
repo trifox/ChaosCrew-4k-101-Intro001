@@ -43,7 +43,7 @@ const vec4 tracks[NUM_TRACKS]=vec4[NUM_TRACKS](
     // start beat, end beat, hsv index
     vec4(4,7*4,0.5,0.), // anfang, danach geht vibe los,aber uebrigens in 2ter halbnote danach
     vec4(16*4,21*4,0.2,0.), // am anfang findet dieser dopüpelschlag in der musik , zum ersten mal statt, ende ist wo dannping pong anfaengt
-vec4(25*4,31*4,0.2,0) // davor war ping-pong
+vec4(25*4,30*4,0.2,0) // davor war ping-pong
 );
 
 

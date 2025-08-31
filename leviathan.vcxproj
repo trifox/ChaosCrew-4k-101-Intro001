@@ -362,15 +362,11 @@
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
     <PreBuildEvent>
-      <Command>shader_minifier.exe -v -o src\shaders\fragment.inl src\shaders\fragment.frag
+      <Command>shader_minifier.exe -v -o src\shaders\fragment.inl src\shaders\fragment.frag  
+      shader_minifier.exe -v -o src\shaders\post.inl src\shaders\post.frag
  </Command>
       <Message>Minify user-supplied shader files. mess3</Message>
-    </PreBuildEvent>
-    <PreBuildEvent>
-      <Command>shader_minifier.exe -v -o src\shaders\post.inl src\shaders\post.frag
- </Command>
-      <Message>Minify user-supplied shader files. mess4</Message>
-    </PreBuildEvent>
+    </PreBuildEvent> 
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Heavy Release|Win32'">
     <Midl>

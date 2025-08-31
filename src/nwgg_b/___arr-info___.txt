@@ -1,0 +1,28 @@
+
+          ,.-==-.,
+,.-='°'=-< 127bpm >-='°'=-.,
+          °'-==-'°
+
+
+Arrangement
+'-=======-'
+1	silence
+2=	start (bd, lortm und shakerz)
+8	Auftakts seq
+10=	beeper und robo-synth
+14	8tel cymbals
+18=	sid melo, shakerz wechselt zu closed his
+24	8tel cymbals
+26=	robo-synth vari, closed his zu shakerz
+30-	bd hochgefiltert
+32	8tel cymbals
+34=	bd filter weg, seq, shakerz zu closed hi
+41	8tel cymbals
+42	outro
+
+
+BassDrum Rhythmus
+'-=============-'
+...in 16tel
+Bassdrum:     o...o...o..o..o.
+Referenz 4/4: °...°...°...°...
