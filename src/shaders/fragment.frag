@@ -17,8 +17,8 @@ const float spb =60/bpm; // derived seconds per beat
 // returns vignette intensity at uv for a given rectangular area
 vec2 vigCenter=vec2(0.7,0.65 );
 vec2 vigSize=vec2(0.3*1.5 ,0.4*1.5);
-float vigIntensity=110.;
-float vigPower=1.25;
+float vigIntensity=31.;
+float vigPower=  .5;
 
 float t;
 const float beatTrack_1[SIXTEEN]=float[SIXTEEN](
@@ -52,15 +52,17 @@ const float beatTrack_4Achtel2[16]=float[16](
 const int NLOCATIONS=7;
 // vec4 real,imag,scale for locations  
 const vec4 locations[NLOCATIONS] = vec4[NLOCATIONS]( 
-   vec4(-1.0301458244292,-0.39277957424159,0.000046293166901589214,-0.36852256578915304),
-vec4(-1.028969519024,-0.3863120832165,0.0005718870946621375,-0.1160432481275296),
-vec4(0.46459922147737,0.39285394575863,0.00009661017497567272,2.299939965276117),
+
+vec4(0.381237793363,0.599378097942,0.004300393224212388,0.21065064233145478),
+vec4(0.36040230539,0.61490698108,0.011646798131609109,2.4731928462200328),
+vec4(0.377149286568,0.666878777916,0.0010316522371209885,-1.5133807978646205),
+vec4(0.376893240379,0.67856869319,0.0012574438753357167,0.6599920743443956),
+vec4(0.359892739013,0.684762020212,0.005553083570499503,3.1212786038479035),
+vec4(0.35925922476,0.64251373714,0.04714342394528389,2.0447869433636376),
+vec4(-0.15652016683,1.0322471089,0.08188697027694743,2.4777729354236357)
 
 
-vec4(-0.0622479300708,0.9943595314843,0.0008759774131568184,2.353293554818721),
-vec4(-0.07447045138,0.9705421369,0.010314690139435465,-0.28392165026872535),
-vec4(-0.12749997355,0.98746090949,0.019406683999726282,2.7550577413926),
-vec4(-1.7698773230722,0.05572268594288,0.000027767848216979985,1.4849970462434485) 
+
 /// alte coords
 /*
 vec4(0.3604,.61491,0.0116,2.47),
@@ -313,7 +315,7 @@ vec2 cardioid(float a, float radius) {
              )/4.;
 }
 float       
-      cam_a = 0.,
+      cam_a = 0.5,
       cam_d = 1.,
         
       nbobs = 100.,
@@ -328,10 +330,9 @@ float
       cangle = 10., // angle pertubation changes from head to tail
       
       column_height = 1.,
-      column_shift = -.1,
+      column_shift = -.1 ;
         
-      // julia view
-      scale = 1;
+      // julia view ;
       //angle = 0.;
         
 vec2 center = vec2(0.),
@@ -343,90 +344,32 @@ vec3 col,
      ray,
      offset,
      cam_pos;
-     
-vec3 xxxNew_scene0(vec2 xy, float t) {
-  r = location.z/scale * rotor(location.w);
-  col = vec3(0.);
-
-  cr = rotor(-cam_a);
-  cam_pos = vec3(0., 0., cam_d);
-  cam_pos.yz = cmul(cr, cam_pos.yz);
-  
-  for(float i = 0.; i < nbobs; ++i) {
-    pertubation = .07*roughness*rotor((t*speed + i/nbobs*cangle)*PI2)*location.z/scale;
-    center = c = location.xy+pertubation;
-  
-    offset = vec3(amplitude * lissajous(lissa, PI2 * i/nbobs * arclen, t*lspeed*PI2),
-                  -column_height * (i/nbobs) + column_shift);
-
-    ray = vec3(xy, 1.);
-    ray.yz = cmul(cr, ray.yz);
-    ray = ray * (cam_pos.z - offset.z)/ray.z - cam_pos;
-    
-    uv = cmul(ray.xy - offset.xy, r) - center + pertubation;
-    float z = 1.-length(ray);
-
-    if(f(c, uv))
-   {
-      // inside 
-          col+= makePal2(1)*0.5; 
-  }
-    // outside
-    col+=makePal1(pow(f_k/MAX_ITER, 2.))*0.1;
-   // col += hsv(.6, .5, pow(f_k/MAX_ITER, 2.));
-  }
-  return col/nbobs;
-}
-
-
-
+      
+float seedStrengsth=0; // lisajou julia strength
 vec3 camera(float a, float d, vec3 v) {
   v.yz = cmul(v.yz, rotor(a));
   //v.xy *= (-1.-d)/(v.z-1.-d);
   v.xy *= (d-1.)/(v.z+1.+d);
   return v;
 }
-float osc(float lo, float hi, float t) {
-  return (sin(t*2.*PI)/2.+.5)*(hi-lo) + lo;
+float osc(float lo, float hi, float x) {
+  return (sin(t-x*2.*PI)/2.+.5)*(hi-lo) + lo;
 }
-vec3 scene0_NEU(vec2 xy, float t) {  
-  float cam_a = -.5,
-        cam_d = 2.,
-        
-        n = 100., // number of bobs
+vec3 scene0_NEU(vec2 xy) {   
   
-        lissa = 1., // 1.0 is a circle
-        amplitude = .0, // of lissjous animation
-        arclen = 1., // 1.0 is full circle
-        lspeed = 1., // of lissajous anmation
-        
-        speed = 1.25, // at which julia parameters are animated
-  
-        roughness = t/10., // scale complex parameter c, 1.0 is on cardioid
-        cangle = 1., // distance the parameter c travels from head to tail
-        
-        column_height = 3.,
-        column_shift = sin(t),
-        
-            // julia view
-        radius = 1.,
-        angle = 0.;
-        
-  vec4 loc = vec4(0., 0., 2., 0.);
-  
+         
   //radius = loc.z;
-  vec2 center = vec2(0.),
-       r = radius * rotor(angle)/2.,
+  vec2 center = location.xy,
+       r = location.z*8 * rotor(location.w),
        c, p;
 
   vec3 col = vec3(0.),
        offset;
 
-  for(float i = 0.; i < n; ++i) {
-    center = loc.xy;
+  for(float i = 0.; i < nbobs; ++i) { 
     
-    offset = vec3(0., -.75,
-                  -column_height * (i/n) + column_shift);
+    offset = vec3(0. , -.0,
+                  -column_height * (i/nbobs) + column_shift);
                   
     vec2 cr = rotor(cam_a);
     vec3 cam_pos = vec3(0., 0., cam_d); // cot(a)?
@@ -437,30 +380,36 @@ vec3 scene0_NEU(vec2 xy, float t) {
     vec2 uv = cmul(ray.xy, r) + offset.xy;
     float z = 1.-length(ray);
 
-    uv = cmul(uv, r) - center;
+    uv = cmul(uv, r)+ center;
 
-    if(length(ray) <= 0.)
-      continue;
-
-    c = cardioid(+t/16.-i/n/4., osc(0.995, 1.009, 1.-i/n));
+     
+    c =center+ seedStrengsth*location.z*cardioid(+t/16.-i/nbobs/4., osc(0.995, 1.009, 1.-i/nbobs));
 //    c = cardioid(t/8.-i/n/4., osc(1.05, 0.99, i/n));
 //    c = mix(vec2(.25, 0.), vec2(.26, 0.), i/n*sin(t));
-    if(f(c, uv)) {
+    if(f(c,  uv)) {
       // inside
-      col += 1.;
+      if(i==0){
+     return vec3(0);
+
+      }else{
+     return makePal1(1);
+      }
       //return vec3(1.-i/n);
     }
-    else
+    else{
+
+   
 //      col += vec3(pow(f_k/f_n, .0125));
 //      col += 1.-i/n*spectrum(f_k/f_n);
 //      return vec3(f_k/f_n)-col/i/2.;
-      return hsv(.6, f_k/MAX_ITER, 1.-i/n)/length(ray);
+     col+= makePal1(f_k/MAX_ITER )/length(ray)  ;
 //      return 1.-vec3(pow(f_k/f_n,1.));
     // outside
-    //col += hsv(0.6, 0.5, pow(f_k/f_n, 1.));
+    //col += hsv(0.6, 0.5, pow(f_k/f_n, 1.)); }
+  }
   }
 //  return vec3(0.);
-  return vec3(0.,0.,.15);
+  return col/nbobs;// vec3(0.,0.,.15);
 }
 
 float vignetteScale=116.,vignettePow=.25;
@@ -490,7 +439,8 @@ const float ding1[8]=float[8](
     ); 
 float flash44Kick;
 float flash44Hihat;
-vec2 manPos=vec2(1.4,.5);
+vec2 manPos=vec2(-1.80,.5);
+//vec2 manPos=vec2(-1.80,.5);
 
 vec4 result=vec4(0.);  
 // die sichtbarkeiten der layer, hier haben wir 3 layer daher vec, sind alpha blends quasi
@@ -592,86 +542,131 @@ layerVisibilities.y=easeInOutTap(fract(beat2))  ;
 
 if (beat1<3){
 
-    manPos=manPos+vec2((1-beat1/3)*3., 0.)*easeOutQuad(1-beat1/3);
+    manPos=manPos-vec2((1-beat1/3)*3., 0.)*easeOutQuad(1-beat1/3);
 }
 if (beat1>3 && beat1<4){
 
     man_seedMouth=man_seedMouth+vec2((1-fract(beat1) )* .5, 0.)*easeOutQuad(1-fract(beat1) );
 }
+if(beat1>12){
+// move mrfractal2go to the left on start
+
+    manPos=manPos+=vec2(smoothstep(0,18,beat1-12),0)*3  ;
+}
 
 
 // blinzeln
     manEyesOpen=flashBang8(beat1 ,float[8](3,2,1,0,0,0,0,0));
+// sprechen
+man_seedMouth=vec2(
+sin3(t*.83425)*0.4-0.5,
+sin3(t*.34216)*0.1
+ )  ;
 
 if(beat1>8) {  
-    location=locations[int((beat1)/4)%NLOCATIONS];
+    location=locations[int((beat1)/4)%2];
+man_seedMouth+=vec2(sin(beat1*PI2),cos(beat1*PI2))*0.1;
 }
 
 
-if(beat1>29) {  
+if(beat1>12*4) {  
 
 // origiinal vec2 vigSize=vec2(0.3*1.5 ,0.4*1.5);
-    location=locations[int((beat1)/4)%NLOCATIONS];
+    location=locations[int((beat1)/4)%4];
  vigCenter=vec2(0.7,0.6 );
  vigSize=vec2(0.3*1.6 ,0.4*1.6);
 // manPos+=vec2(-0.4,0.1);
 man_Size=2;
-} 
 
+
+} 
+ 
 //location=locations[int((beat2+1)/2)%NLOCATIONS];
 
 if(beat2>4*24) {
 
 //deedup, da machen wir rotatrrion rein
-location.w=sin(beat1);
+location.w=sin(beat1/4)*PI;
 
 }
 
 
 
-if(beat2>14*4+2){
-  brotVisibilities=vec2(0,1);
+if(beat2>13*4){
+  brotVisibilities=vec2(0,1); //julia mode 
 //  manFace=1;
 //  man_seedMouth=vec2(0);
 }
 if(beat1>16*4 && int(beat1/4)%3==1){
-  // zoom reinballern
-  location.z=expInterp(location.z,location.z*.5,easeInOutQuad(fract(beat1/4 )));
+  // zoom reinballern periodsch ab beat 16*4 halt
+  //location.z=expInterp(location.z,location.z*.5,easeInOutQuad(fract(beat1/4 )));
 }
 
 
-if(beat1>4*20) {  
-    location=locations[int((beat1)/4)%NLOCATIONS];
+if(beat1>4*16) {  
+  // ein bisschen naeher noch, aber maenneken sichtbar
+//    location=locations[int((beat1)/4)%NLOCATIONS];
  vigCenter=vec2(0.6,0.5 );
  vigSize=vec2(0.3*2 ,0.4*2);
 man_Size=1.8;
  //manPos+=vec2(0,0.2);
 } 
-if(beat1>4*20){
+if(beat1>4*17){
   // main transition zum haupt effect
-float ease=easeOutQuad(fract(beat1));
-layerVisibilities=vec3(ease,1-ease,1);
+  
+    location=locations[4];
+float ease=easeOutQuad(fract(beat1));  
+  // damit liegt juliabob und mandelbroetchen uebereinander
+nbobs=1;
+cam_a=0;
+  cam_d=2;
+layerVisibilities=vec3(1-ease,ease,1);
 
 }
 
 // phase main effect
 
 if(beat1>4*25) {  
+  cam_a=-smoothstep(0,4,beat1-4*25)*0.8;
+  column_height=smoothstep(0,4,beat1-4*25)*2;
+  column_shift=smoothstep(0,4,beat1-4*25)*1;
+  nbobs=smoothstep(0,4,beat1-4*25)*150;
+ 
+
 layerVisibilities=vec3(1,0,0);
  vigCenter=vec2(0.5,0.5 );
  vigSize=vec2(1,1);
  //manPos+=vec2(0,0.2);
 } 
+if(beat1>4*26){
+  location.w+=beat1*0.1-4*26;
+}
 
 if(beat1>4*30){
-  MAX_ITER=121;
-  nbobs=3;
+  MAX_ITER=25;
+    location=locations[int((beat1)/4)%NLOCATIONS];
+     seedStrengsth=1;
+amplitude=1;
+roughness=2;
+  MAX_ITER=50;
+  nbobs=100;
+  cangle=22.;
+//layerVisibilities=vec3(sin(t) ,cos(t) ,0);
+
+       // column_height = 0,
+      //  column_shift = 0;
 //  amplitude=sin(beat1*PI)*0.1+1;
     //cam_a= PI/4;
   //cam_d=sin(beat1)+3;
   //cangle=sin(beat1/4*PI);
 }
+if(beat1>4*36){
+  float banger=flashBang4(beat1,float[4](1,0,1,0));
+  float banger2=flashBang4(beat1,float[4](1,1,1,1));
+brotVisibilities=vec2(banger,1-banger);
+layerVisibilities=vec3(banger2,1-banger2,1);
 
+}
   /*
 
   if(beat2>8){
@@ -786,7 +781,7 @@ fragCoord.xy*= 1/vigSize*1.;
 
 
   return  max(
-    layerVisibilities.x*vec4(scene0_NEU(fragCoord,t),1),
+    layerVisibilities.x*vec4(scene0_NEU(fragCoord),1),
     layerVisibilities.y*scene2Mandelbroetchen(fragCoord));
 }
 
@@ -840,12 +835,10 @@ void main() {
   vec2 uv = gl_FragCoord.xy / iResolution.xy;
   
   vec4 rz = mainWrap(uv*2-1);
-
-
-  vec4 mandelTriklopsBg=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2-1)*man_Size+manPos)),1);   
   vec4 mandelTriklops=vec4(layerVisibilities.z*makePal2(mandelMan((uv*2-1)*man_Size+manPos)),1);   
-
-  o=rz*vignetteRect(uv);
+ 
+// o=rz;
+  o=(rz/1)*vignetteRect(uv);
   o=max(o,mandelTriklops);
 
  
