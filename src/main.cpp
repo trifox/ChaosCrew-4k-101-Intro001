@@ -11,7 +11,7 @@
 	#define BREAK_COMPATIBILITY 0
 #endif
 
-#define POST_PASS    1
+#define POST_PASS    0
 #define USE_MIPMAPS  0
 #define USE_VSYNC    0 /* vsync dangerous, make sure you never exceeed 60fps when using */
 #define USE_CLEAN_BLACK_START    0 /* ensures windows and gl buffers are properly cleared at start to avoid flicker */

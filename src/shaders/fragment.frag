@@ -12,8 +12,7 @@ const float BAILOUT=256;
 const int SIXTEEN=16;
 
 float MAX_ITER = 70; 
-const float bpm = 127; // forcompletion beats per minute
-const float spb =60/bpm; // derived seconds per beat
+const float bpm = 127.0; // forcompletion beats per minute 
 // returns vignette intensity at uv for a given rectangular area
 vec2 vigCenter=vec2(0.7,0.65 );
 vec2 vigSize=vec2(0.3*1.5 ,0.4*1.5);
@@ -597,7 +596,7 @@ if(beat1>16*4 && int(beat1/4)%3==1){
 }
 
 
-if(beat1>4*16) {  
+if(beat1>4*14) {  
   // ein bisschen naeher noch, aber maenneken sichtbar
 //    location=locations[int((beat1)/4)%NLOCATIONS];
  vigCenter=vec2(0.6,0.5 );
@@ -829,7 +828,7 @@ float vignetteRect(vec2 uv )
 
 void main() {
   // t is timed to beat
-   t = (float(m) / 44100)/spb;
+   t = (float(m) / 44100)/(60/bpm);
  
 // debug offset
 //t-=0.5;
