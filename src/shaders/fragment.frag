@@ -582,17 +582,11 @@ man_Size=2;
 } 
  
 //location=locations[int((beat2+1)/2)%NLOCATIONS];
-
-if(beat2>4*24) {
-
-//deedup, da machen wir rotatrrion rein
-location.w=sin(beat1/4)*PI;
-
-}
+ 
 
 
 
-if(beat2>13*4){
+if(beat2>15*4){
   brotVisibilities=vec2(0,1); //julia mode 
 //  manFace=1;
 //  man_seedMouth=vec2(0);
@@ -742,9 +736,9 @@ layerVisibilities=vec3(banger2,1-banger2,1);
   if(t>4.*12*4.) {
     manPos=vec2(0,.5);
     layerVisibilities=vec3(0,0,1);
-    man_headPos=vec2(sin(t*PI2)*0.1, 0);
+    man_headPos=vec2(abs(sin(t/2*PI2))*0.1, 0);
     man_seedMouth= vec2(-0.7,0);  
-    man_seedEyes=  vec2(sin(t)*0.25-0.75,0.4);  
+    man_seedEyes=  vec2(sin(t/2)*0.25-0.75,0.4);  
   }
 
 //        vec4 scene_1= scene2Mandelbroetchen(fragCoord,t) ;
