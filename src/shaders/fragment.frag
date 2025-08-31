@@ -618,18 +618,25 @@ layerVisibilities=vec3(1-ease,ease,1);
 
 }
 
+// move man out
+if(beat1>4*21){
+  manPos.x-=smoothstep(0,8,beat1-4*21)*5;
+
+}
 // phase main effect
 
-if(beat1>4*25) {  
+if(beat1>4*24) {  
+layerVisibilities=vec3(1,0,0);
+ vigCenter=vec2(0.5,0.5 );
+ vigSize=vec2(1,1);
+ }
+if(beat1>4*25) {   
   cam_a=-smoothstep(0,4,beat1-4*25)*0.8;
   column_height=smoothstep(0,4,beat1-4*25)*2;
   column_shift=smoothstep(0,4,beat1-4*25)*1;
   nbobs=smoothstep(0,4,beat1-4*25)*150;
- 
 
-layerVisibilities=vec3(1,0,0);
- vigCenter=vec2(0.5,0.5 );
- vigSize=vec2(1,1);
+
  //manPos+=vec2(0,0.2);
 } 
 if(beat1>4*26){
