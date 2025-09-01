@@ -1,4 +1,4 @@
-#version 130
+#version 330
 const vec2 iResolution=vec2(1920,1080);  
 
 uniform int m; // Time in sample player 
@@ -52,7 +52,7 @@ const int NLOCATIONS=7;
 // vec4 real,imag,scale for locations  
 const vec4 locations[NLOCATIONS] = vec4[NLOCATIONS]( 
 
-vec4(0.38123779336,0.5993,0.0043,0.210),
+vec4(0.38123779336,0.5993,0.0043,0.21),
 vec4(0.360409,0.614906,0.011646,2.47),
 vec4(0.37714928,0.666878,0.001031,-1.51),
 vec4(0.37689324,0.67856,0.00125,0.65),
