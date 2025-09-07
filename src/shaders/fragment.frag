@@ -82,58 +82,59 @@ vec4 location = locations[4];
 /////////////////// Font stuff
 /////////////////// 
 
-const int A=0;
-const int B=1;
-const int C= 2;
-const int D= 3;
-const int E= 4;
-const int F= 5;
-const int G= 6;
-const int H= 7;
-const int I= 8;
-const int J= 9;
-const int K= 10;
-const int L= 11;
-const int M= 12;
-const int N =13;
-const int O= 14;
-const int P= 15;
-const int Q= 16;
-const int R =17;
-const int S =18;
-const int T =19;
-const int U =20;
-const int V= 21;
-const int W= 22;
-const int X= 23;
-const int Y= 24;
-const int Z= 25;
-const int OE= 26;
-const int MINUS= 30;
-const int PLUS =28;
-const int SLASH= 27;
-const int THING =29;
-const int _ =31  ;
+const int A=31;
+const int B=30;
+const int C= 29;
+const int D= 28;
+const int E= 27;
+const int F= 26;
+const int G= 25;
+const int H= 24;
+const int I= 23;
+const int J= 22;
+const int K= 21;
+const int L= 20;
+const int M= 19;
+const int N =18;
+const int O= 17;
+const int P= 16;
+const int Q= 15;
+const int R =14;
+const int S =13;
+const int T =12;
+const int U =11;
+const int V= 10;
+const int W= 9;
+const int X= 8;
+const int Y= 7;
+const int Z= 6;
+const int OE= 5;
+const int MINUS= 1;
+const int PLUS =2;
+const int SLASH= 4;
+const int THING =3;
+const int _ =0 ;
 
 
 
-const uint bitmap3x3vertical[9] = uint[]( 
+
+const int bitmap3x3vertical[9] = int[]( 
     // 32 3x3 characters packed in this one
-                 //  abcdefghijklmnopqrstuvwxyz
-    0x6F3BDFA0u, //  01101111001110111101111110100000  
-    0xAEC7F04Cu, //  10101110110001111111000001001100
-    0x3D2FFFF0u, //  00111101001011111111111111110000
-    0xFF3FEE6Eu, //  11111111001111111110111001101110
-    0xDDED77FEu, //  11011101111011010111011111111110
-    0xD30FAE6Eu, //  11010011000011111010111001101110
-    0xFF7FEB70u, //  11111111011111111110101101110000
-    0x7A9ABEECu, //  01111010100110101011111011101100
-    0xFB3E4B20u  //  11111011001111100100101100100000
+                 //  abcdefghijklmnopqrstuvwxyzö/+d-_ d=ding
+    0x6F3BDFA0, //  01101111001110111101111110100000  
+    0xAEC7F04C, //  10101110110001111111000001001100
+    0x3D2FFFF0, //  00111101001011111111111111110000
+    0xFF3FEE6E, //  11111111001111111110111001101110
+    0xDDED77FE, //  11011101111011010111011111111110
+    0xD30FAE6E, //  11010011000011111010111001101110
+    0xFF7FEB70, //  11111111011111111110101101110000
+    0x7A9ABEEC, //  01111010100110101011111011101100
+    0xFB3E4B20  //  11111011001111100100101100100000
 );
  
 uint characterVertical(vec2 uv,uint c){
-    uint b=bitmap3x3vertical[int(uv.y*3.)*3+int(uv.x*3.) ]; 
-    return (b >> ( 31u-c )) & 1u;
+    uint b=uint(bitmap3x3vertical[int(uv.y*3.)*3+int(uv.x*3.) ]); 
+    return (b >>  c ) & 1u;
 } 
 
 float sdCircle( vec2 p, float r )
@@ -148,7 +149,7 @@ float characterMasked(vec2 uv,uint chari){
 
 const int TEXT_LEN = 18;
 const int[18] text = int[TEXT_LEN](
-MINUS,_,M,A,N,D,E,L,B,R,OE,T,C,H,E,N,_,MINUS
+MINUS,_,M,A,N,D,E,L,B,R,OE,T,C,H,E,N,_,MINUS 
 );
 
 /////////////////////////////////////////////////////////////////////
@@ -620,6 +621,7 @@ if(beat1>15){
 
 if(beat1>24){
   layerVisibilities.x=1;
+  layerVisibilities.y=1;
 }
 
   return  max(
