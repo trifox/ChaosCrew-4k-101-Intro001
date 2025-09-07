@@ -1,39 +1,43 @@
  
- #version 130 
+ #version 330
  const vec2 v=vec2(1920,1080);
  uniform int f;
  out vec4 i;
- float z=2.5;
- const float y=acos(-1.),x=y*2,c=y/2;
+ const float y=acos(-1.),x=y*2,s=y/2;
  float r=70;
- vec2 s=vec2(.7,.65),e=vec2(.45,.6);
- float w;
- const float t[16]=float[16](1,0,1,1,0,1,0,0,1,0,1,1,0,1,0,0),l[8]=float[8](0,0,0,1,0,1,1,1),C[16]=float[16](0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0),F[16]=float[16](0,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0);
- const vec4 m[7]=vec4[7](vec4(.381237793363,.599378097942,.0043003932242124,.210650642331455),vec4(.36040230539,.61490698108,.0116467981316091,2.47319284622003),vec4(.377149286568,.666878777916,.001031652237121,-1.51338079786462),vec4(.376893240379,.67856869319,.0012574438753357,.659992074344396),vec4(.359892739013,.684762020212,.0055530835704995,3.1212786038479),vec4(.35925922476,.64251373714,.0471434239452839,2.04478694336364),vec4(-.15652016683,1.0322471089,.0818869702769474,2.47777293542364));
- vec4 a=m[4];
+ vec2 z=vec2(.5),u=vec2(1);
+ float m;
+ const vec4 t[7]=vec4[7](vec4(.3812,.5993,.0043,.21),vec4(.3604,.6149,.0116,2.47),vec4(.3771,.6668,.001,1.51),vec4(.3768,.6785,.0012,.65),vec4(.3598,.6847,.0055,3.12),vec4(.3592,.6425,.0471,2.04),vec4(.156,1.0322,.0818,2.47));
+ vec4 c=t[4];
+ const uint p[9]=uint[](1866194848u,2932338764u,1026555888u,4282379886u,3723327486u,3541020270u,4286573424u,2056961772u,4215163680u);
+ uint n(vec2 v,uint z)
+ {
+   return p[int(v.y*3.)*3+int(v.x*3.)]>>31u-z&1u;
+ }
+ const int[18] a=int[18](30,31,12,0,13,3,4,11,1,17,26,19,2,7,4,13,31,30);
  float n(float v)
  {
    return smoothstep(0.,.25,v)*(1.-smoothstep(.01,.25,v));
  }
- vec2 n(vec2 v,vec2 a)
+ vec2 n(vec2 v,vec2 c)
  {
-   return vec2(v.x*a.x-v.y*a.y,v.x*a.y+v.y*a.x);
+   return vec2(v.x*c.x-v.y*c.y,v.x*c.y+v.y*c.x);
  }
- vec2 p(float v)
+ vec2 g(float v)
  {
    return vec2(cos(v),sin(v));
  }
- vec3 n()
+ vec3 g()
  {
-   vec4 a=vec4(1,0,0,3);
-   return.8*mix(a.xxx,clamp(abs(fract(vec3(.7)+a.xyz)*6-a.www)-a.xxx,0,1),.7);
+   vec4 v=vec4(1,0,0,3);
+   return.8*mix(v.xxx,clamp(abs(fract(vec3(.7)+v.xyz)*6-v.www)-v.xxx,0,1),.7);
  }
- float b;
+ float w;
  vec2 d;
- bool p(vec2 v,vec2 a)
+ bool g(vec2 v,vec2 m)
  {
-   d=a;
-   for(b=0.;b<r;++b)
+   d=m;
+   for(w=0.;w<r;++w)
      {
        d=n(d,d)+v;
        if(dot(d,d)>256)
@@ -41,191 +45,147 @@
      }
    return true;
  }
- vec3 g(vec2 v,vec2 a)
+ vec3 e(vec2 v,vec2 m)
  {
-   p(v,a);
-   return vec3(d.xy,b/r);
+   g(v,m);
+   return vec3(d.xy,w/r);
  }
- vec2 g(vec2 v,vec2 f,float a,float w)
+ vec2 e(vec2 v,vec2 f,float y,float m)
  {
-   return n(f+v*a,p(radians(w)));
+   return n(f+v*y,g(radians(m)));
  }
- float g(vec2 v,vec2 a,vec2 f,float w)
+ float e(vec2 v,vec2 m,vec2 f,float y)
  {
-   return g(g(v,f,w,180),a).z;
+   return e(e(v,f,y,180),m).z;
  }
- float n(vec2 v,vec2 f,vec2 a,float w)
+ float g(vec2 v,vec2 f,vec2 y,float m)
  {
-   return g(f,g(v,a,16.,w)).z;
+   return e(f,e(v,y,16.,m)).z;
  }
- vec3 g(vec2 v,vec4 a)
+ vec3 e(vec2 v,vec4 m)
  {
-   return g(a.xy,n(v,p(a.w))*a.z+a.xy);
+   return e(m.xy,n(v,g(m.w))*m.z+m.xy);
  }
- vec2 o=vec2(0),u=vec2(0),A=vec2(0);
- float B=0.;
- float g(vec2 a)
- {
-   r=250.;
-   float v;
-   a=n(a,p(radians(90.)));
-   vec2 f=vec2(.5,0),e=f+vec2(3.15,2.4);
-   v=g(a,u*.25,f+vec2(-1.3,0),.8)*.75;
-   a+=A;
-   return v+g(a,vec2(0),f,2.)-n(a,o-vec2(B*.9,0),f+e,-90)-n(vec2(a.x,-a.y),o-vec2(B,0),f+e,-90)-n(a,u,f+vec2(-5,0),90.);
- }
- vec3 g(float a)
- {
-   return vec3(.2549,.8824,.4118)*a;
- }
- vec3 h(float a)
- {
-   return n()+vec3(.25,.35,.45)*cos(x*(vec3(1,2,3)*a+vec3(w*2*0.,w/4*0.,w*8*0.)));
- }
- vec2 D=vec2(1,0);
- vec4 h(vec2 v)
+ vec2 b=vec2(0),l=vec2(0),o=vec2(0),C=vec2(0);
+ float B=1;
+ float e(vec2 v)
  {
    r=250;
-   vec3 f=g(n(v,p(a.w))*a.z+a.xy,vec2(0)),s=g(v,vec4(a.xyz,a.w+n(fract(w/8.))*(y/2.)));
-   return D.x*vec4(h(f.z),1)+D.y*vec4(h(s.z),1);
+   float f;
+   v=n(v,g(radians(90.)))*B;
+   vec2 m=vec2(.5,0),y=m+vec2(3.15,2.4);
+   f=e(v,l*.25,m+vec2(-1.3,0),.8)*.75;
+   v+=C;
+   return f+e(v,vec2(0),m,2.)-g(v,b-vec2(0*.9,0),m+y,-90)-g(vec2(v.x,-v.y),b-vec2(0),m+y,-90)-g(v,o,m+vec2(-5,0),90);
  }
- float g(float v,float[4] a)
+ vec3 e(float v)
  {
-   return n(fract(v))*a[int(v)%4];
+   return vec3(.2549,.8824,.4118)*v;
  }
- float E(float a)
+ vec3 h(float v)
  {
-   return a*a;
+   return g()+vec3(.25,.35,.45)*cos(x*(vec3(1,2,3)*v+vec3(m*2*0,m/4*0,m*8*0)));
  }
- vec2 E(float v,float a)
+ vec2 A=vec2(1,0);
+ vec4 g(vec2 v)
  {
-   vec2 f=p(v)*a;
-   return vec2(1.-E(f.x-1.)+E(f.y),-2.*(f.x-1.)*f.y)/4.;
+   r=250;
+   vec3 f=e(n(v,g(c.w))*c.z+c.xy,vec2(0)),d=e(v,vec4(c.xyz,c.w+n(fract(m/8.))*(y/2.)));
+   return A.x*vec4(h(f.z),1)+A.y*vec4(h(d.z),1);
  }
- float G=.5,H=1.,I=1e2,J=0.,K=.5,L=10.,M=1.,N=-.1;
- vec2 O=vec2(0),P,Q,R,S,T,U;
- vec3 V,W,X,Y;
- float Z=0;
- vec3 E(vec2 v)
+ float D(float v)
  {
-   vec2 f=a.xy,z=a.z*8*p(a.w),i;
-   vec3 s=vec3(0),e;
-   for(float d=0.;d<I;++d)
+   return v*v;
+ }
+ vec2 D(float v,float m)
+ {
+   vec2 f=g(v)*m;
+   return vec2(1.-D(f.x-1.)+D(f.y),-2.*(f.x-1.)*f.y)/4.;
+ }
+ float E=.5;
+ vec2 F=vec2(0),G,H,I,J,K,L;
+ vec3 M,N,O,P;
+ vec3 D(vec2 v)
+ {
+   vec2 f=c.xy,z=c.z*8*g(c.w),i;
+   vec3 b=vec3(0),d;
+   for(float s=0;s<100;++s)
      {
-       e=vec3(0,0,-M*(d/I)+N);
-       vec2 u=p(G);
-       vec3 o=vec3(0,0,H);
-       o.yz=n(u,o.yz);
+       d=vec3(0,0,-1.*(s/100)+-.1);
+       vec2 u=g(.5);
+       vec3 e=vec3(0,0,1);
+       e.yz=n(u,e.yz);
        vec3 x=vec3(v,1);
        x.yz=n(u,x.yz);
-       x=x*(o.z-e.z)/x.z-o;
-       u=n(n(x.xy,z)+e.xy,z)+f;
-       i=f+Z*a.z*E(w/16.-d/I/4.,(sin(w-(1.-d/I)*2.*y)/2.+.5)*.014+.995);
-       if(p(i,u))
-         return d==0?
+       x=x*(e.z-d.z)/x.z-e;
+       u=n(n(x.xy,z)+d.xy,z)+f;
+       i=f+0*c.z*D(m/16.-s/100/4.,(sin(m-(1.-s/100)*2.*y)/2.+.5)*.014+.995);
+       if(g(i,u))
+         return s==0?
            vec3(0):
            h(1);
-       s+=h(b/r)/length(x);
+       b+=h(w/r)/length(x);
      }
-   return s/I;
+   return b/100;
  }
- float _=0;
- float h(float v,float a)
+ float Q=0;
+ float e(float v,float m)
  {
-   return sin(a/v*x)>0.?
+   return sin(m/v*x)>0?
      1:
      0;
  }
- const float j[8]=float[8](1,0,1,0,0,0,0,0);
- float k,q;
- vec2 at=vec2(1.4,.5);
- vec4 ac=vec4(0);
- vec3 aa=vec3(0,0,1);
- float az;
- float an(float v)
+ const float R[8]=float[8](1,0,1,0,0,0,0,0);
+ float S,T;
+ vec2 U=vec2(-1.8,.5);
+ vec4 V=vec4(0);
+ vec3 W=vec3(0,0,1);
+ float X;
+ vec4 h(vec2 v)
  {
-   return(sin(v)+sin(v*2)+sin(v*3))/3;
+   T=n(fract(m));
+   Q=n(fract(m/4.))+n(fract((m+2)/4));
+   b=vec2(-.35,0);
+   o=vec2(-1,0);
+   C=vec2(-.1,0);
+   X=e(1,m)*e(2,m);
+   E=sin(m)*.2+1.1;
+   float f=m,z=m*2;
+   if(f>=0)
+     U=vec2(mix(3.6,0,smoothstep(0,1,f/4)),.5);
+   if(f<8&&f>4)
+     b+=D(smoothstep(0,3,f-4)*x,1);
+   if(f>8&&f<12)
+     l+=D(sin(z)*y,1.5);
+   if(f>12)
+     U+=vec2(smoothstep(0,1,f-12)*4.5,4.5);
+   if(f>12&&f<16)
+     b+=D(sin(z)*y,1.5);
+   if(f>15)
+     B=exp(mix(log(1.),log(.01),fract((f-15)/4)));
+   if(f>24)
+     W.x=1;
+   return max(W.x*vec4(D(v),1),W.y*g(v));
  }
- float af(float v)
+ float n(vec2 v)
  {
-   return 1.f-(1.f-v)*(1.f-v);
- }
- float ap(float a)
- {
-   return a<.5f?
-     2.f*a*a:
-     1.f-pow(-2.f*a+2.f,2.f)/2.f;
- }
- vec4 af(vec2 v)
- {
-   q=n(fract(w));
-   _=n(fract(w/4.))+n(fract((w+2)/4));
-   o=vec2(-.35,0);
-   u=vec2(-1,0);
-   A=vec2(-.1,0);
-   az=h(1,w)*h(2,w);
-   K=sin(w)*.2+1.1;
-   float f=w,d=w*2;
-   if(int(d)==7)
-     aa.y=n(fract(d));
-   if(f>4)
-     aa.y=smoothstep(0,2,f-4);
-   if(f<3)
-     at+=vec2((1-f/3)*3.,0)*af(1-f/3);
-   if(f>3&&f<4)
-     u+=vec2((1-fract(f))*.5,0)*af(1-fract(f));
-   B=n(fract(f))*float[8](3,2,1,0,0,0,0,0)[int(f)%8];
-   u=vec2(an(w*.83425)*.4-.5,an(w*.34216)*.1);
-   if(f>8)
-     a=m[int(f/4)%2];
-   if(f>29)
-     a=m[int(f/4)%4],s=vec2(.7,.6),e=vec2(.48,.64),z=2;
-   if(d>96)
-     a.w=sin(f/4)*y;
-   if(d>58)
-     D=vec2(0,1);
-   if(f>64&&int(f/4)%3==1)
-     a.z=exp(mix(log(a.z),log(a.z*.5),ap(fract(f/4))));
-   if(f>64)
-     s=vec2(.6,.5),e=vec2(.3*2,.4*2),z=1.8;
-   if(f>68)
-     {
-       a=m[4];
-       float s=af(fract(f));
-       I=1;
-       G=0;
-       H=2;
-       aa=vec3(1-s,s,1);
-     }
-   if(f>100)
-     G=-smoothstep(0,4,f-100)*.8,M=smoothstep(0,4,f-100)*2,N=smoothstep(0,4,f-100),I=smoothstep(0,4,f-100)*150,aa=vec3(1,0,0),s=vec2(.5),e=vec2(1);
-   if(f>104)
-     a.w+=f*.1-104;
-   if(f>120)
-     r=25,a=m[int(f/4)%7],Z=1,J=1,K=2,r=50,I=100,L=22.;
-   if(f>144)
-     {
-       float a=g(f,float[4](1,0,1,0)),w=g(f,float[4](1,1,1,1));
-       D=vec2(a,1-a);
-       aa=vec3(w,1-w,1);
-     }
-   if(w>4.*12*4.)
-     at=vec2(0,.5),aa=vec3(0,0,1),A=vec2(sin(w*x)*.1,0),u=vec2(-.7,0),o=vec2(sin(w)*.25-.75,.4);
-   v.xy-=s.xy*.5;
-   v.xy*=1/e;
-   return max(aa.x*vec4(E(v),1),aa.y*h(v));
- }
- float an(vec2 a)
- {
-   a=clamp((a-s+e*.5)/e,0,1);
-   a*=1-a;
-   return pow(a.x*a.y*31.,.5);
+   v=clamp((v-z+u*.5)/u,0,1);
+   v*=1-v;
+   return pow(v.x*v.y*31.,.5);
  }
  void main()
  {
-   w=float(f)/44100/0;
-   vec2 a=gl_FragCoord.xy/v.xy;
-   vec4 s=af(a*2-1),d=vec4(aa.z*g(g((a*2-1)*z+at)),1);
-   i=s*an(a);
-   i=max(i,d);
- }
+   m=float(f)/44100/(60/127.);
+   vec2 x=gl_FragCoord.xy/v.xy;
+   vec4 y=h(x*2-1),z=vec4(W.z*e(e((x*2-1)*2.5+U)),1);
+   i=y*n(x);
+   i=max(i,z);
+   x=gl_FragCoord.xy/v.xy;
+   vec2 c=x;
+   x.y=1.-x.y;
+   x.x*=2.;
+   x.x+=m*.1;
+   x*=12.;
+   if(fract(x.x)<.5&&fract(x.y)<.5&&c.y<.5&&c.y>.42)
+     i+=vec4(n(fract(x*2.),uint(a[int(x.x)%18])));
+ } 

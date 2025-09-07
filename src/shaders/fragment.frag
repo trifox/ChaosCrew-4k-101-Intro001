@@ -147,7 +147,7 @@ float characterMasked(vec2 uv,uint chari){
 }
 
 const int TEXT_LEN = 18;
-const int[TEXT_LEN] text = int[TEXT_LEN](
+const int[18] text = int[TEXT_LEN](
 MINUS,_,M,A,N,D,E,L,B,R,OE,T,C,H,E,N,_,MINUS
 );
 
@@ -246,7 +246,7 @@ float mandelMan(vec2 uvIn)
   MAX_ITER=250;
   float fragColor=0;
   // Normalized pixel coordinates (from 0 to 1)
-  vec2 uv = cmul(uvIn,rotor(radians(90)))*man_scale;
+  vec2 uv = cmul(uvIn,rotor(radians(90.)))*man_scale;
   vec2 center=vec2( .5,-0  );
   float scale=2.;
   vec2 eyePos=center+vec2(  3.150, 2.40);
@@ -615,7 +615,7 @@ if(beat1>12&&beat1<16){
 
 if(beat1>15){
   // zoomie
-  man_scale=expInterp(1,.01,fract((beat1-15)/4  ));
+  man_scale=expInterp(1.,.01,fract((beat1-15)/4  ));
 }
 
 if(beat1>24){
