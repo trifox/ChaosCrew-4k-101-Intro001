@@ -82,3 +82,12 @@ skript irgendwo
 
 erster takt also vier beats macht im 3ten beat wieder anschlag
 dann 4 4tel
+
+
+
+## 3x2 font
+
+ A   B   C   D    E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z
+  #  #   ##  #   ## ## ## #  #   # ## #   #  # ## ## ## ## ## ##     # ## ## ## ##
+ ##  ##  #   ##  ## ##  # ## #   # ## #  ## ## ## ## ## ## ##  # #  #  #  ## #  ##
+ ##  ##  ##  ##  ## #   # #  #  #  #  ## ## #  ## #   # ## ##  # ## ## ## ## #   #
