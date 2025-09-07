@@ -147,9 +147,12 @@ float characterMasked(vec2 uv,uint chari){
     return float(characterVertical(uv,chari))*smoothstep( 0.25,.0,circ );
 }
 
-const int TEXT_LEN = 18;
-const int[18] text = int[TEXT_LEN](
-MINUS,_,M,A,N,D,E,L,B,R,OE,T,C,H,E,N,_,MINUS 
+const int TEXT_LEN = 53;
+const int[TEXT_LEN] text = int[TEXT_LEN](
+MINUS,_,M,A,N,D,E,L,B,R,OE,T,C,H,E,N,_,MINUS ,_,_,
+A,B,C,D,E,F,G,H,I,J,G,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,OE,MINUS,PLUS,SLASH,THING,_
+ 
+
 );
 
 /////////////////////////////////////////////////////////////////////
