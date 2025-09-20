@@ -116,20 +116,34 @@ const int THING =3;
 const int _ =0 ;
 
 
+const int TEXT_LEN = 98;
+const int[TEXT_LEN] text = int[TEXT_LEN](
+_,_,M,A,N,D,E,L,B,R,OE,T,C,H,E,N,_, 
+G,R,E,E,T,I,N,G,S,_,N,U,A,N,C,E,_,R,E,B,E,L,S,_,F,R,A,C,T,A,L,F,O,R,U,M,S,_,
+C,R,E,D,I,T,S,_,C,O,D,E,_,T,R,I,F,O,X,_,R,E,F,U,R,I,O,_,
+M,U,S,I,C,_,C,H,L,U,M,P,I,E,_ 
+);
+
+const vec3[3] textanim=vec3[3](
+  // wordindex, numwords to show, beatindex
+vec3(0,1,16),
+vec3(0,1,10*4),
+vec3(0,1,25*4)
 
 
+);
 const int bitmap3x3vertical[9] = int[]( 
     // 32 3x3 characters packed in this one
                  //  abcdefghijklmnopqrstuvwxyzö/+d-_ d=ding
-    0x6F3BDFA0, //  01101111001110111101111110100000  
-    0xAEC7F04C, //  10101110110001111111000001001100
-    0x3D2FFFF0, //  00111101001011111111111111110000
-    0xFF3FEE6E, //  11111111001111111110111001101110
-    0xDDED77FE, //  11011101111011010111011111111110
-    0xD30FAE6E, //  11010011000011111010111001101110
-    0xFF7FEB70, //  11111111011111111110101101110000
-    0x7A9ABEEC, //  01111010100110101011111011101100
-    0xFB3E4B20  //  11111011001111100100101100100000
+    0x6F3BDFA0u, //  01101111001110111101111110100000  
+    0xAECFF04Cu, //  10101110110011111111000001001100
+    0x3D2FFFF0u, //  00111101001011111111111111110000
+    0xFF3FEE6Eu, //  11111111001111111110111001101110
+    0xDDED73FEu, //  11011101111011010111001111111110
+    0xD30FAE6Eu, //  11010011000011111010111001101110
+    0xFF7FEB74u, //  11111111011111111110101101110100
+    0x7A92BEECu, //  01111010100100101011111011101100
+    0xFB3E4B24u  //  11111011001111100100101100100100
 );
  
 uint characterVertical(vec2 uv,uint c){
@@ -137,6 +151,22 @@ uint characterVertical(vec2 uv,uint c){
     return (b >>  c ) & 1u;
 } 
 
+ vec2 word2(int idx){
+    int start = 0;
+    int w = -1;
+    for(int i=0;i<TEXT_LEN;i++){
+        if(text[i]==_){
+            w++;
+            if(w==idx){
+                int j = i+1;
+                // warning disabled overflow check, always place _ at end of text array
+                while(text[j]!=_) j++;
+                return vec2((i+1), (j-i-1));
+            }
+        }
+    }
+    return vec2(0); // falls index zu groß
+}
 float sdCircle( vec2 p, float r )
 {
     return length(p) - r;
@@ -147,13 +177,6 @@ float characterMasked(vec2 uv,uint chari){
     return float(characterVertical(uv,chari))*smoothstep( 0.25,.0,circ );
 }
 
-const int TEXT_LEN = 53;
-const int[TEXT_LEN] text = int[TEXT_LEN](
-MINUS,_,M,A,N,D,E,L,B,R,OE,T,C,H,E,N,_,MINUS ,_,_,
-A,B,C,D,E,F,G,H,I,J,G,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,OE,MINUS,PLUS,SLASH,THING,_
- 
-
-);
 
 /////////////////////////////////////////////////////////////////////
 // Utility Methods, 
@@ -242,25 +265,25 @@ vec2 man_headPos=vec2(0);
 float man_scale=1;
 float manFace=1;
 float manEyesOpen=0; // eyes open 0 = outside closed 
-float manEyesSymmetry=.9; // eyes open 0 = outside closed 
+float manEyesOpenSymmetry=.9; // controls how much of the opennes the second eye follows  
+float manEyesSymetry=1; // -1 eyes x pos mirrored, 1 same seed for both eyes
 float mandelMan(vec2 uvIn)
 {
   
-
-  MAX_ITER=250;
+ 
   float fragColor=0;
   // Normalized pixel coordinates (from 0 to 1)
   vec2 uv = cmul(uvIn,rotor(radians(90.)))*man_scale;
   vec2 center=vec2( .5,-0  );
   float scale=2.;
-  vec2 eyePos=center+vec2(  3.150, 2.40);
+  vec2 eyePos=center+vec2(  3.150, 2.40); 
   // Mandelbrot 
   fragColor = mandelbrotExt(uv ,man_seedBody*  .25,center+vec2(-1.3,0),scale* .4 ,180)* .75;  
  
   uv+=man_headPos;
   fragColor += mandelbrotExt(uv,vec2(0),center,scale*1 ,180)
-            -  juliaExt(uv,man_seedEyes-vec2(manEyesOpen*manEyesSymmetry,0) ,               center+eyePos,scale*8.,-90)*manFace
-            -  juliaExt(vec2(uv.x, -uv.y),man_seedEyes-vec2(manEyesOpen,0)  ,center+eyePos,scale*8.,-90)*manFace
+            -  juliaExt(uv,man_seedEyes-vec2(manEyesOpen*manEyesOpenSymmetry,0) ,               center+eyePos,scale*8.,-90)*manFace
+            -  juliaExt(vec2(uv.x,manEyesSymetry*uv.y),man_seedEyes-vec2(manEyesOpen,0)  ,      center+vec2(eyePos.x,eyePos.y*-manEyesSymetry ),scale*8.,-90)*manFace
             /// den mund, da wollen wir die schwarzen bereiche mit zaehnen also vertikalen streifen rendern
             -  juliaExt(uv,man_seedMouth,center+vec2(   -5.,.0),scale*8.*manFace,90);
   return fragColor;
@@ -558,6 +581,14 @@ float easeInOutQuad(float t) {
         ? 2.0f * t * t
         : 1.0f - pow(-2.0f * t + 2.0f, 2.0f) / 2.0f;
 }
+
+// GLSL: Gauß-Spike zentriert bei x = 0.5
+// f(x) = exp(-alpha * (x - 0.5)^2)
+
+float spike(float x, float alpha) {
+    float d = x - 0.5;
+    return exp(-alpha * d * d);
+}
 vec4 mainWrap(vec2 fragCoord) {
 
 /// achtung hier die methode direkt zu returnen
@@ -601,29 +632,32 @@ if(beat1>=0){
 } 
 if(beat1<8&& beat1>4){
   //gucki mode
-  man_seedEyes+=cardioid(smoothstep(0,3,beat1-4)*PI2,1);
+//  man_seedEyes+=cardioid(smoothstep(0,3,beat1-4)*PI2,1);
+ man_seedEyes+=smoothstep(0,1,beat1-4)*mix(vec2(-.2,.15),vec2(-.2,-0.15),sin((beat1/2)*PI));
+// manEyesOpen=mix(0,0.5,sin(beat2*PI))
 }
 if(beat1>8&&beat1<12){
   // dancie mode
   man_seedBody+=cardioid(sin(beat2)*PI,1.5);
+  man_headPos+=vec2(sin(beat3)*0.2,0);
 }
-if(beat1>12 ){
+if(beat1>12 &&beat1<14){
   // zwinker mode
-  manPos+=vec2(smoothstep(0,1,beat1-12)*4.5,4.5);
-}
-if(beat1>12&&beat1<16){
-  // zwinker mode 
-  man_seedEyes+=cardioid(sin(beat2)*PI,1.5);
+  //manPos+=vec2(smoothstep(0,1,beat1-12)*4.5,4.5);
+manEyesOpen+=spike(fract(beat1/2),100.);
+manEyesOpenSymmetry=0;
 }
 // beat 12/14 or something then will become the beam into the eye
 
-if(beat1>15){
+if(beat1>15&&beat1<24){
   // zoomie
   man_scale=expInterp(1.,.01,fract((beat1-15)/4  ));
 }
 
 if(beat1>24){
-  layerVisibilities.x=1;
+  
+  man_Size=0;
+    layerVisibilities.x=1;
   layerVisibilities.y=1;
 }
 
@@ -673,6 +707,8 @@ float vignetteRect(vec2 uv )
 // out declarations toplevel are not really useful, in c++ world it is the declared output of the shader
 // in glsl this is handled similarly but using that gl_FragColor instead, having the mainWrap() method to be used in html editor
 
+
+
 void main() {
   // t is timed to beat
    t = (float(m) / 44100)/(60/bpm);
@@ -697,15 +733,41 @@ uv = gl_FragCoord.xy / iResolution.xy;
 // text stuff
      uv.y=1.-uv.y;
     uv.x*=2.;
-    uv.x+=t*.1;
+//    uv.x+=t*.1;
     uv*=12.;
+    int wordi=0;
+    // Manual Word encoding
+    if(t>16&&t<24){
+      wordi=1;
+    }
+
+    if(t>4*16&&t<4*16+7*4)
+    {
+      //greetings
+      wordi=2+int(((t-4*16)+4)/8)%4;
+    }
+    if(t>10*16&&t<10*16+4*6)
+    {
+      //credits
+      wordi=6+int((t-10*16)/4)%6;
+    }
+    
+
+    
+    
+      vec2 wordPos=word2(wordi);
     
 if(
+  // nutze nur ausschnitt aus space
     fract(uv.x)<.5 && 
     fract(uv.y)<.5 &&  
+    // halt in der mitte von screen
     uvOri.y<.5&&uvOri.y>.42)
     {
-o+=vec4(characterVertical(fract(uv*(1./.5)),uint(text[int(uv.x)%TEXT_LEN])) );
+
+      int charIndex=int(wordPos.x)+int(uv.x)%TEXT_LEN;
+      charIndex-=int((26-wordPos.y)/2);
+o+=vec4(characterMasked(fract(uv*(1./.5)),uint(text[charIndex>=(wordPos.x)&&charIndex<=wordPos.x+wordPos.y?charIndex:0])) );
     }  
 /*
 if(uv.y>0.2 && uv.x<t/256 ) {
