@@ -52,8 +52,10 @@ const float beatTrack_4Achtel2[16]=float[16](
 */
 const int NLOCATIONS = 3;
 // vec4 real,imag,scale for locations  
-const vec4 locations[NLOCATIONS] = vec4[NLOCATIONS](vec4(-1.52181, 0, .0044053, 0), vec4(.262830, .6122595, 0.007310, 2.179), vec4(-.69094, .4653495, 0.008320, 2.718)
-
+const vec4 locations[NLOCATIONS] = vec4[NLOCATIONS](
+  vec4(-1.52181, 0, .0044053, 0), 
+  vec4(.262830, .6122595, 0.007310, 2.179),
+  vec4(-.69094, .4653495, 0.008320, 2.718)
 /// alte coords
 
 /*
@@ -185,7 +187,7 @@ float expInterp(float a, float b, float t) {
 }
 
 float easeInOutTap(float t) {
-  return smoothstep(.0, .4, t) * (1.0 - smoothstep(.01, .4, t));
+  return smoothstep(.0, .2, t) * (1.0 - smoothstep(.8, 1, t));
 }
 vec2 cmul(vec2 a, vec2 b) {
   return vec2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
@@ -242,7 +244,7 @@ vec2 man_headPos = vec2(0);
 float man_scale = 1;
 float manFace = 1;
 float manEyesOpen = 0; // eyes open 0 = outside closed 
-float manEyesOpenSymmetry = .9; // controls how much of the opennes the second eye follows  
+float manEyesOpenSymmetry = .0; // controls how much of the opennes the second eye follows  
 float manEyesSymetry = 1; // -1 eyes x pos mirrored, 1 same seed for both eyes
 float mandelMan(vec2 uvIn) {
 
@@ -350,6 +352,13 @@ float cubicIn(float t) {
 float cubicInOut(float t) {
   return t < .5 ? 4.0 * t * t * t : .5 * pow(2.0 * t - 2.0, 3.0) + 1.0;
 }
+
+float backOut(float t) {
+  float f = 1.0 - t;
+  return 1.0 - (pow(f, 3.0) - f * sin(f * PI));
+}
+
+
 float backIn(float t) {
   return pow(t, 3.0) - t * sin(t * PI);
 }
@@ -521,7 +530,9 @@ float easeOutQuad(float t) {
 float easeInOutQuad(float t) {
   return t < .5 ? 2.0 * t * t : 1.0 - pow(-2.0 * t + 2.0, 2.0) / 2.0;
 }
-
+float easeOutSine(float x) {
+  return sin((x * PI) / 2);
+}
 // GLSL: Gauß-Spike zentriert bei x = 0.5
 // f(x) = exp(-alpha * (x - 0.5)^2)
 
@@ -545,9 +556,9 @@ vec4 mainWrap(vec2 fragCoord) {
   // blink schaltet echt die beiden main layer x,y um, als crossfade, kann aber spaeter angepasst werden
 
   // unkritischer code, kann genutzt werden um halt was mal kurz flashen zu lassen
-  flash44Hihat = easeInOutTap(fract(t));
+ // flash44Hihat = easeInOutTap(fract(t));
 
-  bang2 = easeInOutTap(fract(t / 4.)) + easeInOutTap(fract((t + 2) / 4));
+ // bang2 = easeInOutTap(fract(t / 4.)) + easeInOutTap(fract((t + 2) / 4));
 
   // eye seed
   man_seedEyes = vec2(-.35, 0);  
@@ -566,28 +577,37 @@ vec4 mainWrap(vec2 fragCoord) {
 
   if(beat1 >= 0) {
   // comming mode 
-    manPos = vec2(mix(4.0, 0, smoothstep(0, 1, beat1 / 4)), 1 - (1 - smoothstep(0, 1, beat1 / 4)) * abs(sin(beat3) * 0.5) - 0.4);
+    manPos = vec2(
+      mix(4.0, 0, easeOutQuad( smoothstep(0, 1,beat1 / 4))), 
+      1 - (1 - smoothstep(0, 1, beat1 / 4)) * abs(sin(beat3) * 0.5) - 0.4);
   }
-  if(beat1 < 8 && beat1 > 4) {
+  if(beat1 > 4 && beat1 <=8) {
   //gucki mode
 //  man_seedEyes+=cardioid(smoothstep(0,3,beat1-4)*PI2,1);
-    man_seedEyes += smoothstep(0, 1, beat1 - 4) * mix(vec2(-.2, .15), vec2(-.2, -0.15), sin((beat1 / 2) * PI));
+// man_seedEyes += smoothstep(0, 1, beat1 - 4) * mix(vec2(-.2, .2), vec2(-.2, -0.2), sin((beat1 / 2) * PI));
 // manEyesOpen=mix(0,0.5,sin(beat2*PI))
+manEyesOpen=0.0;
+manEyesOpenSymmetry=1;
+
+
+float animhead[4]=float[4](
+  -0.1,
+  0,
+  0.05,
+  0);
+man_headPos.y+=animhead[int(beat1-4)];
+manEyesOpen=animhead[int(beat1-4)]==0?0.:0.8 ;
   }
-  if(beat1 > 8 && beat1 < 12) {
-  // dancie mode
-    man_seedBody += cardioid(sin(beat2) * PI, 1.5);
+  if(beat1 > 8 && beat1 <= 12) {
+    // dancie mode
+    //man_seedBody +=spike(fract(beat1),100)* sin(beat3);  
+    man_headPos.x+=clamp(sin((beat2-16)*PI),0,1 )*0.2;
+    manPos.x     -=abs(sin((beat3-32)*PI/4))*0.1;
 
-    man_headPos.x += flashBang4(beat2, float[4](1, 0, 1, 0));
-
-  }
-
-  if(beat1 > 32) {
-  // mal julia einschalten ab 32
-    isMandel = false;
   }
 
   if(beat1 > 12 && beat1 < 14) {
+manEyesOpenSymmetry= 0.9;
   // zwinker mode
   //manPos+=vec2(smoothstep(0,1,beat1-12)*4.5,4.5);
     manEyesOpen += spike(fract(beat1 / 2), 100.);
@@ -595,9 +615,14 @@ vec4 mainWrap(vec2 fragCoord) {
   }
 // beat 12/14 or something then will become the beam into the eye
 
-  if(beat1 > 15 && beat1 < 19) {
+  if(beat1 > 16 && beat1 <= 20) {
   // zoomie
-    man_scale = expInterp(1., .01, fract((beat1 - 15) / 4));
+    man_scale = expInterp(1., .01, fract((beat1 - 16) / 4));
+
+
+    effectVisibility = smoothstep(15,20,beat1);
+    location = locations[0];
+
   }
 
   if(beat1 > 20 && beat1 < 16 * 4) {
@@ -609,7 +634,7 @@ vec4 mainWrap(vec2 fragCoord) {
     location = locations[int(beat1 / 4) % NLOCATIONS];
   }
 
-  if(beat1 > 16 * 4 && beat1 < 4 * 16 + 7 * 5) {
+  if(beat1 > 16 * 4 +12&& beat1 < 4 * 16 +12 +7 * 5) {
   // greetings
     man_Size = 0;
     effectVisibility = .5;
@@ -619,7 +644,7 @@ vec4 mainWrap(vec2 fragCoord) {
 
   }
 
-  if(beat1 > 4 * 16 + 7 * 5 && beat1 < 10 * 16) {
+  if(beat1 > 4 * 16 + 7 * 5+12 && beat1 < 10 * 16+12) {
   // second effect part after greetings
 
     man_Size = 0;
@@ -628,12 +653,12 @@ vec4 mainWrap(vec2 fragCoord) {
     location = locations[int(beat1) % NLOCATIONS];
 
   }
-  if(beat1 > 44) {
+  if(beat1 > 44+12) {
 
     location.w += 0.1 * beat1;
   }
 
-  if(beat1 > 10 * 16 && beat1 < 10 * 16 + 4 * 6) {
+  if(beat1 > 10 * 16+12 && beat1 < 10 * 16 + 4 * 6+12) {
 // credits und outro intro
 // jedes wort wird 4 beat 1 angezeigt
 // 1. credits nothing special
@@ -669,7 +694,8 @@ vec4 mainWrap(vec2 fragCoord) {
     location.z += effectVisibility * flashBang8(tnorm * 2, float[8](0, 1, 1, 0, 1, 0, 0, 1)) * location.z;
 
   }
-  if(beat1 > 10 * 16 + 4 * 6 && beat1 < 12 * 16) {
+
+  if(beat1 > 10 * 16 + 4 * 6 && beat1 < 12 * 16 ) {
     man_scale = expInterp(1, .01, 1 - fract((beat1) / 4));
   }
 
@@ -741,13 +767,13 @@ void main() {
   int wordi = 0;
     // Manual Word encoding
 
-  if(t > 16 && t < 24) {
+  if(t > 40 && t < 48) {
       // name/title
     wordi = 1;
   }
-  if(t > 4 * 16 && t < 4 * 16 + 6 * 8 - 4) {
+  if(t > 4 * 16+3*4 && t < 4 * 16 +3*4+ 6 * 8 - 4) {
       //greetings
-    wordi = 2 + int(((t - 4 * 16) + 4) / 8) % 6;
+    wordi = 2 + int(((t - (4 * 16+3*4)) + 4) / 8) % 6;
   }
   if(t > 10 * 16 && t < 10 * 16 + 4 * 6) {
       //credits
@@ -755,17 +781,20 @@ void main() {
   }
 
   vec2 wordPos = word2(wordi);
+if( uvOri.y < .54 && uvOri.y >.42 &&wordi!=0){
+
+// black bg
+ o*=.5;
 
   if(
   // nutze nur ausschnitt aus space
-  fract(uv.x) < .5 &&
-    fract(uv.y) < .5 &&  
-    // halt in der mitte von screen
-    uvOri.y < .5 && uvOri.y > .42) {
+    fract(uv.x) < .5 &&
+    fract(uv.y) < .5 ) {
 
     int charIndex = int(wordPos.x) + int(uv.x) % TEXT_LEN;
     charIndex -= int((26 - wordPos.y) / 2);
-    o += vec4(characterVertical(fract(uv * (1 / .5)), uint(text[charIndex >= (wordPos.x) && charIndex <= wordPos.x + wordPos.y ? charIndex : 0])));
+    o +=vec4(characterVertical(fract(uv * (1 / .5)), uint(text[charIndex >= (wordPos.x) && charIndex <= wordPos.x + wordPos.y ? charIndex : 0])));
+  }  
   }  
 /*
 if(uv.y>0.2 && uv.x<t/256 ) {

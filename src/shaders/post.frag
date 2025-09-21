@@ -25,7 +25,7 @@ const int numpatterns =13; // Zeilen (Pattern Sets)
 
 const int NUM_MARKER=1;
 const int marker[NUM_MARKER]=int[NUM_MARKER](
-3 // start  
+15 // start  
 ); 
 
 vec3 hsv(float h, float s, float v) {
@@ -34,13 +34,19 @@ vec3 hsv(float h, float s, float v) {
   return v * mix(K.xxx, clamp(p - K.xxx, 0, 1), s);
 }
 // track hat start und ende als auch ein colorindex 
-const int NUM_TRACKS=3;
+const int NUM_TRACKS=5;
 const vec4 tracks[NUM_TRACKS]=vec4[NUM_TRACKS](
+    // intro
+    vec4(0,16,0.2,0.2),// credits
     // start beat, end beat, hsv index
-    vec4(16,24,0.5,0.4), // anfang, mandelbroetchen
-    vec4(16*4,16*4+6*8-4,0.8,0.5), // greetings am anfang findet dieser dopüpelschlag in der musik , zum ersten mal statt, ende ist wo dannping pong anfaengt
+    vec4(40,48,0.5,0.4), // anfang, mandelbroetchen
     // greetings
-vec4(10*16,10*16+4*6,0.2,0.2) // credits
+    vec4(16*4+12,16*4+6*8-4+12,0.8,0.5), // greetings am anfang findet dieser dopüpelschlag in der musik , zum ersten mal statt, ende ist wo dannping pong anfaengt
+    // credits
+    vec4(10*16,10*16+4*6,0.2,0.2), 
+    // outro
+    vec4(12*16+8,13*16,0.2,0.2) 
+    
 );
 
 

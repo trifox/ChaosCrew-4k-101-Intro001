@@ -18,6 +18,7 @@
 #define USE_AUDIO    1
 #define NO_UNIFORMS  0
 #define DELAY_SOUND  0 // damit steuern wir ob eine kuenstliche pause vor songstart kommt, das intro laeuft dann schon! achtung geht garnicht
+#define DELAY 12.*(60./BPM)
 
 #include "definitions.h"
 #if OPENGL_DEBUG
@@ -45,7 +46,6 @@ void entrypoint(void)
 int __cdecl main(int argc, char* argv[])
 #endif
 {
-	DWORD start = GetTickCount();   // ms zum start fuer zeitmessung
 	#ifdef EDITOR_CONTROLS
 	char *endptr;
     double wert = strtod(argv[1], &endptr);
@@ -151,6 +151,9 @@ int __cdecl main(int argc, char* argv[])
 		double position = 0.0;
 	#endif
 
+	#if DELAY_SOUND
+		DWORD start = GetTickCount();   // ms zum start fuer zeitmessung
+	#endif
 	bool playingxxx=false;
 	// main loop
 	do
@@ -160,7 +163,7 @@ int __cdecl main(int argc, char* argv[])
 				#if DELAY_SOUND
 				DWORD elapsed = GetTickCount() - start;
 				// fixed delay here, 12 beats 3 takte 
-				if(!playingxxx && (elapsed)/1000.>12.*(60./BPM))
+				if(!playingxxx && (elapsed)/1000.>DELAY)
 				{
 					playingxxx=true;
 					waveOutOpen(&hWaveOut, WAVE_MAPPER, &WaveFMT, NULL, 0, CALLBACK_NULL);
@@ -176,7 +179,7 @@ int __cdecl main(int argc, char* argv[])
 			#if DELAY_SOUND
 				DWORD elapsed = GetTickCount() - start;
 				// fixed delay here, 12 beats 3 takte 
-				if(!playingxxx && (elapsed)/1000.>12.*(60./BPM))
+				if(!playingxxx && (elapsed)/1000.>DELAY)
 				{
 					playingxxx=true;
 					
@@ -242,7 +245,19 @@ int __cdecl main(int argc, char* argv[])
 
 			#ifdef EDITOR_CONTROLS
 				// for editing position of time is provided in post pass
-				position = track.getTime();
+
+				#if DELAY_SOUND 
+				printf("%i Elapsed is %i %f ",start,elapsed,elapsed/1000.);
+				if(!playingxxx){
+					position=(elapsed)/1000. ;
+				}else{
+					position = track.getTime()+DELAY;
+
+				}
+				//	printf("position is %f ",position);
+				#else
+					position = track.getTime();
+				#endif
 				((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, (static_cast<int>(position*44100.0)));
 			#else
 				// warning post process is expensive, setting time as well
