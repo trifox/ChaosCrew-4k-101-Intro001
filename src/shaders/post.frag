@@ -23,13 +23,9 @@ const int seq  = 4;        // Schritte pro Pattern
 const int pat  = 4;        // Patterns pro Reihe
 const int numpatterns =13; // Zeilen (Pattern Sets)
 
-const int NUM_MARKER=3;
+const int NUM_MARKER=1;
 const int marker[NUM_MARKER]=int[NUM_MARKER](
-3, // start song
-1*4, // start beat buumm,
- 
-1*4+4*4 // start beat buumm,
- 
+3 // start  
 ); 
 
 vec3 hsv(float h, float s, float v) {
@@ -41,10 +37,10 @@ vec3 hsv(float h, float s, float v) {
 const int NUM_TRACKS=3;
 const vec4 tracks[NUM_TRACKS]=vec4[NUM_TRACKS](
     // start beat, end beat, hsv index
-    vec4(4,7*4,0.5,0.4), // anfang, danach geht vibe los,aber uebrigens in 2ter halbnote danach
-    vec4(16*4,21*4,0.2,0.5), // am anfang findet dieser dopüpelschlag in der musik , zum ersten mal statt, ende ist wo dannping pong anfaengt
+    vec4(16,24,0.5,0.4), // anfang, mandelbroetchen
+    vec4(16*4,16*4+6*8-4,0.8,0.5), // greetings am anfang findet dieser dopüpelschlag in der musik , zum ersten mal statt, ende ist wo dannping pong anfaengt
     // greetings
-vec4(25*4,30*4,0.2,0.7) // davor war ping-pong
+vec4(10*16,10*16+4*6,0.2,0.2) // credits
 );
 
 
@@ -113,11 +109,11 @@ if(fract(beat)<0.5){
     }
 
 // tracks
-    if(cell.y>0.4&&cell.y<0.6)
+    if(cell.y>=0.4&&cell.y<=0.6)
     {
         for(int k =0;k<NUM_TRACKS;k++)
         {
-            if(tracks[k].y>pos && tracks[k].x<pos )
+            if(tracks[k].y>pos && tracks[k].x<=pos )
             {  
                 col += hsv(tracks[k].z,0.75, 1.60); // Knallgruen
             }
@@ -130,7 +126,7 @@ if(fract(beat)<0.5){
         col=vec3(0);
     }
 
-    i =mix(i, vec4(col, 1.0),0.1);
+    i =mix(i, vec4(col, 1.0),0.2);
 
 
 

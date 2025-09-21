@@ -11,12 +11,13 @@
 	#define BREAK_COMPATIBILITY 0
 #endif
 
-#define POST_PASS   0
+#define POST_PASS   1
 #define USE_MIPMAPS  0
 #define USE_VSYNC    0 /* vsync dangerous, make sure you never exceeed 60fps when using */
 #define USE_CLEAN_BLACK_START    0 /* ensures windows and gl buffers are properly cleared at start to avoid flicker */
 #define USE_AUDIO    1
 #define NO_UNIFORMS  0
+#define DELAY_SOUND  0 // damit steuern wir ob eine kuenstliche pause vor songstart kommt, das intro laeuft dann schon! achtung geht garnicht
 
 #include "definitions.h"
 #if OPENGL_DEBUG
@@ -44,6 +45,7 @@ void entrypoint(void)
 int __cdecl main(int argc, char* argv[])
 #endif
 {
+	DWORD start = GetTickCount();   // ms zum start fuer zeitmessung
 	#ifdef EDITOR_CONTROLS
 	char *endptr;
     double wert = strtod(argv[1], &endptr);
@@ -66,6 +68,8 @@ int __cdecl main(int argc, char* argv[])
 	#endif
 	// initialize window
 	#if FULLSCREEN
+	
+		// ... in WinMain oder main:
 		ChangeDisplaySettings(&screenSettings, CDS_FULLSCREEN);
 		ShowCursor(0);
 		const HWND hwnd = CreateWindow((LPCSTR)0xC018, 0, WS_POPUP  | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -121,25 +125,68 @@ int __cdecl main(int argc, char* argv[])
 		#if USE_AUDIO
 			CreateThread(0, 0, (LPTHREAD_START_ROUTINE)_4klang_render, lpSoundBuffer, 0, 0);
 			// sleep a bit to let music render
+
 			Sleep(768);
-			waveOutOpen(&hWaveOut, WAVE_MAPPER, &WaveFMT, NULL, 0, CALLBACK_NULL);
-			waveOutPrepareHeader(hWaveOut, &WaveHDR, sizeof(WaveHDR));
-			waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
+			#if not DELAY_SOUND
+				waveOutOpen(&hWaveOut, WAVE_MAPPER, &WaveFMT, NULL, 0, CALLBACK_NULL);
+				waveOutPrepareHeader(hWaveOut, &WaveHDR, sizeof(WaveHDR));
+				waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
+			#endif
 		#endif
 	#else
 		Leviathan::Editor editor = Leviathan::Editor();
 		editor.updateShaders(&pidMain, &pidPost, true);
+		// sleep a bit to simulate productive code
+		Sleep(768);
 
 		// absolute path always works here
 		// relative path works only when not ran from visual studio directly
 		Leviathan::Song track(L"audio.wav");
-		track.play();
+		
+		#if DELAY_SOUND
+			track.pause();
+		#else
+			track.play();
+		#endif
 		double position = 0.0;
 	#endif
 
+	bool playingxxx=false;
 	// main loop
 	do
 	{
+		#ifndef EDITOR_CONTROLS
+			#if USE_AUDIO
+				#if DELAY_SOUND
+				DWORD elapsed = GetTickCount() - start;
+				// fixed delay here, 12 beats 3 takte 
+				if(!playingxxx && (elapsed)/1000.>12.*(60./BPM))
+				{
+					playingxxx=true;
+					waveOutOpen(&hWaveOut, WAVE_MAPPER, &WaveFMT, NULL, 0, CALLBACK_NULL);
+					waveOutPrepareHeader(hWaveOut, &WaveHDR, sizeof(WaveHDR));
+					waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
+				}
+				#endif
+		#endif
+
+
+		#else
+		
+			#if DELAY_SOUND
+				DWORD elapsed = GetTickCount() - start;
+				// fixed delay here, 12 beats 3 takte 
+				if(!playingxxx && (elapsed)/1000.>12.*(60./BPM))
+				{
+					playingxxx=true;
+					
+				  track.play();
+				}
+			#endif
+
+		#endif
+
+
 		#ifdef EDITOR_CONTROLS
 			editor.beginFrame(timeGetTime());
 		#endif
@@ -167,7 +214,13 @@ int __cdecl main(int argc, char* argv[])
 				#endif
 			#endif
 		#else
-			position = track.getTime();
+			#if DELAY_SOUND 
+			printf("%i Elapsed is %i %f ",start,elapsed,elapsed/1000.);
+				position=(elapsed)/1000. ;
+			//	printf("position is %f ",position);
+			#else
+				position = track.getTime();
+			#endif
 			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, (static_cast<int>(position*44100.0)));
 		#endif
 		glRects(-1, -1, 1, 1);

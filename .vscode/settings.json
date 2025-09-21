@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "*.txt": "glsl",
-        "string": "cpp"
-    }
+        "string": "cpp",
+        "xstring": "cpp"
+    },
+    "notebook.defaultFormatter": "raczzalan.webgl-glsl-editor",
+    "editor.defaultFormatter": "raczzalan.webgl-glsl-editor"
 }
