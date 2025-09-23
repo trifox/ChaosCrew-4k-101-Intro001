@@ -50,12 +50,13 @@ const float beatTrack_4Achtel2[16]=float[16](
     ); 
 
 */
+
+vec2 cmul(vec2 a, vec2 b) {
+  return vec2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
+}
 const int NLOCATIONS = 3;
 // vec4 real,imag,scale for locations  
-const vec4 locations[NLOCATIONS] = vec4[NLOCATIONS](
-  vec4(-1.52181, 0, .0044053, 0), 
-  vec4(.262830, .6122595, 0.007310, 2.179),
-  vec4(-.69094, .4653495, 0.008320, 2.718)
+const vec4 locations[NLOCATIONS] = vec4[NLOCATIONS](vec4(-1.52181, 0, .0044053, 0), vec4(.262830, .6122595, 0.007310, 2.179), vec4(-.69094, .4653495, 0.008320, 2.718)
 /// alte coords
 
 /*
@@ -102,29 +103,36 @@ const int Y = 7;
 const int Z = 6;
 const int OE = 5;
 const int MINUS = 1;
-const int PLUS = 2;
+const int COLON = 3;
 const int SLASH = 4;
-const int THING = 3;
+const int THING = 2;
 const int _ = 0;
 
-const int TEXT_LEN = 117;
-const int[TEXT_LEN] text = int[TEXT_LEN](_, _, M, A, N, D, E, L, B, R, OE, T, C, H, E, N, _, G, R, E, E, T, I, N, G, S, _, N, U, A, N, C, E, _, R, E, B, E, L, S, _, F, R, A, C, T, A, L, F, O, R, U, M, S, _, R, A, B, E, N, A, U, G, E, _, D, E, A, D, L, I, N, E, _, C, R, E, D, I, T, S, _, C, O, D, E, _, T, R, I, F, O, X, _, R, E, F, U, R, I, O, _, M, U, S, I, C, _, C, H, L, U, M, P, I, E, _);
+const int TEXT_LEN = 114;
+const int[TEXT_LEN] text = int[TEXT_LEN](
+  _, _, M, A, N, D, E, L, B, R, OE, T, C, H, E, N, _,
+   G, R, E, E, T, I, N, G, S, COLON,_, 
+   N, U, A, N, C, E, _, R, E, B, E, L, S, _, F, R, A, C, T, A, L,SLASH,F, O, R, U, M, S,SLASH,C,H,A,T,S, _,
+    D, E, A, D, L, I, N, E, P, A, R, T, Y, _,
+      C, O, D, E,COLON,_ , 
+     T, R, I, F, O, X, SLASH, R, E, F, U, R, I, O, 
+     _, M, U, S, I, C, COLON,_, C, H, L, U, M, P, I, E, _);
 
 const vec3[3] textanim = vec3[3](
   // wordindex, numwords to show, beatindex
 vec3(0, 1, 16), vec3(0, 1, 10 * 4), vec3(0, 1, 25 * 4));
 const int bitmap3x3vertical[9] = int[]( 
     // 32 3x3 characters packed in this one
-                 //  abcdefghijklmnopqrstuvwxyzö/+d-_ d=ding
-0x6F3BDFA0, //  01101111001110111101111110100000  
-0xAECFF04C, //  10101110110011111111000001001100
-0x3D2FFFF0, //  00111101001011111111111111110000
-0xFF3FEE6E, //  11111111001111111110111001101110
-0xDDED73FE, //  11011101111011010111001111111110
-0xD30FAE6E, //  11010011000011111010111001101110
-0xFF7FEB74, //  11111111011111111110101101110100
-0x7A92BEEC, //  01111010100100101011111011101100
-0xFB3E4B24  //  11111011001111100100101100100100
+                 //  abcdefghijklmnopqrstuvwxyzö/:d-_ d=ding
+    0x6F3BDFA0u, //  01101111001110111101111110100000  
+    0xAECFF04Cu, //  10101110110011111111000001001100
+    0x3D2FFFF0u, //  00111101001011111111111111110000
+    0xFF3FEE66u, //  11111111001111111110111001100110
+    0xDDED73F6u, //  11011101111011010111001111110110
+    0xD30FAE66u, //  11010011000011111010111001100110
+    0xFF7FEB74u, //  11111111011111111110101101110100
+    0x7A92BEECu, //  01111010100100101011111011101100
+    0xFB3E4B24u  //  11111011001111100100101100100100
 );
 
 uint characterVertical(vec2 uv, uint c) {
@@ -158,6 +166,17 @@ float characterMasked(vec2 uv, uint chari) {
   return float(characterVertical(uv, chari)) * smoothstep(0.25, .0, circ);
 }
 
+vec2 cardioid(vec2 r) {
+  return (r+r-cmul(r,r))/4.;
+}
+
+
+/////////////////
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////
 // Utility Methods, 
 
@@ -189,18 +208,15 @@ float expInterp(float a, float b, float t) {
 float easeInOutTap(float t) {
   return smoothstep(.0, .2, t) * (1.0 - smoothstep(.8, 1, t));
 }
-vec2 cmul(vec2 a, vec2 b) {
-  return vec2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
-}
 vec2 rotor(float a) {
   return vec2(cos(a), sin(a));
 }
 
 vec3 hsv(float h, float s, float v) {
-  vec4 Ki = vec4(1, 2 / 3, 1 / 3, 3);
-  vec3 p = abs(fract(vec3(h, h, h) + Ki.xyz) * 6 - Ki.www);
-  return v * mix(Ki.xxx, clamp(p - Ki.xxx, 0, 1), s);
+  return v * mix(vec3(1), clamp(abs(6.*fract(h + vec3(3,2,1)/3.) - 3.) - 1., 0., 1.), s);
 }
+
+
 vec3 cmix(vec3 a, vec3 b, float t) {
   return sqrt(mix(a * a, b * b, t));
 }
@@ -358,7 +374,6 @@ float backOut(float t) {
   return 1.0 - (pow(f, 3.0) - f * sin(f * PI));
 }
 
-
 float backIn(float t) {
   return pow(t, 3.0) - t * sin(t * PI);
 }
@@ -385,10 +400,6 @@ float sqr(float x) {
   return x * x;
 }
 
-vec2 cardioid(float a, float radius) {
-  vec2 r = rotor(a) * radius;
-  return vec2(1. - (sqr(r.x - 1.) - sqr(r.y)), -2. * (r.x - 1.) * r.y) / 4.;
-}
 float cam_a = .5, cam_d = 1., nbobs = 100, lissa = 1., // 1.0 is a circle
 amplitude = .0, // of lissjous animation
 arclen = .1, // 1.0 is full circle
@@ -416,63 +427,7 @@ vec3 camera(float a, float d, vec3 v) {
 }
 float osc(float lo, float hi, float x) {
   return (sin(t - x * 2. * PI) / 2. + .5) * (hi - lo) + lo;
-}
-vec3 scene0_NEU(vec2 xy) {   
-
-  //radius = loc.z;
-  vec2 center = location.xy, r = location.z * 8 * rotor(location.w), c, p;
-
-  vec3 col = vec3(0), offset;
-
-  for(float i = 0; i < nbobs; ++i) {
-
-    offset = vec3(0, -0, -column_height * (i / nbobs) + column_shift);
-
-    vec2 cr = rotor(cam_a);
-    vec3 cam_pos = vec3(0, 0, cam_d); // cot(a)?
-    cam_pos.yz = cmul(cr, cam_pos.yz);
-    vec3 ray = vec3(xy, 1.);
-    ray.yz = cmul(cr, ray.yz);
-    ray = ray * (cam_pos.z - offset.z) / ray.z - cam_pos;
-    vec2 uv = cmul(ray.xy, r) + offset.xy;
-    float z = 1. - length(ray);
-
-    uv = cmul(uv, r) + center;
-     // julia mode
-    c = center + seedStrengsth * location.z * cardioid(+t / 16. - i / nbobs / 4., osc(.995, 1.009, 1. - i / nbobs));
-    // mandelbrot mode
-    //c=vec2(0);
-    if(isMandel) {
-      vec2 save = c;
-      c = uv;
-      uv = c;
-    }
-
-//    c = cardioid(t/8.-i/n/4., osc(1.05, 0.99, i/n));
-//    c = mix(vec2(.25, 0.), vec2(.26, 0.), i/n*sin(t));
-    if(f(c, uv)) {
-      // inside
-      if(i == 0) {
-        return vec3(0);
-
-      } else {
-        return makePal1(1);
-      }
-      //return vec3(1.-i/n);
-    } else {
-
-//      col += vec3(pow(f_k/f_n, .0125));
-//      col += 1.-i/n*spectrum(f_k/f_n);
-//      return vec3(f_k/f_n)-col/i/2.;
-      col += makePal1(f_k / MAX_ITER) / length(ray);
-//      return 1.-vec3(pow(f_k/f_n,1.));
-    // outside
-    //col += hsv(0.6, 0.5, pow(f_k/f_n, 1.)); }
-    }
-  }
-//  return vec3(0.);
-  return col / nbobs;// vec3(0.,0.,.15);
-}
+} 
 
 float vignetteScale = 116., vignettePow = .25;
 ///////////////////////////////////////////////////
@@ -540,6 +495,191 @@ float spike(float x, float alpha) {
   float d = x - 0.5;
   return exp(-alpha * d * d);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////
+
+float maxiter = 45.,
+      bailout = 4.,
+      n = 100., // number of bobs
+      height = 2., // of bob column
+      pitch, // of camera
+       k, i, jitter;
+
+vec2 xy, z;
+ 
+vec2 csqrt(vec2 z) {
+  return pow(length(z), .5) * rotor(.5*atan(z.y, z.x));
+}
+
+
+void f() {
+  for(k = 0.; k < maxiter; ++k) {
+    z = cmul(z,z) + c;
+    if(dot(z,z) > bailout)
+      break;
+  }
+}
+// julia view
+//vec4 loc = vec4(0,0,2,0);
+vec3 scene_refurio_julibob_tunnel (vec2 uv) {  
+  float t=t/16;
+  vec4 loc=vec4(0,0,2,0);
+
+  pitch = cos(t)*.7; // horizon appears at -pi/4
+  jitter = mod(t, 1./n);
+  
+  loc.w = t - 1.;
+  r = loc.z * rotor(loc.w)/2.;
+  
+  // same as below, but jitter and i are zero:
+  c = cardioid(rotor(t)); // A2
+  // stable fixed point: z²-z+c = 0 => x1,2 = 1/2+-sqrt(1/4-c)
+  loc.xy += vec2(.5, 0)-csqrt(vec2(.25, 0)-c);
+  
+  cr = rotor(pitch);
+  cam_pos.yz = cmul(cr, cam_pos.yz);
+  for(; i < n; ++i) {
+    ray = vec3(uv, 1); // angle of view
+    ray.yz = cmul(cr, ray.yz);
+    ray = ray * (cam_pos.z + height*(i/n - jitter))/ray.z - cam_pos;
+    
+    // hide stuff behind camera
+    if(ray.z > 0.) {
+      c = cardioid(rotor(t + i/n - jitter)*1.0045); // A2
+      // rolling morph effect:
+      //c = cardioid(rotor(t + (i/n - jitter)*1.1)*1.0045); // A2
+      z = cmul(ray.xy, r) + loc.xy;
+      f();
+      if(k < maxiter)
+        break;
+    }
+  } 
+  return hsv(.6, 1.-k/maxiter, 1.-length(ray)/height);
+}
+
+
+vec3 scene_refurio_julibob_columns (vec2 xy) {
+  //t = sin(t*PI);
+  t/=2.;
+  
+  float // camera
+        pitch = -.5, // horizon appears at -pi/4
+        
+        // bobs
+        n = 200., // number of bobs
+        height = 2., // of bob column
+        
+        i,
+        jitter = mod(t, 1./n);
+  
+  // same as below, but jitter and i are zero:
+  c = cardioid(rotor(t)); // A2
+
+  // julia view
+  location.w += t/4.;
+  
+  vec2 r = location.z * rotor(location.w)/2.,
+       cr;
+  
+  maxiter = 12.;
+  
+  // stable fixed point: z²-z+c = 0 => x1,2 = 1/2+-sqrt(1/4-c)
+  //loc.xy = vec2(.5, 0.)-csqrt(vec2(.25, 0.)-c);
+  
+  vec3 cam_pos, ray;
+  jitter = 0.;
+  for(i = 0.; i < n; ++i) {
+    cr = rotor(pitch);
+    cam_pos = vec3(0., .5, 1.25); // view position
+    cam_pos.yz = cmul(cr, cam_pos.yz);
+    ray = vec3(xy, 1.); // angle of view
+    ray.yz = cmul(cr, ray.yz);
+    ray = ray * (cam_pos.z - height*(jitter - i/n))/ray.z - cam_pos;
+    
+    // hide stuff behind camera
+    if(ray.z < -0.01)
+      continue;
+
+    // debug: highlight fixed points
+    if(i > 3. && length(cmul(z,z) + c - z) < .002)
+      return vec3(1.,0.,0.);
+
+    vec2  m = vec2(.25);
+    c = cardioid(rotor(t - jitter + i/n*m.x*8.))*1.5; // A2
+    //c = rotor(t - jitter + i/n + loc.w)*loc.z + loc.xy; // A2
+    // rolling morph effect:
+    //c = cardioid(t - (jitter - i/n)*1.1, 1.0045); // A2
+    z = cmul(ray.xy, r) + location.xy;
+    f();
+    if(k >= maxiter) {
+      if(i == 0.) {
+        float kk = k;
+        maxiter = 30.;
+        z = cmul(ray.xy, r) + location.xy;
+        f();
+        float s = (k-kk)/(maxiter-kk);
+        return hsv(.6, s, 1.-length(ray)/height/3.);
+      }
+      break;
+    }
+  }
+  return hsv(.6, 1.-k/maxiter, 1.-length(ray)/height/2.);
+}
+
+
+
+
+
+
+
+/////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+float scene1=1;
+vec4 wrapRefurio(vec2 fragCoord){
+return scene1>0.5?
+vec4(scene_refurio_julibob_tunnel(fragCoord),1):
+vec4(scene_refurio_julibob_columns(fragCoord), 1);
+}
+
+
+
+
+
+
 vec4 mainWrap(vec2 fragCoord) {
 
 /// achtung hier die methode direkt zu returnen
@@ -577,37 +717,32 @@ vec4 mainWrap(vec2 fragCoord) {
 
   if(beat1 >= 0) {
   // comming mode 
-    manPos = vec2(
-      mix(4.0, 0, easeOutQuad( smoothstep(0, 1,beat1 / 4))), 
-      1 - (1 - smoothstep(0, 1, beat1 / 4)) * abs(sin(beat3) * 0.5) - 0.4);
+    manPos = vec2(mix(4.0, 0, easeOutQuad(smoothstep(0, 1, beat1 / 4))), 
+    
+    1 - (1 - smoothstep(0, 1, beat1 / 4)) * abs(sin(beat3) * 0.5) - 0.4);
   }
-  if(beat1 > 4 && beat1 <=8) {
+  if(beat1 > 4 && beat1 <= 8) {
   //gucki mode
 //  man_seedEyes+=cardioid(smoothstep(0,3,beat1-4)*PI2,1);
 // man_seedEyes += smoothstep(0, 1, beat1 - 4) * mix(vec2(-.2, .2), vec2(-.2, -0.2), sin((beat1 / 2) * PI));
 // manEyesOpen=mix(0,0.5,sin(beat2*PI))
-manEyesOpen=0.0;
-manEyesOpenSymmetry=1;
+    manEyesOpen = 0.0;
+    manEyesOpenSymmetry = 1;
 
-
-float animhead[4]=float[4](
-  -0.1,
-  0,
-  0.05,
-  0);
-man_headPos.y+=animhead[int(beat1-4)];
-manEyesOpen=animhead[int(beat1-4)]==0?0.:0.8 ;
+    float animhead[4] = float[4](-0.1, 0, 0.05, 0);
+    man_headPos.y += animhead[int(beat1 - 4)];
+    manEyesOpen = animhead[int(beat1 - 4)] == 0 ? 0. : 0.8;
   }
   if(beat1 > 8 && beat1 <= 12) {
     // dancie mode
     //man_seedBody +=spike(fract(beat1),100)* sin(beat3);  
-    man_headPos.x+=clamp(sin((beat2-16)*PI),0,1 )*0.2;
-    manPos.x     -=abs(sin((beat3-32)*PI/4))*0.1;
+    man_headPos.x += clamp(sin((beat2 - 16) * PI), 0, 1) * 0.2;
+    manPos.x -= abs(sin((beat3 - 32) * PI / 4)) * 0.1;
 
   }
 
   if(beat1 > 12 && beat1 < 14) {
-manEyesOpenSymmetry= 0.9;
+    manEyesOpenSymmetry = 0.9;
   // zwinker mode
   //manPos+=vec2(smoothstep(0,1,beat1-12)*4.5,4.5);
     manEyesOpen += spike(fract(beat1 / 2), 100.);
@@ -616,49 +751,132 @@ manEyesOpenSymmetry= 0.9;
 // beat 12/14 or something then will become the beam into the eye
 
   if(beat1 > 16 && beat1 <= 20) {
+
+
+
+
   // zoomie
     man_scale = expInterp(1., .01, fract((beat1 - 16) / 4));
 
-
-    effectVisibility = smoothstep(15,20,beat1);
-    location = locations[0];
-
+    effectVisibility = smoothstep(15, 20, beat1);
+      
+    effectVisibility = 1;
+  
+    n=5;
+scene1=0;
+ location=vec4(0,0,2,0);
   }
+//////////////////////////////////////// refurio edit start
 
-  if(beat1 > 20 && beat1 < 16 * 4) {
+
+  if(beat1 > 20 && beat1 < 40) {
  // firsty effect part  
+
+
     man_Size = 0;
     effectVisibility = 1;
     cam_a = 0;
     nbobs = 1;
-    location = locations[int(beat1 / 4) % NLOCATIONS];
+    n=5;
+   location = locations[int(beat1 / 4) % NLOCATIONS];
+scene1=0;
+ location=vec4(0,0,2,0);
+ 
   }
-
-  if(beat1 > 16 * 4 +12&& beat1 < 4 * 16 +12 +7 * 5) {
-  // greetings
-    man_Size = 0;
-    effectVisibility = .5;
-    location = locations[int((beat1 - 4) / 8) % 2];
-    cam_a = smoothstep(16 * 4, 16 * 4 + 8, beat1) * -(PI / 4);
-    nbobs = smoothstep(16 * 4, 16 * 4 + 16, beat1) * 100;
-
-  }
-
-  if(beat1 > 4 * 16 + 7 * 5+12 && beat1 < 10 * 16+12) {
-  // second effect part after greetings
-
+if(beat1>40 &&beat1<48){
+// title scene
     man_Size = 0;
     effectVisibility = 1;
-    cam_a += 0.1 * beat1;
-    location = locations[int(beat1) % NLOCATIONS];
+    cam_a = 0;
+    nbobs = 1;
+   location = locations[int(beat1 / 4) % NLOCATIONS];
+scene1=1;
+ // location=vec4(0,0,2,0);
+ 
+}
+if(beat1>=48 && beat1<16*4+12 ){
+// scene zwischen titel und greetings
+    man_Size = 0;
+    effectVisibility = 1;
+    cam_a = 0;
+    nbobs = 1;
+   location = locations[int(beat1 ) % NLOCATIONS];
+scene1=1;
+// location=vec4(0,0,2,0);
+ 
+}
 
-  }
-  if(beat1 > 44+12) {
+if(beat1>=16*4+12 && beat1<16*4+6*8-4+12){
+// greetings
+    man_Size = 0;
+    effectVisibility = 1;
+    cam_a = 0;
+    nbobs = 1;
 
-    location.w += 0.1 * beat1;
-  }
+    n=flashBang4((beat1-4)/2,float[4](0,0,1,0))*90+10;
+   location = locations[int(beat1 / 4) % NLOCATIONS];
 
-  if(beat1 > 10 * 16+12 && beat1 < 10 * 16 + 4 * 6+12) {
+scene1=1;
+ //location=vec4(0,0,2,0);
+ 
+}
+
+if(  beat1>=16*4+6*8-4+12 && beat1<10*16){
+ //main effect bis credits
+     man_Size = 0;
+    effectVisibility = 1;
+    cam_a = 0;
+    nbobs = 1;
+   location = locations[int(beat1 / 4) % NLOCATIONS];
+scene1=0;
+ location=vec4(0,0,2,0);
+  
+}
+
+if(  beat1>=10*16&& beat1<10*16+4*6){
+
+ //main effect bis credits
+     man_Size = 0;
+    effectVisibility = 1;
+    cam_a = 0;
+    nbobs = 1;
+   location = locations[int(beat1 / 4) % NLOCATIONS];
+scene1=1;
+  //location=vec4(0,0,2,0);
+}
+
+
+if(  beat1>=10*16+4*6&&beat1<10*16+4*6+8 ){
+
+ //main effect bis credits
+     man_Size = 0;
+    effectVisibility = 1;
+    cam_a = 0;
+    nbobs = 1;
+   location = locations[int(beat1 / 4) % NLOCATIONS];
+scene1=0;
+  location=vec4(0,0,2,0);
+
+}
+ 
+if(beat1>=184&&beat1<200){
+// 
+//    .. ..
+//     mandel
+// main effekt power action
+
+     man_Size = 0;
+    effectVisibility = 1;
+    cam_a = 0;
+    nbobs = 1;
+   location = locations[int(beat1 / 4) % NLOCATIONS];
+scene1=1; 
+
+}
+
+
+
+  if(beat1 > 10 * 16 + 12 && beat1 < 10 * 16 + 4 * 6 + 12) {
 // credits und outro intro
 // jedes wort wird 4 beat 1 angezeigt
 // 1. credits nothing special
@@ -672,35 +890,29 @@ manEyesOpenSymmetry= 0.9;
     float tnorm = t - 10 * 16;
     if(tnorm > 8 && tnorm < 12) {
   // trifox
-      effectVisibility = smoothstep(8, 8.25, tnorm) * .5;
-  //location=vec4(0,0,2,0);
-      isMandel = true;
-      cam_a = 0;
-      nbobs = 1;
+     
     }
     if(tnorm > 12 && tnorm < 16) {
   // refurio
-
-      effectVisibility = smoothstep(12, 12.25, tnorm) * .5;
+ 
     }
     if(tnorm > 20 && tnorm < 24) {
-  //chlumpie
-      effectVisibility = smoothstep(20, 20.25, tnorm) * .5;
+  //chlumpie 
 
     }
 
   // bump zoom bei credits
-
-    location.z += effectVisibility * flashBang8(tnorm * 2, float[8](0, 1, 1, 0, 1, 0, 0, 1)) * location.z;
+ location.z += effectVisibility * flashBang8(tnorm * 2, float[8](0, 1, 1, 0, 1, 0, 0, 1)) * location.z;
 
   }
 
-  if(beat1 > 10 * 16 + 4 * 6 && beat1 < 12 * 16 ) {
-    man_scale = expInterp(1, .01, 1 - fract((beat1) / 4));
-  }
+  // if(beat1 > 10 * 16 + 4 * 6 && beat1 < 12 * 16) {
+  //   man_scale = expInterp(1, .01, 1 - fract((beat1) / 4));
+  // }
 
-  return effectVisibility * vec4(scene0_NEU(fragCoord), 1);
+  return effectVisibility * wrapRefurio(fragCoord);
 }
+
 
 //EOE/////////////////////////////////////////////////////////////////////////////////////////////////////// 
 //
@@ -751,8 +963,8 @@ void main() {
   vec4 rz = mainWrap(uv * 2 - 1);
   vec4 mandelTriklops = vec4(makePal2(mandelMan((uv * 2 - 1) * man_Size + manPos)), 1);   
 
-// o=rz;
-  o = (rz / 1) * vignetteRect(uv);
+ o=rz;
+  //o = rz * vignetteRect(uv);
   o = max(o, mandelTriklops);
 
   uv = gl_FragCoord.xy / iResolution.xy;
@@ -771,30 +983,30 @@ void main() {
       // name/title
     wordi = 1;
   }
-  if(t > 4 * 16+3*4 && t < 4 * 16 +3*4+ 6 * 8 - 4) {
+  if(t > 4 * 16 + 3 * 4 && t < 4 * 16 + 3 * 4 + 6 * 8 - 4) {
       //greetings
-    wordi = 2 + int(((t - (4 * 16+3*4)) + 4) / 8) % 6;
+    wordi = 2 + int(((t - (4 * 16 + 3 * 4)) + 4) / 8) % 6;
   }
-  if(t > 10 * 16 && t < 10 * 16 + 4 * 6) {
+  if(t > 160 && t < 160 + 4 * 5) {
       //credits
-    wordi = 8 + int((t - 10 * 16) / 4) % 6;
+    wordi = 8 + int((t - 10 * 16) / 4) % 5;
   }
 
   vec2 wordPos = word2(wordi);
-if( uvOri.y < .54 && uvOri.y >.42 &&wordi!=0){
+  if(uvOri.y < .54 && uvOri.y > .42 && wordi != 0) {
 
 // black bg
- o*=.5;
+    o *= .5;
 
-  if(
+    if(
   // nutze nur ausschnitt aus space
     fract(uv.x) < .5 &&
-    fract(uv.y) < .5 ) {
+      fract(uv.y) < .5) {
 
-    int charIndex = int(wordPos.x) + int(uv.x) % TEXT_LEN;
-    charIndex -= int((26 - wordPos.y) / 2);
-    o +=vec4(characterVertical(fract(uv * (1 / .5)), uint(text[charIndex >= (wordPos.x) && charIndex <= wordPos.x + wordPos.y ? charIndex : 0])));
-  }  
+      int charIndex = int(wordPos.x) + int(uv.x) % TEXT_LEN;
+      charIndex -= int((26 - wordPos.y) / 2);
+      o += vec4(characterVertical(fract(uv * (1 / .5)), uint(text[charIndex >= (wordPos.x) && charIndex <= wordPos.x + wordPos.y ? charIndex : 0])));
+    }
   }  
 /*
 if(uv.y>0.2 && uv.x<t/256 ) {
