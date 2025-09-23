@@ -528,6 +528,63 @@ float spike(float x, float alpha) {
 
 
 /////////////////////////////////////////////////
+// geter fuer char text
+const int num_chars=114;
+
+int getCharText(int index){
+
+int index1=index%32;
+int index2=(index/32)*5;
+// dann ist result quasi die 5 index1 bits aber index2+n (n=1..5) nehmen
+
+return 0;
+
+}
+
+////////////////////////////////////////////
+/****
+interface proposal>
+
+
+deine f() methode, die sollten wir nun gemeinsam finalisieren als interface, so dass wir sie gemeinsam nutzen, also ich fuer faceman und du fuer auch alles wo du sie schon benutzt da mir das interface nicht klar ist wuerde ich es gerne hier definieren und abstimmen
+
+/////////////////
+
+interface globalmandel{
+ float mandel_bailout=16.;
+ int MAX_ITER=100;
+ vec2 mandel_start=(0.0,0.0); 
+ vec2 mandel_seed=(0.0,0.0);
+ vec2 mandel_result_escapez;
+ vec2 mandel_result_escapezvirtual; // for special intros
+ int mandel_result_escapeiteration; 
+ int mandel_result_escapeiterationvirtual; // for special intros
+ void m() // m dann halt impl der mandelbrot iteration
+
+
+/* Lemma>
+
+normalisierte iter :mandel_result_escapeiteration/MAX_ITER;
+smooth mandel: tbd irgendwas mit log
+color by mandel_result_escapez
+increase bailout for nicer smoothness
+increase iter for deeper results in double/float range
+julia mode> use pixel for mandel_start, mandel_seed for julia seed
+mandelbrot mode> 0,0 for mandel_start, mandel_seed is pixel
+mandelbrot pertubationmode> seed for mandel start, mandel_seed is pixel
+}
+
+
+
+
+
+
+
+
+
+
+
+*/
 
 float maxiter = 45.,
       bailout = 4.,
