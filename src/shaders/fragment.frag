@@ -75,42 +75,37 @@ vec4 location = locations[0];
 /////////////////// Font stuff
 /////////////////// 
 
-const int A = 31;
-const int B = 30;
-const int C = 29;
-const int D = 28;
-const int E = 27;
-const int F = 26;
-const int G = 25;
-const int H = 24;
-const int I = 23;
-const int J = 22;
-const int K = 21;
-const int L = 20;
-const int M = 19;
-const int N = 18;
-const int O = 17;
-const int P = 16;
-const int Q = 15;
-const int R = 14;
-const int S = 13;
-const int T = 12;
-const int U = 11;
-const int V = 10;
-const int W = 9;
-const int X = 8;
-const int Y = 7;
-const int Z = 6;
-const int OE = 5;
-const int MINUS = 1;
-const int COLON = 3;
-const int SLASH = 4;
-const int THING = 2;
+const int A = 23;
+const int B = 22;
+const int C = 21;
+const int D = 20;
+const int E = 19;
+const int F = 18;
+const int G = 17;
+const int H = 16;
+const int I = 15;
+const int L = 14;
+const int M = 13;
+const int N = 12;
+const int O = 11;
+const int P = 10;
+const int R = 9;
+const int S = 8;
+const int T = 7;
+const int U = 6;
+const int X = 5;
+const int Y = 4;
+const int OE = 3; 
+const int COLON = 2;
+const int SLASH = 1; 
 const int _ = 0;
 
 const int TEXT_LEN = 114;
 const int[TEXT_LEN] text = int[TEXT_LEN](
-  _, _, M, A, N, D, E, L, B, R, OE, T, C, H, E, N, _,
+  _,
+   
+  
+   _, M, A, N, D, E, L, B, R, OE, T, C, H, E, N, _,
    G, R, E, E, T, I, N, G, S, COLON,_, 
    N, U, A, N, C, E, _, R, E, B, E, L, S, _, F, R, A, C, T, A, L,SLASH,F, O, R, U, M, S,SLASH,C,H,A,T,S, _,
     D, E, A, D, L, I, N, E, P, A, R, T, Y, _,
@@ -122,17 +117,29 @@ const vec3[3] textanim = vec3[3](
   // wordindex, numwords to show, beatindex
 vec3(0, 1, 16), vec3(0, 1, 10 * 4), vec3(0, 1, 25 * 4));
 const int bitmap3x3vertical[9] = int[]( 
-    // 32 3x3 characters packed in this one
-                 //  abcdefghijklmnopqrstuvwxyzö/:d-_ d=ding
-    0x6F3BDFA0u, //  01101111001110111101111110100000  
-    0xAECFF04Cu, //  10101110110011111111000001001100
-    0x3D2FFFF0u, //  00111101001011111111111111110000
-    0xFF3FEE66u, //  11111111001111111110111001100110
-    0xDDED73F6u, //  11011101111011010111001111110110
-    0xD30FAE66u, //  11010011000011111010111001100110
-    0xFF7FEB74u, //  11111111011111111110101101110100
-    0x7A92BEECu, //  01111010100100101011111011101100
-    0xFB3E4B24u  //  11111011001111100100101100100100
+    // 24 3x3 characters packed in this one
+    //              //  abcdefghijklmnopqrstuvwxyzö/:d-_ d=ding
+    // 0x6F3BDFA0u, //  01101111001110111101111110100000  
+    // 0xAECFF04Cu, //  10101110110011111111000001001100
+    // 0x3D2FFFF0u, //  00111101001011111111111111110000
+    // 0xFF3FEE66u, //  11111111001111111110111001100110
+    // 0xDDED73F6u, //  11011101111011010111001111110110
+    // 0xD30FAE66u, //  11010011000011111010111001100110
+    // 0xFF7FEB74u, //  11111111011111111110101101110100
+    // 0x7A92BEECu, //  01111010100100101011111011101100
+    // 0xFB3E4B24u  //  11111011001111100100101100100100
+    // 24 3x3 characters packed in this one
+       //                      ABCDEFGHILMNOPRSTUXY  
+    0x6F6EF8, //  00000000011011110110111011111000  
+    0xAEBF82, //  00000000101011101011111110000010
+    0x3D3FFC, //  00000000001111010011111111111100
+    0xFF7F48, //  00000000111111110111111101001000
+    0xDDB7BC, //  00000000110111011011011110111100
+    0xD33D48, //  00000000110100110011110101001000
+    0xFF7F6C, //  00000000111111110111111101101100
+    0x7AC9DA, //  00000000011110101100100111011010
+    0xFB7A68  //  00000000111110110111101001101000
+
 );
 
 uint characterVertical(vec2 uv, uint c) {
@@ -993,7 +1000,7 @@ void main() {
   }
 
   vec2 wordPos = word2(wordi);
-  if(uvOri.y < .54 && uvOri.y > .42 && wordi != 0) {
+  if(uvOri.y < .54 && uvOri.y > .42 ) {
 
 // black bg
     o *= .5;
