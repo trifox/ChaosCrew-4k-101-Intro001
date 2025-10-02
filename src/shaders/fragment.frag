@@ -306,6 +306,9 @@ float smoothStepCounter(float t, float stepDuration, float rampFrac) {
     return base + 1;
   }
 }
+
+
+
 // A simple anf really efficient way to create color variation.
 //
 // Short video about this method to make palettes:
@@ -721,6 +724,197 @@ vec3 scene_refurio_julibob_columns (vec2 xy) {
 
 
 /////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+////////////// REFURIO 20251002
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+
+ int j;
+
+////////////////////////////////////////////////////////////////
+
+vec3 scene_all( int which) {  
+  if(which == 0) { // anemone
+    t /= 4.;
+    n = 200., // number of bobs
+    location.w += t/4.;
+    maxiter = 12.;
+    jitter = 0.;
+    cam_pos = vec3(0., .5, 1.25); // view position
+  }
+  if(which == 1) { // tunnel
+    t /= 32.;
+    pitch = cos(t)*.7;
+    location.w = t - 1.;
+    jitter = mod(t, 1./n);
+    
+    // same as below, but jitter and i are zero:
+    c = cardioid(rotor(t)); // A2
+    // stable fixed point: z²-z+c = 0 => x1,2 = 1/2+-sqrt(1/4-c)
+    location.xy += vec2(.5, 0)-csqrt(vec2(.25, 0)-c);
+  }
+  if(which == 2) { // ch
+    maxiter = 170.;
+    height = 1.;
+    n = 50.;
+    pitch = .1*t;
+    location = locations[int(t) % NLOCATIONS];
+    location.w += 0.1 * t;
+  }
+  
+  r = location.z * rotor(location.w)/2.;  
+  
+  cr = rotor(pitch);
+  cam_pos.yz = cmul(cr, cam_pos.yz);
+  float s;
+  vec3 col;
+  for(; j < n; ++j) {
+    ray = vec3(xy, 1.); // angle of view
+    ray.yz = cmul(cr, ray.yz);
+    ray = ray * (cam_pos.z + height*(j/n - jitter))/ray.z - cam_pos;
+    
+    // hide stuff behind camera
+    if(ray.z > 0.001) {
+      z = cmul(ray.xy, r) + location.xy;
+      if(which == 0) // anemone
+        c = cardioid(rotor(t + j/n*2. - jitter))*1.4; // A2
+      if(which == 1) // tunnel
+        c = cardioid(rotor(t + j/n - jitter)*1.0045); // A2
+        // rolling morph effect:
+        //c = cardioid(rotor(t + (i/n - jitter)*1.1)*1.0045); // A2
+      if(which == 2) { // ch
+        float seedStrengsth = 0.;
+        //z = c;
+        //z = location.xy + seedStrengsth * location.z * cardioid(rotor(t / 16. - j / n / 4.)*osc(.995, 1.009, 1. - j / n));
+        c = location.xy + seedStrengsth * location.z * cardioid(rotor(t / 16. - j / n / 4.)*osc(.995, 1.009, 1. - j / n));
+      }
+      f();
+      s = 1.-k/maxiter;
+      if(which == 0) { // anemone
+        if(k >= maxiter) {
+          if(j == 1.) { // compute cap
+            float kk = maxiter;
+            maxiter = 30.;
+            z = cmul(ray.xy, r) + location.xy;
+            f();
+            s = (k-kk)/(maxiter-kk);
+          }
+          break;
+        }
+      }
+      else if(which==2) {
+        if(k > maxiter) {
+          if(j == 0.)
+            return vec3(0);
+          return makePal1(1.);
+        }
+        col += makePal1(k / maxiter) / length(ray);
+      }
+      else if(k < maxiter)
+        break;
+    }
+  }
+  if(which == 2)
+    return col / n;
+  return hsv(.6, s, 1.-(length(ray)-cam_pos.y)/height);
+}
+
+////////////////////////////////////////////////////////////////
+  
+bool ff(vec2 c, vec2 z0) {
+  f_z = z0;
+  for(f_k = 0.; f_k < maxiter; ++f_k) {
+    f_z = cmul(f_z, f_z) + c;
+    if(dot(f_z, f_z) > bailout)
+      return false;
+  }
+  return true;
+} 
+vec3 scene_ch(vec2 xy) {
+  maxiter = 170.;
+  height = 1.;
+  n = 50.; 
+  location = locations[int(t) % NLOCATIONS];
+  location.w += 0.1 * t;
+
+  vec2 center = location.xy, r = location.z * 8. * rotor(location.w), c, p;
+
+  vec3 col = vec3(0), offset;
+
+  float column_shift = -1.;
+  float cam_d = 0.;
+
+  for(float i = 0.; i < n; ++i) {
+
+    offset = vec3(0, 0, -height * (i / n) + column_shift);
+
+    vec2 cr = rotor(pitch);
+    vec3 cam_pos = vec3(0, 0, cam_d); // cot(a)?
+    cam_pos.yz = cmul(cr, cam_pos.yz);
+    vec3 ray = vec3(xy, 1.);
+    ray.yz = cmul(cr, ray.yz);
+    ray = ray * (cam_pos.z - offset.z) / ray.z - cam_pos;
+    vec2 uv = cmul(ray.xy, r) + offset.xy;
+    float z = 1. - length(ray);
+
+    uv = cmul(uv, r) + center;
+     // julia mode
+    c = center;
+    float seedStrengsth = 0.;
+    c = center + seedStrengsth * location.z * cardioid(rotor(t / 16. - i / n / 4.)*osc(.995, 1.009, 1. - i / n));
+    if(isMandel) {
+      vec2 save = c;
+      c = uv;
+      uv = c;
+    }
+
+    if(ff(c, uv)) {
+      // inside
+      if(i == 0.)
+        return vec3(0);
+      return makePal1(1.);
+    }
+    col += makePal1(f_k / maxiter) / length(ray);
+  }
+  return col / n;
+}
+
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
 
 
 
@@ -974,8 +1168,9 @@ scene1=1;
   //   man_scale = expInterp(1, .01, 1 - fract((beat1) / 4));
   // }
 
-  return effectVisibility * wrapRefurio(fragCoord);
-}
+//;  return effectVisibility * wrapRefurio(fragCoord);
+  return effectVisibility *vec4( scene_ch(fragCoord),1);
+  }
 
 
 //EOE/////////////////////////////////////////////////////////////////////////////////////////////////////// 
