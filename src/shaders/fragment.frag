@@ -733,25 +733,32 @@ const int EFFECTYVISIBILITY_KEY_INDEX=0;
  const int NBOBS_KEY_INDEX=1;
 const int LOCATION_SPEED_KEY_INDEX=2;
 const int BOBMODE_KEY_INDEX=3;
-const int JULIAMODE_KEY_INDEX=3;
+const int JULIAMODE_KEY_INDEX=4;
+const int MAN_VISIBILITY_KEY_INDEX=5;
 
-float keyframes[9*5]=   {
-      // effectvisibility,nbobs, locationspeed, bobmode (0..3), juliamandelbrot
-          0, 10. , 0., 0,1,
-          1, 110. , 1., 1,0,
-          1, 10. , 2., 2,1,
-          1, 110. , 3., 3,0,
-          1, 10. , 0., 0,1,
-          1, 110. , 1., 1,0,
-          1, 10. , 2., 2,1,
-          1, 110. , 3., 3,0,
-         1,  111., 1., 1  ,1
+float keyframes[9*6]=   {
+      // effectvisibility,nbobs, locationspeed, bobmode (0..3), juliamandelbrot,man_visibility
+          0, 10. , 0., 0,1,2.5,
+          1, 110. , 1., 1,0,0,
+         
+         // title
+          .5, 10. , 2., 2,1,0,
+          1, 110. , 3., 3,0,0,
+          // greetings
+          .5, 10. , 0., 0,1,0,
+          1, 110. , 1., 1,0,0,
+          
+          //credits
+          1, 10. , 2., 2,1,0,
+          1, 110. , 3., 3,0,0,
+        // end
+         1,  111., 1., 1  ,1,2.5
     } ;
 
  const int scenes[9]=int[9](
   // scene indexes
     // intro
-    0,17,40,48,76,120,160,184,204
+    0,16,40,48,76,120,160,184,204
     
 );
 
@@ -763,13 +770,16 @@ int getSceneValues(float t){
   }
 }
 
-float[5] getSceneKeyframe(float t){ 
-  return float[5](
-    keyframes[5*getSceneValues(t)+0],
-    keyframes[5*getSceneValues(t)+1],
-    keyframes[5*getSceneValues(t)+2],
-    keyframes[5*getSceneValues(t)+3],
-    keyframes[5*getSceneValues(t)+4]);
+float[6] getSceneKeyframe(float t){ 
+  return float[6](
+    keyframes[6*getSceneValues(t)+0],
+    keyframes[6*getSceneValues(t)+1],
+    keyframes[6*getSceneValues(t)+2],
+    keyframes[6*getSceneValues(t)+3],
+    keyframes[6*getSceneValues(t)+4],
+    keyframes[6*getSceneValues(t)+5]
+    
+    );
 }
 
 
@@ -806,6 +816,23 @@ vec4 mainWrap(vec2 fragCoord) {
   float beat1 = t; // ganze note
   float beat2 = t * 2; // halbe noten
   float beat3 = beat2 * 2; // viertel noten
+
+
+
+
+
+// Keyframe
+float[6] keyframe=getSceneKeyframe(t); 
+effectVisibility=keyframe[EFFECTYVISIBILITY_KEY_INDEX];
+nbobs=keyframe[NBOBS_KEY_INDEX];
+location=locations[int(t*keyframe[LOCATION_SPEED_KEY_INDEX])%NLOCATIONS];
+int which=int(keyframe[BOBMODE_KEY_INDEX]);
+isMandel=keyframe[JULIAMODE_KEY_INDEX]<.5;
+man_Size=keyframe[MAN_VISIBILITY_KEY_INDEX] ;
+
+
+ 
+
 
   if(beat1 >= 0) {
   // comming mode 
@@ -854,20 +881,10 @@ vec4 mainWrap(vec2 fragCoord) {
       
     effectVisibility = 1;
   
-    nbobs=5; 
- location=vec4(0,0,2,0);
+    nbobs=5;  
   }
 
 
-
-
-// Keyframe
-float[5] keyframe=getSceneKeyframe(t); 
-effectVisibility=keyframe[EFFECTYVISIBILITY_KEY_INDEX];
-nbobs=keyframe[NBOBS_KEY_INDEX];
-location=locations[int(t*keyframe[LOCATION_SPEED_KEY_INDEX])%NLOCATIONS];
-int which=int(keyframe[BOBMODE_KEY_INDEX]);
-isMandel=keyframe[JULIAMODE_KEY_INDEX]<.5;
 
 
 
@@ -1055,7 +1072,7 @@ float vignetteRect(vec2 uv) {
 // start, end, wordpos,words
 int  wordMap[3*4]={
 40,48,1,1,
-76,120,2,6,
+76,116,2,6,
 160,192,7,5
 };
 int getWord(){
