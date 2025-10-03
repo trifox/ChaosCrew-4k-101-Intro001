@@ -735,30 +735,31 @@ const int LOCATION_SPEED_KEY_INDEX=2;
 const int BOBMODE_KEY_INDEX=3;
 const int JULIAMODE_KEY_INDEX=4;
 const int MAN_VISIBILITY_KEY_INDEX=5;
+const int MAX_ITER_KEY_INDEX=6;
 
-float keyframes[9*6]=   {
+float keyframes[9*7]=   {
       // effectvisibility,nbobs, locationspeed, bobmode (0..3), juliamandelbrot,man_visibility
-          0, 10. , 0., 0,1,2.5,
-          1, 110. , 1., 1,0,0,
+          0, 0. , 0., 0,0,2.5,10,
+          1, 110. , 1., 1,0,0,20,
          
          // title
-          .5, 10. , 2., 2,1,0,
-          1, 110. , 3., 3,0,0,
+          .5, 10. , 2., 2,1,0,30,
+          1, 110. , 3., 3,0,0,40,
           // greetings
-          .5, 10. , 0., 0,1,0,
-          1, 110. , 1., 1,0,0,
+          .5, 10. , 0., 0,1,0,50,
+          1, 110. , 1., 1,0,0,60,
           
           //credits
-          1, 10. , 2., 2,1,0,
-          1, 110. , 3., 3,0,0,
+          1, 10. , 2., 2,1,0,70,
+          1, 110. , 3., 3,0,0,80,
         // end
-         1,  111., 1., 1  ,1,2.5
-    } ;
+         1,  111., 1., 1  ,1,2.5,90
+      } ;
 
  const int scenes[9]=int[9](
   // scene indexes
     // intro
-    0,16,40,48,76,120,160,184,204
+    0,20,40,48,76,120,160,184,204
     
 );
 
@@ -770,14 +771,15 @@ int getSceneValues(float t){
   }
 }
 
-float[6] getSceneKeyframe(float t){ 
-  return float[6](
+float[7] getSceneKeyframe(float t){ 
+  return float[7](
     keyframes[6*getSceneValues(t)+0],
     keyframes[6*getSceneValues(t)+1],
     keyframes[6*getSceneValues(t)+2],
     keyframes[6*getSceneValues(t)+3],
     keyframes[6*getSceneValues(t)+4],
-    keyframes[6*getSceneValues(t)+5]
+    keyframes[6*getSceneValues(t)+5],
+    keyframes[6*getSceneValues(t)+6]
     
     );
 }
@@ -822,14 +824,14 @@ vec4 mainWrap(vec2 fragCoord) {
 
 
 // Keyframe
-float[6] keyframe=getSceneKeyframe(t); 
+float[7] keyframe=getSceneKeyframe(t); 
 effectVisibility=keyframe[EFFECTYVISIBILITY_KEY_INDEX];
 nbobs=keyframe[NBOBS_KEY_INDEX];
 location=locations[int(t*keyframe[LOCATION_SPEED_KEY_INDEX])%NLOCATIONS];
 int which=int(keyframe[BOBMODE_KEY_INDEX]);
 isMandel=keyframe[JULIAMODE_KEY_INDEX]<.5;
 man_Size=keyframe[MAN_VISIBILITY_KEY_INDEX] ;
-
+MAX_ITER=int(keyframe[MAX_ITER_KEY_INDEX]);
 
  
 
