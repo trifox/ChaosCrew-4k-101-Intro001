@@ -1,4 +1,4 @@
-#version 330
+#version 430
 const vec2 iResolution = vec2(1920, 1080);
 
 uniform int m; // Time in sample player 
@@ -10,7 +10,6 @@ const float PI2 = PI * 2;
 const float HALF_PI = PI / 2;
 const float BAILOUT = 256;
 const int SIXTEEN = 16;
-
 float MAX_ITER = 170;
 const float bpm = 127.0; // forcompletion beats per minute 
 // returns vignette intensity at uv for a given rectangular area
@@ -96,8 +95,8 @@ const int U = 6;
 const int X = 5;
 const int Y = 4;
 const int OE = 3; 
-const int COLON = 2;
-const int SLASH = 1; 
+const int COLON = 1;
+const int SLASH = 2; 
 const int _ = 0;
 
 const int TEXT_LEN = 114;
@@ -147,8 +146,7 @@ uint characterVertical(vec2 uv, uint c) {
   return (b >> c) & 1u;
 }
 
-vec2 word2(int idx) {
-  int start = 0;
+vec2 word2(int idx) { 
   int w = -1;
   for(int i = 0; i < TEXT_LEN; i++) {
     if(text[i] == _) {
@@ -213,7 +211,7 @@ float expInterp(float a, float b, float t) {
 }
 
 float easeInOutTap(float t) {
-  return smoothstep(.0, .2, t) * (1.0 - smoothstep(.8, 1, t));
+  return smoothstep(.0, .2, t) * (1.0 - smoothstep(.8, .1, t));
 }
 vec2 rotor(float a) {
   return vec2(cos(a), sin(a));
@@ -281,7 +279,10 @@ float mandelMan(vec2 uvIn) {
   fragColor = mandelbrotExt(uv, man_seedBody * .25, center + vec2(-1.3, 0), scale * .4, 180) * .75;
 
   uv += man_headPos;
-  fragColor += mandelbrotExt(uv, vec2(0), center, scale * 1, 180) - juliaExt(uv, man_seedEyes - vec2(manEyesOpen * manEyesOpenSymmetry, 0), center + eyePos, scale * 8., -90) * manFace - juliaExt(vec2(uv.x, manEyesSymetry * uv.y), man_seedEyes - vec2(manEyesOpen, 0), center + vec2(eyePos.x, eyePos.y * -manEyesSymetry), scale * 8., -90) * manFace
+  fragColor += mandelbrotExt(uv, vec2(0), center, scale * 1, 180) 
+  - juliaExt(uv, man_seedEyes - vec2(manEyesOpen * manEyesOpenSymmetry, 0), center + eyePos, scale * 8., -90) * manFace 
+
+  - juliaExt(vec2(uv.x, manEyesSymetry * uv.y), man_seedEyes - vec2(manEyesOpen, 0), center + vec2(eyePos.x, eyePos.y * -manEyesSymetry), scale * 8., -90) * manFace
             /// den mund, da wollen wir die schwarzen bereiche mit zaehnen also vertikalen streifen rendern
   - juliaExt(uv, man_seedMouth, center + vec2(-5., .0), scale * 8. * manFace, 90);
   return fragColor;
@@ -589,14 +590,13 @@ mandelbrot pertubationmode> seed for mandel start, mandel_seed is pixel
 
 */
 
-float maxiter = 45.,
-      bailout = 4.,
-      n = 100., // number of bobs
+float maxiter = 245.,
+      bailout = 4., 
       height = 2., // of bob column
       pitch, // of camera
        k, i, jitter;
 
-vec2 xy, z;
+vec2   z;
  
 vec2 csqrt(vec2 z) {
   return pow(length(z), .5) * rotor(.5*atan(z.y, z.x));
@@ -604,124 +604,17 @@ vec2 csqrt(vec2 z) {
 
 
 void f() {
+      if(isMandel){
+            vec2 zsafe=z;
+            z=c;
+            c=zsafe;
+      }
   for(k = 0.; k < maxiter; ++k) {
     z = cmul(z,z) + c;
     if(dot(z,z) > bailout)
       break;
   }
-}
-// julia view
-//vec4 loc = vec4(0,0,2,0);
-vec3 scene_refurio_julibob_tunnel (vec2 uv) {  
-  float t=t/16;
-  vec4 loc=vec4(0,0,2,0);
-
-  pitch = cos(t)*.7; // horizon appears at -pi/4
-  jitter = mod(t, 1./n);
-  
-  loc.w = t - 1.;
-  r = loc.z * rotor(loc.w)/2.;
-  
-  // same as below, but jitter and i are zero:
-  c = cardioid(rotor(t)); // A2
-  // stable fixed point: z²-z+c = 0 => x1,2 = 1/2+-sqrt(1/4-c)
-  loc.xy += vec2(.5, 0)-csqrt(vec2(.25, 0)-c);
-  
-  cr = rotor(pitch);
-  cam_pos.yz = cmul(cr, cam_pos.yz);
-  for(; i < n; ++i) {
-    ray = vec3(uv, 1); // angle of view
-    ray.yz = cmul(cr, ray.yz);
-    ray = ray * (cam_pos.z + height*(i/n - jitter))/ray.z - cam_pos;
-    
-    // hide stuff behind camera
-    if(ray.z > 0.) {
-      c = cardioid(rotor(t + i/n - jitter)*1.0045); // A2
-      // rolling morph effect:
-      //c = cardioid(rotor(t + (i/n - jitter)*1.1)*1.0045); // A2
-      z = cmul(ray.xy, r) + loc.xy;
-      f();
-      if(k < maxiter)
-        break;
-    }
-  } 
-  return hsv(.6, 1.-k/maxiter, 1.-length(ray)/height);
-}
-
-
-vec3 scene_refurio_julibob_columns (vec2 xy) {
-  //t = sin(t*PI);
-  t/=2.;
-  
-  float // camera
-        pitch = -.5, // horizon appears at -pi/4
-        
-        // bobs
-        n = 200., // number of bobs
-        height = 2., // of bob column
-        
-        i,
-        jitter = mod(t, 1./n);
-  
-  // same as below, but jitter and i are zero:
-  c = cardioid(rotor(t)); // A2
-
-  // julia view
-  location.w += t/4.;
-  
-  vec2 r = location.z * rotor(location.w)/2.,
-       cr;
-  
-  maxiter = 12.;
-  
-  // stable fixed point: z²-z+c = 0 => x1,2 = 1/2+-sqrt(1/4-c)
-  //loc.xy = vec2(.5, 0.)-csqrt(vec2(.25, 0.)-c);
-  
-  vec3 cam_pos, ray;
-  jitter = 0.;
-  for(i = 0.; i < n; ++i) {
-    cr = rotor(pitch);
-    cam_pos = vec3(0., .5, 1.25); // view position
-    cam_pos.yz = cmul(cr, cam_pos.yz);
-    ray = vec3(xy, 1.); // angle of view
-    ray.yz = cmul(cr, ray.yz);
-    ray = ray * (cam_pos.z - height*(jitter - i/n))/ray.z - cam_pos;
-    
-    // hide stuff behind camera
-    if(ray.z < -0.01)
-      continue;
-
-    // debug: highlight fixed points
-    if(i > 3. && length(cmul(z,z) + c - z) < .002)
-      return vec3(1.,0.,0.);
-
-    vec2  m = vec2(.25);
-    c = cardioid(rotor(t - jitter + i/n*m.x*8.))*1.5; // A2
-    //c = rotor(t - jitter + i/n + loc.w)*loc.z + loc.xy; // A2
-    // rolling morph effect:
-    //c = cardioid(t - (jitter - i/n)*1.1, 1.0045); // A2
-    z = cmul(ray.xy, r) + location.xy;
-    f();
-    if(k >= maxiter) {
-      if(i == 0.) {
-        float kk = k;
-        maxiter = 30.;
-        z = cmul(ray.xy, r) + location.xy;
-        f();
-        float s = (k-kk)/(maxiter-kk);
-        return hsv(.6, s, 1.-length(ray)/height/3.);
-      }
-      break;
-    }
-  }
-  return hsv(.6, 1.-k/maxiter, 1.-length(ray)/height/2.);
-}
-
-
-
-
-
-
+} 
 
 /////////////////////////////////////
 /////////////////////////////////////
@@ -749,66 +642,43 @@ vec3 scene_refurio_julibob_columns (vec2 xy) {
 /////////////////////////////////////
 
  int j;
-
+vec2 cstart=vec2(0);
 ////////////////////////////////////////////////////////////////
+vec2 xy;
+vec3 scene_all(int which/* 0...3 3 is 2d*/) {  
 
-vec3 scene_all( int which) {  
-  if(which == 0) { // anemone
-    t /= 4.;
-    n = 200., // number of bobs
-    location.w += t/4.;
-    maxiter = 12.;
-    jitter = 0.;
-    cam_pos = vec3(0., .5, 1.25); // view position
-  }
-  if(which == 1) { // tunnel
-    t /= 32.;
-    pitch = cos(t)*.7;
-    location.w = t - 1.;
-    jitter = mod(t, 1./n);
-    
-    // same as below, but jitter and i are zero:
-    c = cardioid(rotor(t)); // A2
-    // stable fixed point: z²-z+c = 0 => x1,2 = 1/2+-sqrt(1/4-c)
-    location.xy += vec2(.5, 0)-csqrt(vec2(.25, 0)-c);
-  }
-  if(which == 2) { // ch
-    maxiter = 170.;
-    height = 1.;
-    n = 50.;
-    pitch = .1*t;
-    location = locations[int(t) % NLOCATIONS];
-    location.w += 0.1 * t;
-  }
-  
   r = location.z * rotor(location.w)/2.;  
   
   cr = rotor(pitch);
   cam_pos.yz = cmul(cr, cam_pos.yz);
   float s;
   vec3 col;
-  for(; j < n; ++j) {
+  for(; j < nbobs; ++j) {
     ray = vec3(xy, 1.); // angle of view
     ray.yz = cmul(cr, ray.yz);
-    ray = ray * (cam_pos.z + height*(j/n - jitter))/ray.z - cam_pos;
+    ray = ray * (cam_pos.z + height*(j/nbobs - jitter))/ray.z - cam_pos;
     
     // hide stuff behind camera
     if(ray.z > 0.001) {
-      z = cmul(ray.xy, r) + location.xy;
+      z = cmul(ray.xy, r) + location.xy; 
       if(which == 0) // anemone
-        c = cardioid(rotor(t + j/n*2. - jitter))*1.4; // A2
+        c = cardioid(rotor(t + j/nbobs*2. - jitter))*1.4; // A2
       if(which == 1) // tunnel
-        c = cardioid(rotor(t + j/n - jitter)*1.0045); // A2
+        c = cardioid(rotor(t + j/nbobs - jitter)*1.0045); // A2
         // rolling morph effect:
         //c = cardioid(rotor(t + (i/n - jitter)*1.1)*1.0045); // A2
       if(which == 2) { // ch
         float seedStrengsth = 0.;
         //z = c;
         //z = location.xy + seedStrengsth * location.z * cardioid(rotor(t / 16. - j / n / 4.)*osc(.995, 1.009, 1. - j / n));
-        c = location.xy + seedStrengsth * location.z * cardioid(rotor(t / 16. - j / n / 4.)*osc(.995, 1.009, 1. - j / n));
+        c = location.xy + seedStrengsth * location.z * cardioid(rotor(t / 16. - j / nbobs / 4.)*osc(.995, 1.009, 1. - j /nbobs));
       }
+c=cstart;
+
       f();
+
       s = 1.-k/maxiter;
+
       if(which == 0) { // anemone
         if(k >= maxiter) {
           if(j == 1.) { // compute cap
@@ -834,108 +704,64 @@ vec3 scene_all( int which) {
     }
   }
   if(which == 2)
-    return col / n;
+    return col /nbobs;
   return hsv(.6, s, 1.-(length(ray)-cam_pos.y)/height);
 }
 
 ////////////////////////////////////////////////////////////////
-  
-bool ff(vec2 c, vec2 z0) {
-  f_z = z0;
-  for(f_k = 0.; f_k < maxiter; ++f_k) {
-    f_z = cmul(f_z, f_z) + c;
-    if(dot(f_z, f_z) > bailout)
-      return false;
-  }
-  return true;
-} 
-vec3 scene_ch(vec2 xy) {
-  maxiter = 170.;
-  height = 1.;
-  n = 50.; 
-  location = locations[int(t) % NLOCATIONS];
-  location.w += 0.1 * t;
+   
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
+/////////////////////////////////////
 
-  vec2 center = location.xy, r = location.z * 8. * rotor(location.w), c, p;
 
-  vec3 col = vec3(0), offset;
 
-  float column_shift = -1.;
-  float cam_d = 0.;
+float keyframes[9][4]=   {
+      // effectvisibility,nbobs, location, bobmode (0..3)
+        {  1, 10. , 0., 0},
+        {  1, 110. , 1., 1},
+        {  1, 10. , 2., 2},
+        {  1, 110. , 3., 3},
+        {  1, 10. , 0., 0},
+        {  1, 110. , 1., 1},
+        {  1, 10. , 2., 2},
+        {  1, 110. , 3., 3},
+        { 1,  111., 1., 1  }
+    } ;
 
-  for(float i = 0.; i < n; ++i) {
+ const int scenes[9]=int[9](
+  // scene indexes
+    // intro
+    0,17,40,48,76,120,160,184,204
+    
+);
 
-    offset = vec3(0, 0, -height * (i / n) + column_shift);
-
-    vec2 cr = rotor(pitch);
-    vec3 cam_pos = vec3(0, 0, cam_d); // cot(a)?
-    cam_pos.yz = cmul(cr, cam_pos.yz);
-    vec3 ray = vec3(xy, 1.);
-    ray.yz = cmul(cr, ray.yz);
-    ray = ray * (cam_pos.z - offset.z) / ray.z - cam_pos;
-    vec2 uv = cmul(ray.xy, r) + offset.xy;
-    float z = 1. - length(ray);
-
-    uv = cmul(uv, r) + center;
-     // julia mode
-    c = center;
-    float seedStrengsth = 0.;
-    c = center + seedStrengsth * location.z * cardioid(rotor(t / 16. - i / n / 4.)*osc(.995, 1.009, 1. - i / n));
-    if(isMandel) {
-      vec2 save = c;
-      c = uv;
-      uv = c;
+int getSceneValues(float t){
+  for(int i=0;i<9;i++){
+    if(scenes[i]>t){
+      return i;
     }
-
-    if(ff(c, uv)) {
-      // inside
-      if(i == 0.)
-        return vec3(0);
-      return makePal1(1.);
-    }
-    col += makePal1(f_k / maxiter) / length(ray);
   }
-  return col / n;
+  return 0;
 }
 
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-/////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-float scene1=1;
-vec4 wrapRefurio(vec2 fragCoord){
-return scene1>0.5?
-vec4(scene_refurio_julibob_tunnel(fragCoord),1):
-vec4(scene_refurio_julibob_columns(fragCoord), 1);
+float[4] getSceneKeyframe(float t){ 
+  return keyframes[getSceneValues(t)];
 }
-
-
-
-
 
 
 vec4 mainWrap(vec2 fragCoord) {
@@ -975,9 +801,9 @@ vec4 mainWrap(vec2 fragCoord) {
 
   if(beat1 >= 0) {
   // comming mode 
-    manPos = vec2(mix(4.0, 0, easeOutQuad(smoothstep(0, 1, beat1 / 4))), 
+    manPos = vec2(mix(4., 0., easeOutQuad(smoothstep(0, 1, beat1 / 4))), 
     
-    1 - (1 - smoothstep(0, 1, beat1 / 4)) * abs(sin(beat3) * 0.5) - 0.4);
+    1 - (1 - smoothstep(0., 1., beat1 / 4)) * abs(sin(beat3) * 0.5) - 0.4);
   }
   if(beat1 > 4 && beat1 <= 8) {
   //gucki mode
@@ -1020,13 +846,26 @@ vec4 mainWrap(vec2 fragCoord) {
       
     effectVisibility = 1;
   
-    n=5;
-scene1=0;
+    nbobs=5; 
  location=vec4(0,0,2,0);
   }
+
+
+
+
+// Keyframe
+float[4] keyframe=getSceneKeyframe(t);
+effectVisibility=keyframe[0];
+nbobs=keyframe[1];
+effectVisibility=keyframe[2];
+location=locations[int(keyframe[3])%NLOCATIONS];
+int which=int(keyframe[3]);
+
+
+
+
 //////////////////////////////////////// refurio edit start
-
-
+/*
   if(beat1 > 20 && beat1 < 40) {
  // firsty effect part  
 
@@ -1034,10 +873,8 @@ scene1=0;
     man_Size = 0;
     effectVisibility = 1;
     cam_a = 0;
-    nbobs = 1;
-    n=5;
-   location = locations[int(beat1 / 4) % NLOCATIONS];
-scene1=0;
+    nbobs = 4;
+   location = locations[int(beat1 / 4) % NLOCATIONS]; 
  location=vec4(0,0,2,0);
  
   }
@@ -1047,8 +884,7 @@ if(beat1>40 &&beat1<48){
     effectVisibility = 1;
     cam_a = 0;
     nbobs = 1;
-   location = locations[int(beat1 / 4) % NLOCATIONS];
-scene1=1;
+   location = locations[int(beat1 / 4) % NLOCATIONS]; 
  // location=vec4(0,0,2,0);
  
 }
@@ -1058,8 +894,7 @@ if(beat1>=48 && beat1<16*4+12 ){
     effectVisibility = 1;
     cam_a = 0;
     nbobs = 1;
-   location = locations[int(beat1 ) % NLOCATIONS];
-scene1=1;
+   location = locations[int(beat1 ) % NLOCATIONS]; 
 // location=vec4(0,0,2,0);
  
 }
@@ -1071,10 +906,9 @@ if(beat1>=16*4+12 && beat1<16*4+6*8-4+12){
     cam_a = 0;
     nbobs = 1;
 
-    n=flashBang4((beat1-4)/2,float[4](0,0,1,0))*90+10;
+    nbobs=flashBang4((beat1-4)/2,float[4](0,0,1,0))*90+10;
    location = locations[int(beat1 / 4) % NLOCATIONS];
-
-scene1=1;
+ 
  //location=vec4(0,0,2,0);
  
 }
@@ -1085,8 +919,7 @@ if(  beat1>=16*4+6*8-4+12 && beat1<10*16){
     effectVisibility = 1;
     cam_a = 0;
     nbobs = 1;
-   location = locations[int(beat1 / 4) % NLOCATIONS];
-scene1=0;
+   location = locations[int(beat1 / 4) % NLOCATIONS]; 
  location=vec4(0,0,2,0);
   
 }
@@ -1098,8 +931,7 @@ if(  beat1>=10*16&& beat1<10*16+4*6){
     effectVisibility = 1;
     cam_a = 0;
     nbobs = 1;
-   location = locations[int(beat1 / 4) % NLOCATIONS];
-scene1=1;
+   location = locations[int(beat1 / 4) % NLOCATIONS]; 
   //location=vec4(0,0,2,0);
 }
 
@@ -1111,8 +943,7 @@ if(  beat1>=10*16+4*6&&beat1<10*16+4*6+8 ){
     effectVisibility = 1;
     cam_a = 0;
     nbobs = 1;
-   location = locations[int(beat1 / 4) % NLOCATIONS];
-scene1=0;
+   location = locations[int(beat1 / 4) % NLOCATIONS]; 
   location=vec4(0,0,2,0);
 
 }
@@ -1127,8 +958,7 @@ if(beat1>=184&&beat1<200){
     effectVisibility = 1;
     cam_a = 0;
     nbobs = 1;
-   location = locations[int(beat1 / 4) % NLOCATIONS];
-scene1=1; 
+   location = locations[int(beat1 / 4) % NLOCATIONS]; 
 
 }
 
@@ -1169,7 +999,9 @@ scene1=1;
   // }
 
 //;  return effectVisibility * wrapRefurio(fragCoord);
-  return effectVisibility *vec4( scene_ch(fragCoord),1);
+
+*/
+  return effectVisibility *vec4( scene_all( which),1);
   }
 
 
@@ -1211,17 +1043,34 @@ float vignetteRect(vec2 uv) {
 // out declarations toplevel are not really useful, in c++ world it is the declared output of the shader
 // in glsl this is handled similarly but using that gl_FragColor instead, having the mainWrap() method to be used in html editor
 
+
+// text engine keyframes
+// start, end, wordpos,words
+int  wordMap[3][4]={
+{40,48,1,1},
+{76,120,2,6},
+{160,192,7,5}
+};
+int getWord(){
+
+for(int i=0;i<3;i++){
+if(t>=wordMap[i][0] && t<wordMap[i][1])
+  return     wordMap[i][2] + int((t - wordMap[i][0]) / 8)%wordMap[i][3];
+}
+
+  return 0;
+}
 void main() {
   // t is timed to beat
   t = (float(m) / 44100) / (60 / bpm);
-
+ xy = (2.*gl_FragCoord.xy-iResolution.xy)/min(iResolution.x, iResolution.y);
 // debug offset
 //t-=0.5;
   vec2 uv = gl_FragCoord.xy / iResolution.xy;
 
-  vec4 rz = mainWrap(uv * 2 - 1);
-  vec4 mandelTriklops = vec4(makePal2(mandelMan((uv * 2 - 1) * man_Size + manPos)), 1);   
-
+  vec4 rz = mainWrap(xy);
+  vec4 mandelTriklops = vec4(makePal2(mandelMan((xy) * man_Size + manPos)), 1);   
+ 
  o=rz;
   //o = rz * vignetteRect(uv);
   o = max(o, mandelTriklops);
@@ -1235,23 +1084,9 @@ void main() {
   uv.x *= 2;
 //    uv.x+=t*.1;
   uv *= 12;
-  int wordi = 0;
-    // Manual Word encoding
+  int wordi = 0; 
 
-  if(t > 40 && t < 48) {
-      // name/title
-    wordi = 1;
-  }
-  if(t > 4 * 16 + 3 * 4 && t < 4 * 16 + 3 * 4 + 6 * 8 - 4) {
-      //greetings
-    wordi = 2 + int(((t - (4 * 16 + 3 * 4)) + 4) / 8) % 6;
-  }
-  if(t > 160 && t < 160 + 4 * 5) {
-      //credits
-    wordi = 8 + int((t - 10 * 16) / 4) % 5;
-  }
-
-  vec2 wordPos = word2(wordi);
+  vec2 wordPos = word2(getWord());
   if(uvOri.y < .54 && uvOri.y > .42 ) {
 
 // black bg

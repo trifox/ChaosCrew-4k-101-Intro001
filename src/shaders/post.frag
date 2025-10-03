@@ -43,7 +43,7 @@ const vec4 tracks[NUM_TRACKS]=vec4[NUM_TRACKS](
     // greetings
     vec4(16*4+12,16*4+6*8-4+12,0.8,0.5), // greetings am anfang findet dieser dopüpelschlag in der musik , zum ersten mal statt, ende ist wo dannping pong anfaengt
     // credits
-    vec4(10*16,10*16+4*6,0.2,0.2), 
+    vec4(10*16,10*16+4*6+4,0.2,0.2), 
     // outro
     vec4(12*16+8,13*16,0.2,0.2) 
     
