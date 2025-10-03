@@ -17,7 +17,7 @@ const char *post_frag =
    "vec4 v=vec4(1,0,0,3);"
    "return 1.6*mix(v.xxx,clamp(abs(fract(vec3(f)+v.xyz)*6-v.www)-v.xxx,0,1),.75);"
  "}"
- "const vec4 s[5]=vec4[5](vec4(0,16,.2,.2),vec4(40,48,.5,.4),vec4(76,120,.8,.5),vec4(160,184,.2,.2),vec4(200,208,.2,.2));"
+ "const vec4 s[5]=vec4[5](vec4(0,16,.2,.2),vec4(40,48,.5,.4),vec4(76,120,.8,.5),vec4(160,188,.2,.2),vec4(200,208,.2,.2));"
  "void main()"
  "{"
    "vec2 c=gl_FragCoord.xy/v.xy;"

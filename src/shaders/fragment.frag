@@ -729,18 +729,23 @@ c=cstart;
 /////////////////////////////////////
 
 
+const int EFFECTYVISIBILITY_KEY_INDEX=0;
+ const int NBOBS_KEY_INDEX=1;
+const int LOCATION_SPEED_KEY_INDEX=2;
+const int BOBMODE_KEY_INDEX=3;
+const int JULIAMODE_KEY_INDEX=3;
 
-float keyframes[9][4]=   {
-      // effectvisibility,nbobs, location, bobmode (0..3)
-        {  1, 10. , 0., 0},
-        {  1, 110. , 1., 1},
-        {  1, 10. , 2., 2},
-        {  1, 110. , 3., 3},
-        {  1, 10. , 0., 0},
-        {  1, 110. , 1., 1},
-        {  1, 10. , 2., 2},
-        {  1, 110. , 3., 3},
-        { 1,  111., 1., 1  }
+float keyframes[9*5]=   {
+      // effectvisibility,nbobs, locationspeed, bobmode (0..3), juliamandelbrot
+          0, 10. , 0., 0,1,
+          1, 110. , 1., 1,0,
+          1, 10. , 2., 2,1,
+          1, 110. , 3., 3,0,
+          1, 10. , 0., 0,1,
+          1, 110. , 1., 1,0,
+          1, 10. , 2., 2,1,
+          1, 110. , 3., 3,0,
+         1,  111., 1., 1  ,1
     } ;
 
  const int scenes[9]=int[9](
@@ -751,16 +756,20 @@ float keyframes[9][4]=   {
 );
 
 int getSceneValues(float t){
-  for(int i=0;i<9;i++){
-    if(scenes[i]>t){
+  for(int i=8;i>=0;i--){
+    if(scenes[i]<=t){
       return i;
     }
   }
-  return 0;
 }
 
-float[4] getSceneKeyframe(float t){ 
-  return keyframes[getSceneValues(t)];
+float[5] getSceneKeyframe(float t){ 
+  return float[5](
+    keyframes[5*getSceneValues(t)+0],
+    keyframes[5*getSceneValues(t)+1],
+    keyframes[5*getSceneValues(t)+2],
+    keyframes[5*getSceneValues(t)+3],
+    keyframes[5*getSceneValues(t)+4]);
 }
 
 
@@ -792,8 +801,7 @@ vec4 mainWrap(vec2 fragCoord) {
   man_seedMouth = vec2(-1, 0);  
   // head pos
   man_headPos = vec2(-.1, 0);
-
-  blink = pulses(1, t) * pulses(4 / 2, t);
+ 
   roughness = sin(t) * .2 + 1.1;
   float beat1 = t; // ganze note
   float beat2 = t * 2; // halbe noten
@@ -854,13 +862,12 @@ vec4 mainWrap(vec2 fragCoord) {
 
 
 // Keyframe
-float[4] keyframe=getSceneKeyframe(t);
-effectVisibility=keyframe[0];
-nbobs=keyframe[1];
-effectVisibility=keyframe[2];
-location=locations[int(keyframe[3])%NLOCATIONS];
-int which=int(keyframe[3]);
-
+float[5] keyframe=getSceneKeyframe(t); 
+effectVisibility=keyframe[EFFECTYVISIBILITY_KEY_INDEX];
+nbobs=keyframe[NBOBS_KEY_INDEX];
+location=locations[int(t*keyframe[LOCATION_SPEED_KEY_INDEX])%NLOCATIONS];
+int which=int(keyframe[BOBMODE_KEY_INDEX]);
+isMandel=keyframe[JULIAMODE_KEY_INDEX]<.5;
 
 
 
@@ -1046,16 +1053,16 @@ float vignetteRect(vec2 uv) {
 
 // text engine keyframes
 // start, end, wordpos,words
-int  wordMap[3][4]={
-{40,48,1,1},
-{76,120,2,6},
-{160,192,7,5}
+int  wordMap[3*4]={
+40,48,1,1,
+76,120,2,6,
+160,192,7,5
 };
 int getWord(){
 
 for(int i=0;i<3;i++){
-if(t>=wordMap[i][0] && t<wordMap[i][1])
-  return     wordMap[i][2] + int((t - wordMap[i][0]) / 8)%wordMap[i][3];
+if(t>=wordMap[i*4] && t<wordMap[i*4+1])
+  return     wordMap[i*4+2] + int((t - wordMap[i*4]) / 8)%wordMap[i*4+3];
 }
 
   return 0;
@@ -1072,7 +1079,7 @@ void main() {
   vec4 mandelTriklops = vec4(makePal2(mandelMan((xy) * man_Size + manPos)), 1);   
  
  o=rz;
-  //o = rz * vignetteRect(uv);
+  o = rz * vignetteRect(uv);
   o = max(o, mandelTriklops);
 
   uv = gl_FragCoord.xy / iResolution.xy;
