@@ -24,6 +24,7 @@ def mandelbrot(cx, cy, zoom, angle, width=400, height=400, max_iter=100):
     scale =  zoom
 
     for x in range(width):
+        print("row",x)
         for y in range(height):
             # Normierte Koordinaten (-1 .. 1)
             nx = (x - width/2) / (width/2)
@@ -106,49 +107,10 @@ def julia(cx, cy, zoom, angle, width=400, height=400, max_iter=100):
 
 # Beispiel-Parameter aus deiner Liste (real, imag, zoom, angle)
 params = [
-    
- 
+       
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(0.3604,0.61491,0.0116,2.47),
-(-1.87,0.,0.0002675,0.),
-(-0.52597,0.696944,0.001252,-1.41),
-(-0.528326,0.704073,0.0001073,-2.04),
-(-0.724136,0.361574,0.000676,-0.35),
-(-0.69094,0.46535,0.00832,2.72),
-(-0.7113,0.473618,6.14e-05,-3.08)
+(-0.78820636382236719375,-0.16195987251749071435,1.5104431e9,0)
 ]
 
  
@@ -158,7 +120,7 @@ overview_center = (-0.75, 0.0)
 overview_zoom = 1.5
 overview_angle = 0
 
-img = mandelbrot(overview_center[0], overview_center[1], overview_zoom, overview_angle,124,124)
+img = mandelbrot(overview_center[0], overview_center[1], overview_zoom, overview_angle,1024,1024)
 
 draw = ImageDraw.Draw(img)
 font = ImageFont.load_default() 
@@ -179,29 +141,28 @@ def coord_to_pixel(real, imag, cx, cy, zoom, angle, width, height):
 
 # Alle Punkte einzeichnen
 for idx, (r, i, z, a) in enumerate(params):
-    px, py = coord_to_pixel(r, i, overview_center[0], overview_center[1], overview_zoom, overview_angle, 124, 124)
-    draw.ellipse((px-2, py-2, px+2, py+2), fill=(255,0,0))
+    px, py = coord_to_pixel(r, i, overview_center[0], overview_center[1], overview_zoom, overview_angle, 1024, 1024)
+    draw.ellipse((px-10, py-10, px+10, py+10), fill=(255,0,0))
     draw.text((px+4, py-4), str(idx), font=font, fill=(255,255,0))
 
 img.save("out/mandelbrot_map.jpg")
-
  
-# Rendere die Bilder und speichere sie ab
-for idx, (r, i, z, a) in enumerate(params):
-    print(idx,"Rendering scale",z)
-    img = mandelbrot(r, i, z, 0,400,400,100) 
-    img.save(f"out/{idx}-mandel.jpg")
+# # Rendere die Bilder und speichere sie ab
+# for idx, (r, i, z, a) in enumerate(params):
+#     print(idx,"Rendering scale",z)
+#     img = mandelbrot(r, i, z, 0,400,400,100) 
+#     img.save(f"out/{idx}-mandel.jpg")
 
-    img = mandelbrot(r, i, z,a,400,400,100,) 
-    img.save(f"out/{idx}_angled.jpg")
+#     img = mandelbrot(r, i, z,a,400,400,100,) 
+#     img.save(f"out/{idx}_angled.jpg")
 
-    img = julia(r,i, 1, 0,400,400,100) 
-    img.save(f"out/{idx}_julia.jpg")
-    img = julia(r,i, .1, 0,400,400,100) 
-    img.save(f"out/{idx}_julia2.jpg")
-    img = julia(r,i, z*10, 0,400,400,100) 
-    img.save(f"out/{idx}_julia_zoom.jpg")
-    img = julia(r,i, z*10, a,400,400,100) 
-    img.save(f"out/{idx}_julia_zoom_angled.jpg")
+#     img = julia(r,i, 1, 0,400,400,100) 
+#     img.save(f"out/{idx}_julia.jpg")
+#     img = julia(r,i, .1, 0,400,400,100) 
+#     img.save(f"out/{idx}_julia2.jpg")
+#     img = julia(r,i, z*10, 0,400,400,100) 
+#     img.save(f"out/{idx}_julia_zoom.jpg")
+#     img = julia(r,i, z*10, a,400,400,100) 
+#     img.save(f"out/{idx}_julia_zoom_angled.jpg")
 
 

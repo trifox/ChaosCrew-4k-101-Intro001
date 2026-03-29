@@ -20,15 +20,14 @@ float vigPower = .5;
 float effectVisibility = 0;
 float t;
 bool isMandel = true;
-/*
+
 const float beatTrack_1[SIXTEEN]=float[SIXTEEN](
   // paradiddle pattern
-    1,0,1,1,
-    0,1,0,0, 
-    1,0,1,1,
-    0,1,0,0
-    );
-}
+    1,0,1,0,
+    0,0,0,0, 
+    0,0,0,0,
+    0,0,0,0
+    ); 
 const float beatTrack_4Achtel[8]=float[8](
   // achtung wird als 8tel takt genutzt!
     0,0,0,1,   0,1,1,1
@@ -48,14 +47,31 @@ const float beatTrack_4Achtel2[16]=float[16](
     0,0,0,0,    1,0,1,0,    1,0, 0,0,    0,0, 0,0
     ); 
 
-*/
 
 vec2 cmul(vec2 a, vec2 b) {
   return vec2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
 }
-const int NLOCATIONS = 3;
+const int NLOCATIONS = 6;
 // vec4 real,imag,scale for locations  
-const vec4 locations[NLOCATIONS] = vec4[NLOCATIONS](vec4(-1.52181, 0, .0044053, 0), vec4(.262830, .6122595, 0.007310, 2.179), vec4(-.69094, .4653495, 0.008320, 2.718)
+const vec4 locations[NLOCATIONS] = vec4[NLOCATIONS](
+// super 
+vec4(0.378608124133,0.098558011118,0.009888368833442377,1.1638031883861026),
+// nice 
+vec4(-1.252735884,0.34247064789,0.012762410119084943,1.8579812971990988),
+// nice 
+vec4(-0.15652016683,1.0322471089,0.08188697027694743,2.4777729354236357),
+// oker 
+vec4(-1.40844648574,0.136171997305,0.005327122987750701,0.9843750469771976),
+// line ok 
+vec4(-1.6254137251,0,0.040293673159955135,3.141592653589793),
+// on the line, ok vec4(-1.754877666,0,0.18201981627989672,3.141592653589793)
+
+
+vec4(-0.59689164465,0.66298074458,0.021384109663499292,2.6972507408674624)
+
+//vec4(-1.966773216393,0,0.00035591307491505736,3.141592653589793)
+
+
 /// alte coords
 
 /*
@@ -74,32 +90,34 @@ vec4 location = locations[0];
 /////////////////// Font stuff
 /////////////////// 
 
-const int A = 23;
-const int B = 22;
-const int C = 21;
-const int D = 20;
-const int E = 19;
-const int F = 18;
-const int G = 17;
-const int H = 16;
-const int I = 15;
-const int L = 14;
-const int M = 13;
-const int N = 12;
-const int O = 11;
-const int P = 10;
-const int R = 9;
-const int S = 8;
-const int T = 7;
-const int U = 6;
-const int X = 5;
-const int Y = 4;
-const int OE = 3; 
-const int COLON = 1;
-const int SLASH = 2; 
-const int _ = 0;
+const int A = 9;
+const int TWO = 24;
+const int B = 23;
+const int C = 8;
+const int D = 22;
+const int E = 0;
+const int F = 21;
+const int G = 20;
+const int H = 19;
+const int I = 3;
+const int L = 7;
+const int M = 18;
+const int N = 2;
+const int O = 6;
+const int P = 17;
+const int R = 1;
+const int S = 4;
+const int T = 10;
+const int U = 5;
+const int V = 16;
+const int X = 15;
+const int Y = 16;
+const int OE = 13; 
+const int COLON = 11;
+const int SLASH = 12; 
+const int _ = 30;
 
-const int TEXT_LEN = 114;
+const int TEXT_LEN = 109;
 const int[TEXT_LEN] text = int[TEXT_LEN](
   _,
    
@@ -107,7 +125,7 @@ const int[TEXT_LEN] text = int[TEXT_LEN](
    _, M, A, N, D, E, L, B, R, OE, T, C, H, E, N, _,
    G, R, E, E, T, I, N, G, S, COLON,_, 
    N, U, A, N, C, E, _, R, E, B, E, L, S, _, F, R, A, C, T, A, L,SLASH,F, O, R, U, M, S,SLASH,C,H,A,T,S, _,
-    D, E, A, D, L, I, N, E, P, A, R, T, Y, _,
+    R, E, V, I, S, I, O, N,  _,
       C, O, D, E,COLON,_ , 
      T, R, I, F, O, X, SLASH, R, E, F, U, R, I, O, 
      _, M, U, S, I, C, COLON,_, C, H, L, U, M, P, I, E, _);
@@ -115,7 +133,7 @@ const int[TEXT_LEN] text = int[TEXT_LEN](
 const vec3[3] textanim = vec3[3](
   // wordindex, numwords to show, beatindex
 vec3(0, 1, 16), vec3(0, 1, 10 * 4), vec3(0, 1, 25 * 4));
-const int bitmap3x3vertical[9] = int[]( 
+const int bitmap3x3verticalold[9] = int[]( 
     // 24 3x3 characters packed in this one
     //              //  abcdefghijklmnopqrstuvwxyzö/:d-_ d=ding
     // 0x6F3BDFA0u, //  01101111001110111101111110100000  
@@ -139,6 +157,18 @@ const int bitmap3x3vertical[9] = int[](
     0x7AC9DA, //  00000000011110101100100111011010
     0xFB7A68  //  00000000111110110111101001101000
 
+);
+const int bitmap3x3vertical[9] = int[]( 
+                   //         2bdfghmpvxyö/:taclousinre
+    0x01BFE5E3, //  00000001101111111110010111100011  
+    0x01360F5F, //  00000001001101100000111101011111
+    0x016FF577, //  00000001011011111111010101110111
+    0x00FF23F7, //  00000000111111110010001111110111
+    0x01EEF61F, //  00000001111011101111011000011111
+    0x00DF2274, //  00000000110111110010001001110100
+    0x01FEB3F7, //  00000001111111101011001111110111
+    0x01D16DF9, //  00000001110100010110110111111001
+    0x01DCA3E7  //  00000001110111001010001111100111
 );
 
 uint characterVertical(vec2 uv, uint c) {
@@ -258,10 +288,12 @@ vec3 mandelbrotRenderJulia(vec2 c, vec4 loc) {
   return mandelbrotCore(loc.xy, cmul(c, rotor(loc.w)) * loc.z + loc.xy);
 }
 
+
 vec2 man_seedEyes = vec2(0);
 vec2 man_seedBody = vec2(0);
 vec2 man_seedMouth = vec2(0);
 vec2 man_headPos = vec2(0);
+vec2 man_scaleCenter= vec2(-0.15,0.15);
 float man_scale = 1;
 float manFace = 1;
 float manEyesOpen = 0; // eyes open 0 = outside closed 
@@ -271,20 +303,23 @@ float mandelMan(vec2 uvIn) {
 
   float fragColor = 0;
   // Normalized pixel coordinates (from 0 to 1)
-  vec2 uv = cmul(uvIn, rotor(radians(90.))) * man_scale;
   vec2 center = vec2(.5, -0);
   float scale = 2.;
   vec2 eyePos = center + vec2(3.150, 2.40); 
+  vec2 uv = (cmul(uvIn, rotor(radians(90.)))-man_scaleCenter  )* man_scale+man_scaleCenter ;
   // Mandelbrot 
-  fragColor = mandelbrotExt(uv, man_seedBody * .25, center + vec2(-1.3, 0), scale * .4, 180) * .75;
+  fragColor =step(1, mandelbrotExt(uv, man_seedBody * .25, center + vec2(-1.3, 0), scale * .4, 180)) * .75;
 
   uv += man_headPos;
-  fragColor += mandelbrotExt(uv, vec2(0), center, scale * 1, 180) 
+  fragColor +=step(1, mandelbrotExt(uv, vec2(0), center, scale * 1, 180) );
+
+  fragColor=fragColor
   - juliaExt(uv, man_seedEyes - vec2(manEyesOpen * manEyesOpenSymmetry, 0), center + eyePos, scale * 8., -90) * manFace 
 
   - juliaExt(vec2(uv.x, manEyesSymetry * uv.y), man_seedEyes - vec2(manEyesOpen, 0), center + vec2(eyePos.x, eyePos.y * -manEyesSymetry), scale * 8., -90) * manFace
             /// den mund, da wollen wir die schwarzen bereiche mit zaehnen also vertikalen streifen rendern
   - juliaExt(uv, man_seedMouth, center + vec2(-5., .0), scale * 8. * manFace, 90);
+
   return fragColor;
 }
 //////////////////////////
@@ -341,10 +376,7 @@ float juliastep = 0;
 
 vec2 brotVisibilities = vec2(1, 0);
  // minibrote trifox
-vec4 scene2Mandelbroetchen(vec2 fragCoord) {
-  MAX_ITER = 250;
-  int index = int(t) % SIXTEEN;
-  float interval = fract(t);
+vec4 scene2Mandelbroetchen(vec2 fragCoord) {  
 //  float vis=beatTrack_1[index]; 
   vec2 v = fragCoord; // to -1 +1 real,imag
   // arg allgemeiner winkel, normalisiert dann auf 0..1 also der winkel 0..360
@@ -353,7 +385,7 @@ vec4 scene2Mandelbroetchen(vec2 fragCoord) {
 //    vec4 keyframe=getKeyFrame(t);
 
   vec3 l = mandelbrotRender(v);
-  vec3 ljulia = mandelbrotRenderJulia(v, vec4(location.xy, location.z * (juliastep > 0. ? smoothStepCounter(4. - mod(t * 1., 4.), 1., .2) : 1.), location.w + easeInOutTap(fract(t / 8.)) * (PI / 2.)));
+  vec3 ljulia = mandelbrotRenderJulia(v, vec4(location.xy, location.z *2, location.w));
 
   vec4 result = brotVisibilities.x * vec4(makePal1(l.z), 1.) + brotVisibilities.y * vec4(makePal1(ljulia.z), 1.);
 
@@ -466,7 +498,7 @@ const float ding1[8] = float[8](
 1, 0, 1, 0, 0, 0, 0, 0);
 float flash44Kick;
 float flash44Hihat;
-vec2 manPos = vec2(-1.80, .5);
+vec2 manPos = vec2(-1.80, .75);
 //vec2 manPos=vec2(-1.80,.5);
 
 vec4 result = vec4(0);
@@ -592,9 +624,9 @@ mandelbrot pertubationmode> seed for mandel start, mandel_seed is pixel
 
 float maxiter = 245.,
       bailout = 4., 
-      height = 2., // of bob column
-      pitch, // of camera
-       k, i, jitter;
+      height = 4., // of bob column
+      pitch=.2, // of camera
+       k, i, jitter=.2;
 
 vec2   z;
  
@@ -640,13 +672,30 @@ void f() {
 /////////////////////////////////////
 /////////////////////////////////////
 /////////////////////////////////////
-
  int j;
 vec2 cstart=vec2(0);
 ////////////////////////////////////////////////////////////////
 vec2 xy;
-vec3 scene_all(int which/* 0...3 3 is 2d*/) {  
-
+vec3 scene_all(int which/* 0...3 3 is 2d*/,float t) {  
+  if(which == 0) { // anemone
+    
+    location.w += t*4;
+//    maxiter = 25.;
+height=5;
+    jitter = 1*location.z;
+    cam_pos = vec3(sin(t*4)*0.25, cos(t*4)*0.25, sin(t)+1.25); // view position
+  }
+  if(which == 1) { // tunnel
+     
+    pitch = cos(t)*.7;
+    location.w = t  ; 
+//    height=0;
+  //  jitter =  mod(t, 1./nbobs); 
+    cam_pos = vec3(0,0, 1.25); // view position
+    jitter = 1*location.z;
+   // jitter = 10.5*location.z;
+  //  location.xy += location.z*( vec2(.5, 0)-csqrt(vec2(.25, 0)-c));
+  }
   r = location.z * rotor(location.w)/2.;  
   
   cr = rotor(pitch);
@@ -660,20 +709,20 @@ vec3 scene_all(int which/* 0...3 3 is 2d*/) {
     
     // hide stuff behind camera
     if(ray.z > 0.001) {
-      z = cmul(ray.xy, r) + location.xy; 
+      z = cmul(ray.xy, r)  + location.xy; 
       if(which == 0) // anemone
-        c = cardioid(rotor(t + j/nbobs*2. - jitter))*1.4; // A2
+        c = location.xy+location.z*0.1*cardioid(rotor(t + j/nbobs*2. - jitter))*1.4; // A2
       if(which == 1) // tunnel
-        c = cardioid(rotor(t + j/nbobs - jitter)*1.0045); // A2
+        c = location.xy+location.z*0.1*cardioid(rotor(t + j/nbobs - jitter)*1.0045); // A2
         // rolling morph effect:
         //c = cardioid(rotor(t + (i/n - jitter)*1.1)*1.0045); // A2
-      if(which == 2) { // ch
-        float seedStrengsth = 0.;
-        //z = c;
-        //z = location.xy + seedStrengsth * location.z * cardioid(rotor(t / 16. - j / n / 4.)*osc(.995, 1.009, 1. - j / n));
-        c = location.xy + seedStrengsth * location.z * cardioid(rotor(t / 16. - j / nbobs / 4.)*osc(.995, 1.009, 1. - j /nbobs));
-      }
-c=cstart;
+     
+//c=cstart;
+//if(brotVisibilities.y>0){
+//  z=cstart;
+//  c=z;
+
+//}
 
       f();
 
@@ -690,14 +739,6 @@ c=cstart;
           }
           break;
         }
-      }
-      else if(which==2) {
-        if(k > maxiter) {
-          if(j == 0.)
-            return vec3(0);
-          return makePal1(1.);
-        }
-        col += makePal1(k / maxiter) / length(ray);
       }
       else if(k < maxiter)
         break;
@@ -730,36 +771,40 @@ c=cstart;
 
 
 const int EFFECTYVISIBILITY_KEY_INDEX=0;
- const int NBOBS_KEY_INDEX=1;
-const int LOCATION_SPEED_KEY_INDEX=2;
-const int BOBMODE_KEY_INDEX=3;
-const int JULIAMODE_KEY_INDEX=4;
-const int MAN_VISIBILITY_KEY_INDEX=5;
-const int MAX_ITER_KEY_INDEX=6;
+ const int NBOBS_KEY_INDEX=2;
+const int MANDELBROT_VISIBILITY_INDEX=1;
+const int BOBMODE_KEY_INDEX=3; 
+const int MAX_ITER_KEY_INDEX=4;
 
-float keyframes[9*7]=   {
-      // effectvisibility,nbobs, locationspeed, bobmode (0..3), juliamandelbrot,man_visibility
-          0, 0. , 0., 0,0,2.5,10,
-          1, 110. , 1., 1,0,0,20,
-         
-         // title
-          .5, 10. , 2., 2,1,0,30,
-          1, 110. , 3., 3,0,0,40,
-          // greetings
-          .5, 10. , 0., 0,1,0,50,
-          1, 110. , 1., 1,0,0,60,
-          
-          //credits
-          1, 10. , 2., 2,1,0,70,
-          1, 110. , 3., 3,0,0,80,
-        // end
-         1,  111., 1., 1  ,1,2.5,90
-      } ;
+float keyframes2[9*5]=   {
+  // effectvisibility, mandelbrotvisibility , nbobs, bobmode,maxiter
+  // intro
+  0,0,0,0,100,
+  // effect1
+  0,1,0,0,100,
+  // titel
+  0.0,.5,10,0,300,
+  // effect2
+  1,0,25,0,100,
+  // greetings
+  0.0,0.5,10,0,300,
+  // effect 3
+  1,0,50,1,100,
+  // credits   
+  0,.5,0,0,300,
+  // effect 4
+  1,0,50,1,100,
+  // outro
+  0,0,0,0,100
+
+
+};
+ 
 
  const int scenes[9]=int[9](
-  // scene indexes
+  // scene indexes, dies sind die takte  an welchen die wechsel stattfinden
     // intro
-    0,20,40,48,76,120,160,184,204
+    0,20,40,48,76,120,160,184,200
     
 );
 
@@ -771,16 +816,14 @@ int getSceneValues(float t){
   }
 }
 
-float[7] getSceneKeyframe(float t){ 
-  return float[7](
-    keyframes[6*getSceneValues(t)+0],
-    keyframes[6*getSceneValues(t)+1],
-    keyframes[6*getSceneValues(t)+2],
-    keyframes[6*getSceneValues(t)+3],
-    keyframes[6*getSceneValues(t)+4],
-    keyframes[6*getSceneValues(t)+5],
-    keyframes[6*getSceneValues(t)+6]
-    
+float[5] getSceneKeyframe(float t){ 
+  int scene=getSceneValues(t)*5;
+  return float[5](
+    keyframes2[scene+0],
+    keyframes2[scene+1],
+    keyframes2[scene+2],
+    keyframes2[scene+3],
+    keyframes2[scene+4]
     );
 }
 
@@ -824,68 +867,99 @@ vec4 mainWrap(vec2 fragCoord) {
 
 
 // Keyframe
-float[7] keyframe=getSceneKeyframe(t); 
+float[5] keyframe=getSceneKeyframe(t); 
 effectVisibility=keyframe[EFFECTYVISIBILITY_KEY_INDEX];
-nbobs=keyframe[NBOBS_KEY_INDEX];
-location=locations[int(t*keyframe[LOCATION_SPEED_KEY_INDEX])%NLOCATIONS];
+nbobs=keyframe[NBOBS_KEY_INDEX];  
+
+float mandelbrotVis=keyframe[MANDELBROT_VISIBILITY_INDEX];
+//location=locations[int(t*keyframe[LOCATION_SPEED_KEY_INDEX])%NLOCATIONS];
+
+// die locations anim soll lang kurz kurz sein
+//t*=4;
+ if(mod(beat3,16)<8){
+  location=locations[int(beat3/16)%NLOCATIONS];
+  location.z*=1+mod(t,4)/4;
+  brotVisibilities=vec2(1,0);
+    isMandel=true;
+}else if(mod(beat3,16)<12){
+  location=locations[int(beat3/16)%NLOCATIONS];
+  brotVisibilities=vec2(0,1);
+//  location.z*=2+mod(t,4)/4;
+    isMandel=false;
+  location.z*=.9;
+}else{
+  location=locations[int(beat3/16)%NLOCATIONS];
+
+  location.z*=.75;
+    brotVisibilities=vec2(0,1);
+    isMandel=false;
+}
+
+//location.z*=flashBang(t*2,beatTrack_1)+1.;
+
 int which=int(keyframe[BOBMODE_KEY_INDEX]);
-isMandel=keyframe[JULIAMODE_KEY_INDEX]<.5;
-man_Size=keyframe[MAN_VISIBILITY_KEY_INDEX] ;
+//isMandel=keyframe[JULIAMODE_KEY_INDEX]<.5; 
 MAX_ITER=int(keyframe[MAX_ITER_KEY_INDEX]);
 
- 
+ man_Size=2.5;
 
-
-  if(beat1 >= 0) {
-  // comming mode 
+  if(beat1 >=0) {
+  // comming mode  
     manPos = vec2(mix(4., 0., easeOutQuad(smoothstep(0, 1, beat1 / 4))), 
     
-    1 - (1 - smoothstep(0., 1., beat1 / 4)) * abs(sin(beat3) * 0.5) - 0.4);
+    1 - (1 - smoothstep(0., 1., beat1 / 4)) * abs(sin(beat3) * 0.5) - 0.8);
   }
   if(beat1 > 4 && beat1 <= 8) {
+
   //gucki mode
 //  man_seedEyes+=cardioid(smoothstep(0,3,beat1-4)*PI2,1);
 // man_seedEyes += smoothstep(0, 1, beat1 - 4) * mix(vec2(-.2, .2), vec2(-.2, -0.2), sin((beat1 / 2) * PI));
 // manEyesOpen=mix(0,0.5,sin(beat2*PI))
     manEyesOpen = 0.0;
     manEyesOpenSymmetry = 1;
-
+ 
     float animhead[4] = float[4](-0.1, 0, 0.05, 0);
     man_headPos.y += animhead[int(beat1 - 4)];
-    manEyesOpen = animhead[int(beat1 - 4)] == 0 ? 0. : 0.8;
+    manEyesOpen = animhead[int(beat1 - 4)] == 0 ? 0. : 0.8; 
+     man_seedMouth = vec2(animhead[int(beat1 - 4)]==0?-1:-1.25, 0.05);  
   }
-  if(beat1 > 8 && beat1 <= 12) {
+  if((beat1 > 8 && beat1 <= 12) || (beat1>200&&beat1<204)){ 
     // dancie mode
     //man_seedBody +=spike(fract(beat1),100)* sin(beat3);  
     man_headPos.x += clamp(sin((beat2 - 16) * PI), 0, 1) * 0.2;
     manPos.x -= abs(sin((beat3 - 32) * PI / 4)) * 0.1;
 
+  man_seedMouth+= vec2(sin(t*PI*2.5),cos(1*t*PI))*vec2(0.5,0.25);  
+  //  man_scale=1;
+
   }
 
-  if(beat1 > 12 && beat1 < 14) {
+  if((beat1 > 12 && beat1 < 14) || (beat1>204&&beat1<208)) {
     manEyesOpenSymmetry = 0.9;
+ man_Size=2.5;
   // zwinker mode
   //manPos+=vec2(smoothstep(0,1,beat1-12)*4.5,4.5);
     manEyesOpen += spike(fract(beat1 / 2), 100.);
     manEyesOpenSymmetry = 0;
+//    man_scale=1;
   }
 // beat 12/14 or something then will become the beam into the eye
 
   if(beat1 > 16 && beat1 <= 20) {
 
-
-
+ 
 
   // zoomie
-    man_scale = expInterp(1., .01, fract((beat1 - 16) / 4));
-
-    effectVisibility = smoothstep(15, 20, beat1);
+    man_scale = expInterp(1., .01, fract((beat1 - 16) / 4)); 
+//    manPos.y+=1.5;
+//    manPos.x-= 1.75;
+    mandelbrotVis = smoothstep(15, 20, beat1);
       
-    effectVisibility = 1;
-  
-    nbobs=5;  
   }
-
+// man verstecken 
+if(beat1>20&&beat1<200){
+  man_Size=0;
+}
 
 
 
@@ -1027,7 +1101,20 @@ if(beat1>=184&&beat1<200){
 //;  return effectVisibility * wrapRefurio(fragCoord);
 
 */
-  return effectVisibility *vec4( scene_all( which),1);
+;
+// pitch = cos(t/4)*.7; 
+ 
+ //   jitter = 0.1;
+ //   cam_pos = vec3(0., .5, 1.25); // view position
+//  location.w = t/32 ; 
+//nbobs=100; 
+//location=vec4(0,0,2,0);
+//location.z
+// location.z=2;
+//location.xy +=location.z* (vec2(.5, 0)-csqrt(vec2(.25, 0)-c));
+//  jitter = mod(t/32, 1./nbobs); 
+ height=2;
+return   mandelbrotVis*scene2Mandelbroetchen(fragCoord)+vec4( scene_all(which,t/32),1)*effectVisibility ;
   }
 
 
@@ -1089,17 +1176,17 @@ if(t>=wordMap[i*4] && t<wordMap[i*4+1])
 void main() {
   // t is timed to beat
   t = (float(m) / 44100) / (60 / bpm);
- xy = (2.*gl_FragCoord.xy-iResolution.xy)/min(iResolution.x, iResolution.y);
-// debug offset
-//t-=0.5;
+  xy = (2.*gl_FragCoord.xy-iResolution.xy)/max(iResolution.x, iResolution.y);
+  // debug offset
+  //t-=0.5;
   vec2 uv = gl_FragCoord.xy / iResolution.xy;
 
   vec4 rz = mainWrap(xy);
   vec4 mandelTriklops = vec4(makePal2(mandelMan((xy) * man_Size + manPos)), 1);   
  
- o=rz;
-  o = rz * vignetteRect(uv);
-  o = max(o, mandelTriklops);
+  o=rz;
+ // o = rz * vignetteRect(uv);
+  o = max(o,step(1,man_Size)* mandelTriklops);
 
   uv = gl_FragCoord.xy / iResolution.xy;
 
@@ -1111,9 +1198,9 @@ void main() {
 //    uv.x+=t*.1;
   uv *= 12;
   int wordi = 0; 
-
-  vec2 wordPos = word2(getWord());
-  if(uvOri.y < .54 && uvOri.y > .42 ) {
+int word=getWord();
+  vec2 wordPos = word2(word);
+  if(word!=0 && uvOri.y < .54 && uvOri.y > .42 ) {
 
 // black bg
     o *= .5;
@@ -1128,23 +1215,7 @@ void main() {
       o += vec4(characterVertical(fract(uv * (1 / .5)), uint(text[charIndex >= (wordPos.x) && charIndex <= wordPos.x + wordPos.y ? charIndex : 0])));
     }
   }  
-/*
-if(uv.y>0.2 && uv.x<t/256 ) {
-  o=vec4(0,1.,0.,1.);
-}
-*/ 
-/** Anti Alias 
   
-  for (float i=0.; i<4.; i++) 
-  {
-    vec2  of = floor(vec2(i/2.,mod(i,2.)))-0.5;
-    vec2 project = gl_FragCoord.xy+ of;
-    rz += mainWrap((project/iResolution)*2.0-1.0,t);
-  }
-    
-  rz /= 5.;
-  o= rz;
-*/
 }
 
 ////////////////////////////////////////////////////////////////
