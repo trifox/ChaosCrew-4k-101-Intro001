@@ -51,23 +51,37 @@ const float beatTrack_4Achtel2[16]=float[16](
 vec2 cmul(vec2 a, vec2 b) {
   return vec2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
 }
-const int NLOCATIONS = 6;
+const int NLOCATIONS = 8;
+const int NLOCATIONSAPPROVED = 8;
 // vec4 real,imag,scale for locations  
-const vec4 locations[NLOCATIONS] = vec4[NLOCATIONS](
+/*const vec4 locationstest[NLOCATIONS] = vec4[NLOCATIONS](
+vec4(-0.525971082531,-0.696943648552,0.0012521592421613436,-1.4127195914530066)
+);
+*/
+
+
+const vec4 locations[NLOCATIONSAPPROVED] = vec4[NLOCATIONSAPPROVED](
+
+// geiles alien 
+vec4(0.412916024723,0.614806760143,0.0011506479607298573,1.54488747132172),
+
+// ok 
+  vec4(-1.02819385245,-0.361376517119,0.009799275724922101,0.2922593907296842),
+
 // super 
-vec4(0.378608124133,0.098558011118,0.009888368833442377,1.1638031883861026),
+vec4(0.3786,0.09855,0.009888,0),
 // nice 
-vec4(-1.252735884,0.34247064789,0.012762410119084943,1.8579812971990988),
+vec4(-1.252735,0.342470,0.012762,0),
 // nice 
-vec4(-0.15652016683,1.0322471089,0.08188697027694743,2.4777729354236357),
+vec4(-0.156520,1.032247,0.081886,0),
 // oker 
-vec4(-1.40844648574,0.136171997305,0.005327122987750701,0.9843750469771976),
+vec4(-1.408446,0.136171,0.005327,0),
 // line ok 
-vec4(-1.6254137251,0,0.040293673159955135,3.141592653589793),
+vec4(-1.625413,0,0.040293,0),
 // on the line, ok vec4(-1.754877666,0,0.18201981627989672,3.141592653589793)
 
 
-vec4(-0.59689164465,0.66298074458,0.021384109663499292,2.6972507408674624)
+vec4(-0.596891,0.662980,0.021384,0)
 
 //vec4(-1.966773216393,0,0.00035591307491505736,3.141592653589793)
 
@@ -676,7 +690,7 @@ void f() {
 vec2 cstart=vec2(0);
 ////////////////////////////////////////////////////////////////
 vec2 xy;
-vec3 scene_all(int which/* 0...3 3 is 2d*/,float t) {  
+vec3 scene_all(int which/* 0...3 3 is 2d*/,float t) {   
   if(which == 0) { // anemone
     
     location.w += t*4;
@@ -779,23 +793,23 @@ const int MAX_ITER_KEY_INDEX=4;
 float keyframes2[9*5]=   {
   // effectvisibility, mandelbrotvisibility , nbobs, bobmode,maxiter
   // intro
-  0,0,0,0,100,
+  0,0,0,0,200,
   // effect1
-  0,1,0,0,100,
+  0,1,0,0,200,
   // titel
-  0.0,.5,10,0,300,
+  0.0,.5,10,0,200,
   // effect2
-  1,0,25,0,100,
+  1,1,25,0,200,
   // greetings
-  0.0,0.5,10,0,300,
+  0.0,0.5,10,0,200,
   // effect 3
-  1,0,50,1,100,
+  1,1,50,1,200,
   // credits   
-  0,.5,0,0,300,
+  0,.5,0,0,200,
   // effect 4
-  1,0,50,1,100,
+  1,1,50,1,200,
   // outro
-  0,0,0,0,100
+  0,0,0,0,200
 
 
 };
@@ -878,7 +892,7 @@ float mandelbrotVis=keyframe[MANDELBROT_VISIBILITY_INDEX];
 //t*=4;
  if(mod(beat3,16)<8){
   location=locations[int(beat3/16)%NLOCATIONS];
-  location.z*=1+mod(t,4)/4;
+  location.z*=1+mod(t,8)/8;
   brotVisibilities=vec2(1,0);
     isMandel=true;
 }else if(mod(beat3,16)<12){
@@ -886,11 +900,11 @@ float mandelbrotVis=keyframe[MANDELBROT_VISIBILITY_INDEX];
   brotVisibilities=vec2(0,1);
 //  location.z*=2+mod(t,4)/4;
     isMandel=false;
-  location.z*=.9;
+  location.z*=1;
 }else{
   location=locations[int(beat3/16)%NLOCATIONS];
 
-  location.z*=.75;
+  location.z*=0.66;
     brotVisibilities=vec2(0,1);
     isMandel=false;
 }
@@ -923,7 +937,7 @@ MAX_ITER=int(keyframe[MAX_ITER_KEY_INDEX]);
     manEyesOpen = animhead[int(beat1 - 4)] == 0 ? 0. : 0.8; 
      man_seedMouth = vec2(animhead[int(beat1 - 4)]==0?-1:-1.25, 0.05);  
   }
-  if((beat1 > 8 && beat1 <= 12) || (beat1>200&&beat1<204)){ 
+  if((beat1 > 8 && beat1 <= 12) || (beat1>202&&beat1<206)){ 
     // dancie mode
     //man_seedBody +=spike(fract(beat1),100)* sin(beat3);  
     man_headPos.x += clamp(sin((beat2 - 16) * PI), 0, 1) * 0.2;
@@ -934,7 +948,7 @@ MAX_ITER=int(keyframe[MAX_ITER_KEY_INDEX]);
 
   }
 
-  if((beat1 > 12 && beat1 < 14) || (beat1>204&&beat1<208)) {
+  if((beat1 > 12 && beat1 < 14) || (beat1>206&&beat1<210)) {
     manEyesOpenSymmetry = 0.9;
  man_Size=2.5;
   // zwinker mode
@@ -1113,8 +1127,7 @@ if(beat1>=184&&beat1<200){
 // location.z=2;
 //location.xy +=location.z* (vec2(.5, 0)-csqrt(vec2(.25, 0)-c));
 //  jitter = mod(t/32, 1./nbobs); 
- height=2;
-return   mandelbrotVis*scene2Mandelbroetchen(fragCoord)+vec4( scene_all(which,t/32),1)*effectVisibility ;
+return   mandelbrotVis*scene2Mandelbroetchen(fragCoord);//+vec4( scene_all(which,t/32),1)*effectVisibility ;
   }
 
 
