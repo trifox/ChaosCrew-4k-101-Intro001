@@ -16,9 +16,7 @@
 #define USE_VSYNC    0 /* vsync dangerous, make sure you never exceeed 60fps when using */
 #define USE_CLEAN_BLACK_START    0 /* ensures windows and gl buffers are properly cleared at start to avoid flicker */
 #define USE_AUDIO    1
-#define NO_UNIFORMS  0
-#define DELAY_SOUND  0 // damit steuern wir ob eine kuenstliche pause vor songstart kommt, das intro laeuft dann schon! achtung geht garnicht
-#define DELAY 12.*(60./BPM)
+#define NO_UNIFORMS  0 
 
 #include "definitions.h"
 #if OPENGL_DEBUG
@@ -143,53 +141,18 @@ int __cdecl main(int argc, char* argv[])
 		// relative path works only when not ran from visual studio directly
 		Leviathan::Song track(L"audio.wav");
 		
-		#if DELAY_SOUND
-			track.pause();
-		#else
-			track.play();
-		#endif
+		 
+		track.play();
+	 
 		double position = 0.0;
 	#endif
 
-	#if DELAY_SOUND
-		DWORD start = GetTickCount();   // ms zum start fuer zeitmessung
-	#endif
+	 
 	bool playingxxx=false;
 	// main loop
 	do
 	{
-		#ifndef EDITOR_CONTROLS
-			#if USE_AUDIO
-				#if DELAY_SOUND
-				DWORD elapsed = GetTickCount() - start;
-				// fixed delay here, 12 beats 3 takte 
-				if(!playingxxx && (elapsed)/1000.>DELAY)
-				{
-					playingxxx=true;
-					waveOutOpen(&hWaveOut, WAVE_MAPPER, &WaveFMT, NULL, 0, CALLBACK_NULL);
-					waveOutPrepareHeader(hWaveOut, &WaveHDR, sizeof(WaveHDR));
-					waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
-				}
-				#endif
-		#endif
-
-
-		#else
 		
-			#if DELAY_SOUND
-				DWORD elapsed = GetTickCount() - start;
-				// fixed delay here, 12 beats 3 takte 
-				if(!playingxxx && (elapsed)/1000.>DELAY)
-				{
-					playingxxx=true;
-					
-				  track.play();
-				}
-			#endif
-
-		#endif
-
-
 		#ifdef EDITOR_CONTROLS
 			editor.beginFrame(timeGetTime());
 		#endif
@@ -218,13 +181,9 @@ int __cdecl main(int argc, char* argv[])
 				#endif
 			#endif
 		#else
-			#if DELAY_SOUND 
-			printf("%i Elapsed is %i %f ",start,elapsed,elapsed/1000.);
-				position=(elapsed)/1000. ;
-			//	printf("position is %f ",position);
-			#else
-				position = track.getTime();
-			#endif
+			 
+			position = track.getTime();
+		 
 			((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, (static_cast<int>(position*44100.0)));
 		#endif
 		glRects(-1, -1, 1, 1);
@@ -247,18 +206,8 @@ int __cdecl main(int argc, char* argv[])
 			#ifdef EDITOR_CONTROLS
 				// for editing position of time is provided in post pass
 
-				#if DELAY_SOUND 
-				printf("%i Elapsed is %i %f ",start,elapsed,elapsed/1000.);
-				if(!playingxxx){
-					position=(elapsed)/1000. ;
-				}else{
-					position = track.getTime()+DELAY;
-
-				}
-				//	printf("position is %f ",position);
-				#else
-					position = track.getTime();
-				#endif
+				 
+				position = track.getTime(); 
 				((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, (static_cast<int>(position*44100.0)));
 			#else
 				// warning post process is expensive, setting time as well

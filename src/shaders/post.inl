@@ -1,4 +1,4 @@
-// Generated with Shader Minifier 1.5.1 (https://github.com/laurentlb/Shader_Minifier/)
+// Generated with Shader Minifier 1.6.0 (https://github.com/laurentlb/Shader_Minifier/)
 #ifndef POST_INL_
 # define POST_INL_
 # define VAR_i "m"
@@ -12,12 +12,12 @@ const char *post_frag =
  "uniform sampler2D i;"
  "out vec4 m;"
  "const int a[1]=int[1](15);"
+ "const vec4 s[5]=vec4[5](vec4(0,16,.2,.2),vec4(40,48,.5,.4),vec4(76,120,.8,.5),vec4(160,188,.2,.2),vec4(200,208,.2,.2));"
  "vec3 t(float f)"
  "{"
    "vec4 v=vec4(1,0,0,3);"
    "return 1.6*mix(v.xxx,clamp(abs(fract(vec3(f)+v.xyz)*6-v.www)-v.xxx,0,1),.75);"
  "}"
- "const vec4 s[5]=vec4[5](vec4(0,16,.2,.2),vec4(40,48,.5,.4),vec4(76,120,.8,.5),vec4(160,188,.2,.2),vec4(200,208,.2,.2));"
  "void main()"
  "{"
    "vec2 c=gl_FragCoord.xy/v.xy;"
