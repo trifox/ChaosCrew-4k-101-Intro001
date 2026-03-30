@@ -69,7 +69,7 @@ static DEVMODE screenSettings = {
 	#include "4klang/4klang.h"
 
 	#pragma data_seg(".4klangout")
-	static float lpSoundBuffer[MAX_SAMPLES * 2];
+	static float lpSoundBuffer[MAX_SAMPLES * 2+PAUSE_SAMPLES * 2];
 	static HWAVEOUT hWaveOut;
 
 	#pragma data_seg(".wavefmt")

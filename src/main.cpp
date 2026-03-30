@@ -74,7 +74,7 @@ int __cdecl main(int argc, char* argv[])
 		ShowCursor(0);
 		const HWND hwnd = CreateWindow((LPCSTR)0xC018, 0, WS_POPUP  | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
 		const HDC hDC = GetDC(hwnd);
-		#ifdef USE_CLEAN_BLACK_START
+	/*	#ifdef USE_CLEAN_BLACK_START
 		// byte size: 
 				RECT rect;
 				GetClientRect(hwnd, &rect);
@@ -91,7 +91,7 @@ int __cdecl main(int argc, char* argv[])
 				// 5. Fenster sichtbar machen
 				ShowWindow(hwnd, SW_SHOW);
 				UpdateWindow(hwnd);
-		#endif
+		#endif*/
 		#else
 		#ifdef EDITOR_CONTROLS
 			HWND window = CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0);
@@ -123,15 +123,15 @@ int __cdecl main(int argc, char* argv[])
 	// initialize sound
 	#ifndef EDITOR_CONTROLS
 		#if USE_AUDIO
-			CreateThread(0, 0, (LPTHREAD_START_ROUTINE)_4klang_render, lpSoundBuffer, 0, 0);
-			// sleep a bit to let music render
-
-			Sleep(768);
-			#if not DELAY_SOUND
-				waveOutOpen(&hWaveOut, WAVE_MAPPER, &WaveFMT, NULL, 0, CALLBACK_NULL);
-				waveOutPrepareHeader(hWaveOut, &WaveHDR, sizeof(WaveHDR));
-				waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
-			#endif
+		// 1. Berechne den Startpunkt für den Renderer (nach der Pause)
+		// Wir casten auf float*, damit die Pointer-Arithmetik korrekt in float-Schritten springt.
+		float* renderStartPoint = lpSoundBuffer + (PAUSE_SAMPLES * 2);
+			CreateThread(0, 0, (LPTHREAD_START_ROUTINE)_4klang_render, renderStartPoint, 0, 0);			 
+			
+			waveOutOpen(&hWaveOut, WAVE_MAPPER, &WaveFMT, NULL, 0, CALLBACK_NULL);
+			waveOutPrepareHeader(hWaveOut, &WaveHDR, sizeof(WaveHDR));
+			waveOutWrite(hWaveOut, &WaveHDR, sizeof(WaveHDR));
+			
 		#endif
 	#else
 		Leviathan::Editor editor = Leviathan::Editor();
@@ -213,6 +213,7 @@ int __cdecl main(int argc, char* argv[])
 					glColor3ui(MMTime.u.sample, 0, 0);
 				#else
 					// remember to divide your shader time variable with the SAMPLE_RATE (44100 with 4klang)
+					 
 					((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, MMTime.u.sample);
 				#endif
 			#endif
