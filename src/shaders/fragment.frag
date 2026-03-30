@@ -62,10 +62,10 @@ vec4(-0.525971082531,-0.696943648552,0.0012521592421613436,-1.4127195914530066)
 const vec4 locationsFinalApproved[NLOCATIONSAPPROVED] = vec4[NLOCATIONSAPPROVED](
 
 // geiles alien 
-vec4(0.412916,0.614806760143,0.0011506479607298573,0.),
+vec4(0.412916,0.614806,0.001150,0.),
 
 // ok 
-  vec4(-1.028193,-0.361376517119,0.009799275724922101,0.2922593907296842),
+  vec4(-1.028193,-0.361376,0.009799,0),
 
 // super 
 vec4(0.3786,0.09855,0.009888,0),
@@ -635,8 +635,7 @@ mandelbrot pertubationmode> seed for mandel start, mandel_seed is pixel
 
 */
 
-float maxiter = 245.,
-      bailout = 4., 
+float        bailout = 4., 
       height = 4., // of bob column
       pitch=.2, // of camera
        k, i, jitter=.2;
@@ -654,7 +653,7 @@ void f() {
             z=c;
             c=zsafe;
       }
-  for(k = 0.; k < maxiter; ++k) {
+  for(k = 0.; k < MAX_ITER; ++k) {
     z = cmul(z,z) + c;
     if(dot(z,z) > bailout)
       break;
@@ -739,21 +738,21 @@ height=5;
 
       f();
 
-      s = 1.-k/maxiter;
+      s = 1.-k/MAX_ITER;
 
       if(which == 0) { // anemone
-        if(k >= maxiter) {
+        if(k >= MAX_ITER) {
           if(j == 1.) { // compute cap
-            float kk = maxiter;
-            maxiter = 30.;
+            float kk = MAX_ITER;
+         //   maxiter = 30.;
             z = cmul(ray.xy, r) + location.xy;
             f();
-            s = (k-kk)/(maxiter-kk);
+            s = (k-kk)/(MAX_ITER-kk);
           }
           break;
         }
       }
-      else if(k < maxiter)
+      else if(k < MAX_ITER)
         break;
     }
   }
@@ -880,11 +879,11 @@ vec4 mainWrap(vec2 fragCoord) {
 
 
 // Keyframe
-float[5] keyframe=getSceneKeyframe(t); 
-effectVisibility=keyframe[EFFECTYVISIBILITY_KEY_INDEX];
-nbobs=keyframe[NBOBS_KEY_INDEX];  
+//float[5] keyframe=getSceneKeyframe(t); 
+//effectVisibility=keyframe[EFFECTYVISIBILITY_KEY_INDEX];
+//nbobs=keyframe[NBOBS_KEY_INDEX];  
 
-float mandelbrotVis=keyframe[MANDELBROT_VISIBILITY_INDEX];
+float mandelbrotVis=0;//keyframe[MANDELBROT_VISIBILITY_INDEX];
 //location=locations[int(t*keyframe[LOCATION_SPEED_KEY_INDEX])%NLOCATIONS];
 
 // die locations anim soll lang kurz kurz sein
@@ -910,9 +909,9 @@ float mandelbrotVis=keyframe[MANDELBROT_VISIBILITY_INDEX];
 
 //location.z*=flashBang(t*2,beatTrack_1)+1.;
 
-int which=int(keyframe[BOBMODE_KEY_INDEX]);
+//int which=int(keyframe[BOBMODE_KEY_INDEX]);
 //isMandel=keyframe[JULIAMODE_KEY_INDEX]<.5; 
-MAX_ITER=int(keyframe[MAX_ITER_KEY_INDEX]);
+//MAX_ITER=int(keyframe[MAX_ITER_KEY_INDEX]);
 
  man_Size=2.5;
 
@@ -972,6 +971,7 @@ MAX_ITER=int(keyframe[MAX_ITER_KEY_INDEX]);
 // man verstecken 
 if(beat1>20&&beat1<200){
   man_Size=0;
+  mandelbrotVis=1;
 }
 
 
