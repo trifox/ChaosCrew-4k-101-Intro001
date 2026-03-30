@@ -658,7 +658,6 @@ vec2   z;
   return pow(length(z), .5) * rotor(.5*atan(z.y, z.x));
 }
 */
-/*
 void f() {
       if(isMandel){
             vec2 zsafe=z;
@@ -671,7 +670,6 @@ void f() {
       break;
   }
 } 
-*/
 /////////////////////////////////////
 /////////////////////////////////////
 /////////////////////////////////////
@@ -700,9 +698,9 @@ void f() {
 vec2 cstart=vec2(0);
 ////////////////////////////////////////////////////////////////
 vec2 xy;
-/*
 
-vec3 scene_all(int which/* 0...3 3 is 2d* /,float t) {   
+
+vec3 scene_all(int which/* 0...3 3 is 2d*/,float t) {   
   if(which == 0) { // anemone
     
     location.w += t*4;
@@ -774,8 +772,7 @@ height=5;
     return col /nbobs;
   return hsv(.6, s, 1.-(length(ray)-cam_pos.y)/height);
 }
-
-*/
+ 
 ////////////////////////////////////////////////////////////////
    
 /////////////////////////////////////
@@ -1141,7 +1138,7 @@ if(beat1>=184&&beat1<200){
 // location.z=2;
 //location.xy +=location.z* (vec2(.5, 0)-csqrt(vec2(.25, 0)-c));
 //  jitter = mod(t/32, 1./nbobs); 
-return   mandelbrotVis*scene2Mandelbroetchen(fragCoord);//+vec4( scene_all(which,t/32),1)*effectVisibility ;
+return   mandelbrotVis*scene2Mandelbroetchen(fragCoord)+vec4( scene_all(0,t/32),1)*1 ;
   }
 
 
