@@ -59,15 +59,14 @@ const float beatTrack_4Achtel2[16]=float[16](
 vec2 cmul(vec2 a, vec2 b) {
   return vec2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
 }
-const int NLOCATIONS = 1;
-const int NLOCATIONSAPPROVED = 4;
+const int NLOCATIONS = 4;
 // vec4 real,imag,scale for locations  
 //const vec4 locations[NLOCATIONS] = vec4[NLOCATIONS](
 //vec4(-0.525971082531,-0.696943648552,0.0012521592421613436,-1.4127195914530066)
 //);
 
 
-const vec3 locations[NLOCATIONSAPPROVED] = vec3[NLOCATIONSAPPROVED](
+const vec3 locations[NLOCATIONS] = vec3[NLOCATIONS](
 
 // geiles alien 
 vec3(.412916,.614806,.001150),
@@ -297,6 +296,7 @@ vec2   z,c;
 
 
  
+
 bool fMandelbrot(vec2 c, vec2 z0) {
   z = z0;
   for(k = 0; k < MAX_ITER; ++k) {
@@ -306,6 +306,8 @@ bool fMandelbrot(vec2 c, vec2 z0) {
   }
   return true;
 } 
+
+
 
 void f() {
       if(isMandel){
@@ -349,19 +351,19 @@ vec2 man_seedEyes = vec2(0);
 vec2 man_seedBody = vec2(0);
 vec2 man_seedMouth = vec2(0);
 vec2 man_headPos = vec2(0);
-vec2 man_scaleCenter= vec2(-0.15,0.15);
+vec2 man_scaleCenter= vec2(-.15,.15);
 float man_scale = 1;
 //float manFace = 1;
 float manEyesOpen = 0; // eyes open 0 = outside closed 
-float manEyesOpenSymmetry = .0; // controls how much of the opennes the second eye follows  
+float manEyesOpenSymmetry = 0; // controls how much of the opennes the second eye follows  
 float manEyesSymetry = 1; // -1 eyes x pos mirrored, 1 same seed for both eyes
 float mandelMan(vec2 uvIn) {
 
   float fragColor = 0;
   // Normalized pixel coordinates (from 0 to 1)
-  vec2 center = vec2(.5, -0);
+  vec2 center = vec2(.5, 0);
   float scale = 2;
-  vec2 eyePos = center + vec2(3.150, 2.40); 
+  vec2 eyePos = center + vec2(3.15, 2.4); 
   vec2 uv = (cmul(uvIn, rotor(radians(90)))-man_scaleCenter  )* man_scale+man_scaleCenter ;
   // Mandelbrot 
   fragColor =step(1, mandelbrotExt(uv, man_seedBody * .25, center + vec2(-1.3, 0), scale * .4, 180)) * .75;
@@ -852,8 +854,8 @@ float[5] getSceneKeyframe(float t){
 
  const int scenes[9]=int[9](
   // scene indexes, dies sind die takte  an welchen die wechsel stattfinden
-    // intro
-    0,20,40,48,76,120,160,184,200
+    // intro,pretitle,title,posttitle,greetings,postgreetings,credits,postcredits,outro
+    0,20,40,48,76,120,160,190,200
     
 );
 
@@ -960,7 +962,7 @@ location.xyz=locations[int(beat3/16)%NLOCATIONS];
     manEyesOpen = animhead[int(beat1 - 4)] == 0 ? 0 : .8; 
      man_seedMouth = vec2(animhead[int(beat1 - 4)]==0?-1:-1.25, .05);  
   }
-  if((beat1 > 8 && beat1 <= 12) || (beat1>202&&beat1<206)){ 
+  if((beat1 > 8 && beat1 <= 12) || (beat1>204&&beat1<206)){ 
     // dancie mode
     //man_seedBody +=spike(fract(beat1),100)* sin(beat3);  
     man_headPos.x += clamp(sin((beat2 - 16) * PI), 0, 1) * .2;
@@ -971,7 +973,7 @@ location.xyz=locations[int(beat3/16)%NLOCATIONS];
 
   }
 
-  if((beat1 > 12 && beat1 < 14) || (beat1>206&&beat1<210)) {
+  if((beat1 > 12 && beat1 < 14) || (beat1>206&&beat1<208)) {
     manEyesOpenSymmetry = .9;
  man_Size=2.5;
   // zwinker mode
