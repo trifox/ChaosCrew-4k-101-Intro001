@@ -69,9 +69,9 @@ const int NLOCATIONS = 4;
 const vec3 locations[NLOCATIONS] = vec3[NLOCATIONS](
 
 // geiles alien 
-vec3(.4129,.614,.00115),
 // ok 
   vec3(-1.028,-.3617,.0097),
+vec3(.4129,.614,.00115),
 
 // super 
 vec3(0.378,0.09855,0.0098),
