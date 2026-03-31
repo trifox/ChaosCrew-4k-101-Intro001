@@ -22,6 +22,10 @@ float t;
 bool isMandel = true;
 
 
+// i use it wherever but dont use it in nested loops ;)
+int i; // the infamouzs loop variable i
+
+
 vec2 xy;
 
 /*
@@ -196,7 +200,7 @@ uint characterVertical(vec2 uv, uint c) {
 
 vec2 word2(int idx) { 
   int w = -1;
-  for(int i = 0; i < 109; i++) {
+  for(i = 0; i < 109; i++) {
     if(text[i] == _) {
       w++;
       if(w == idx) {
@@ -220,6 +224,7 @@ float sdCircle(vec2 p, float r) {
   return float(characterVertical(uv, chari)) * smoothstep(0.25, .0, circ);
 }
 */
+
 vec2 cardioid(vec2 r) {
   return (r+r-cmul(r,r))/4.;
 }
@@ -278,10 +283,10 @@ vec3 cmix(vec3 a, vec3 b, float t) {
  */
 
 
-float       bailout = 4, 
+float       bailout = 256, 
       height = 4, // of bob column
       pitch=.2, // of camera
-       k, i, jitter=.2;
+       k, jitter=.2;
 
 vec2   z,c;
  
@@ -289,35 +294,38 @@ vec2   z,c;
   return pow(length(z), .5) * rotor(.5*atan(z.y, z.x));
 }
 */
+
+
+ 
+bool fMandelbrot(vec2 c, vec2 z0) {
+  z = z0;
+  for(k = 0; k < MAX_ITER; ++k) {
+    z = cmul(z, z) + c;
+    if(dot(z, z) > BAILOUT)
+      return false;
+  }
+  return true;
+} 
+
 void f() {
       if(isMandel){
             vec2 zsafe=z;
             z=c;
             c=zsafe;
       }
-  for(k = 0; k < MAX_ITER; ++k) {
-    z = cmul(z,z) + c;
-    if(dot(z,z) > bailout)
-      break;
-  }
-} 
+// lets wrap it
+fMandelbrot(c,z);
 
-
-float f_k;
-vec2 f_z;
-bool fMandelbrot(vec2 c, vec2 z0) {
-  f_z = z0;
-  for(f_k = 0; f_k < MAX_ITER; ++f_k) {
-    f_z = cmul(f_z, f_z) + c;
-    if(dot(f_z, f_z) > BAILOUT)
-      return false;
-  }
-  return true;
+//  for(k = 0; k < MAX_ITER; ++k) {
+//    z = cmul(z,z) + c;
+//    if(dot(z,z) > bailout)
+//      break;
+//  }
 } 
 
 vec3 mandelbrotCore(vec2 c, vec2 z0) {
   fMandelbrot(c, z0);
-  return vec3(f_z.xy, f_k / MAX_ITER);
+  return vec3(z.xy, k / MAX_ITER);
 }
 vec2 project(vec2 uv, vec2 center, float scale, float angle) {
   return cmul(center + uv * scale, rotor(radians(angle)));
@@ -851,7 +859,7 @@ float[5] getSceneKeyframe(float t){
 
 int getSceneIndexFromTime(float t){
   // absolute convenience method, we need this for distinguishing between scenes rather than checking t with bpm count
-  for(int i=8;i>=0;i--){
+  for(i=8;i>=0;i--){
     if(scenes[i]<=t){
       return i;
     }
@@ -1229,7 +1237,7 @@ int  wordMap[3*4]={
 };
 int getWord(){
 
-for(int i=0;i<3;i++){
+for(i=0;i<3;i++){
 if(t>=wordMap[i*4] && t<wordMap[i*4+1])
   return     wordMap[i*4+2] + int((t - wordMap[i*4]) / 8)%wordMap[i*4+3];
 }
