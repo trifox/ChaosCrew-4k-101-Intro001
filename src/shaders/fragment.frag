@@ -69,14 +69,14 @@ const int NLOCATIONS = 4;
 const vec3 locations[NLOCATIONS] = vec3[NLOCATIONS](
 
 // geiles alien 
-vec3(.412916,.614806,.001150),
+vec3(.41291,.61480,.00115),
 // ok 
-  vec3(-1.028193,-.361376,.009799),
+  vec3(-1.0281,-.36137,.00979),
 
 // super 
-vec3(0.3786,0.09855,0.009888),
+vec3(0.3786,0.09855,0.00988),
 // nice 
-vec3(-1.2527,0.3424,0.012762)
+vec3(-1.2527,0.3424,0.01276)
 // nice 
 //vec4(-0.1565,1.0322,0.081886,0),
 // oker 
@@ -225,7 +225,7 @@ float sdCircle(vec2 p, float r) {
 */
 
 vec2 cardioid(vec2 r) {
-  return (r+r-cmul(r,r))/4.;
+  return (r+r-cmul(r,r))/4;
 }
 
 
@@ -453,7 +453,7 @@ vec4 scene2Mandelbroetchen( ) {
   vec3 l = mandelbrotRender(xy);
   vec3 ljulia = mandelbrotRenderJulia(xy, vec4(location.xy, location.z *2, location.w));
 
-  vec4 result = brotVisibilities.x * vec4(hsv(l.z+2.9,1,1), 1) + brotVisibilities.y * vec4(hsv(ljulia.z+2.9,1,1), 1);
+  vec4 result = brotVisibilities.x * vec4(hsv(l.z+2.9,.5,.5), 1) + brotVisibilities.y * vec4(hsv(ljulia.z+1.9,.6,.6), 1);
 
   //    result.x+=beatTrack_1[index]*(1.0-interval);
   //    result.y+=beatTrack_2[index]*(1.0-interval);
@@ -1260,8 +1260,7 @@ void main() {
   o=rz;
  // o = rz * vignetteRect(uv);
   o = max(o,step(1,man_Size)* mandelTriklops);
-
-  uv = gl_FragCoord.xy / iResolution.xy;
+ 
 
   vec2 uvOri = uv;
 
@@ -1273,15 +1272,12 @@ void main() {
 int word=getWord();
   vec2 wordPos = word2(word);
   if(word!=0 && uvOri.y < .54 && uvOri.y > .42 ) {
-
 // black bg
     o *= .5;
-
     if(
   // nutze nur ausschnitt aus space
     fract(uv.x) < .5 &&
       fract(uv.y) < .5) {
-
       int charIndex = int(wordPos.x) + int(uv.x) % 109;
       charIndex -= int((26 - wordPos.y) / 2);
       o += vec4(characterVertical(fract(uv * (1 / .5)), uint(text[charIndex >= (wordPos.x) && charIndex <= wordPos.x + wordPos.y ? charIndex : 0])));
