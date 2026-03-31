@@ -69,14 +69,14 @@ const int NLOCATIONS = 4;
 const vec3 locations[NLOCATIONS] = vec3[NLOCATIONS](
 
 // geiles alien 
-vec3(.41291,.61480,.00115),
+vec3(.4129,.614,.00115),
 // ok 
-  vec3(-1.0281,-.36137,.00979),
+  vec3(-1.028,-.3617,.0097),
 
 // super 
-vec3(0.3786,0.09855,0.00988),
+vec3(0.378,0.09855,0.0098),
 // nice 
-vec3(-1.2527,0.3424,0.01276)
+vec3(-1.252,0.3424,0.0127)
 // nice 
 //vec4(-0.1565,1.0322,0.081886,0),
 // oker 
@@ -453,7 +453,7 @@ vec4 scene2Mandelbroetchen( ) {
   vec3 l = mandelbrotRender(xy);
   vec3 ljulia = mandelbrotRenderJulia(xy, vec4(location.xy, location.z *2, location.w));
 
-  vec4 result = brotVisibilities.x * vec4(hsv(l.z+2.9,.5,.5), 1) + brotVisibilities.y * vec4(hsv(ljulia.z+1.9,.6,.6), 1);
+  vec4 result = brotVisibilities.x * vec4(hsv(0,1-l.z,l.z), 1) + brotVisibilities.y * vec4(hsv(ljulia.z+t,1-ljulia.z,ljulia.z), 1);
 
   //    result.x+=beatTrack_1[index]*(1.0-interval);
   //    result.y+=beatTrack_2[index]*(1.0-interval);
