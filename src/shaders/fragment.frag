@@ -74,7 +74,7 @@ const vec3 locations[NLOCATIONS] = vec3[NLOCATIONS](
 vec3(.4129,.614,.00115),
 
 // super 
-vec3(0.378,0.09855,0.0098),
+vec3(.378,0.0985,0.0098),
 // nice 
 vec3(-1.252,0.3424,0.0127)
 // nice 
