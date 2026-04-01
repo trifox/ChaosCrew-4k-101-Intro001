@@ -62,7 +62,6 @@ int __cdecl main(int argc, char* argv[])
     printf("MENU + SHIFT LEFT/RIGHT: time +/- 1sec \n"); 
 
 	SONG_START=wert*(60./BPM);
-	
 	#endif
 	// initialize window
 	#if FULLSCREEN
@@ -70,26 +69,8 @@ int __cdecl main(int argc, char* argv[])
 		// ... in WinMain oder main:
 		ChangeDisplaySettings(&screenSettings, CDS_FULLSCREEN);
 		ShowCursor(0);
-		const HWND hwnd = CreateWindow((LPCSTR)0xC018, 0, WS_POPUP  | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
-		const HDC hDC = GetDC(hwnd);
-	/*	#ifdef USE_CLEAN_BLACK_START
-		// byte size: 
-				RECT rect;
-				GetClientRect(hwnd, &rect);
-				HBRUSH blackBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
-				FillRect(hDC, &rect, blackBrush);
-						
-				// 1. Setze Clear Color auf Schwarz
-				glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-				// 2. Lösche den Farb-Puffer (Backbuffer)
-				glClear(GL_COLOR_BUFFER_BIT);
-				// 3. Präsentiere den Frame (flippt Backbuffer in den Frontbuffer)
-				SwapBuffers(hDC);
-				
-				// 5. Fenster sichtbar machen
-				ShowWindow(hwnd, SW_SHOW);
-				UpdateWindow(hwnd);
-		#endif*/
+		const HDC hDC = GetDC(CreateWindow((LPCSTR)0xC018, 0, WS_POPUP | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0));
+	 	
 		#else
 		#ifdef EDITOR_CONTROLS
 			HWND window = CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0);
@@ -105,19 +86,13 @@ int __cdecl main(int argc, char* argv[])
 	// initalize opengl context
 	SetPixelFormat(hDC, ChoosePixelFormat(hDC, &pfd), &pfd);
 	wglMakeCurrent(hDC, wglCreateContext(hDC));
-
-	#if USE_VSYNC
-    // Hier VSync aktivieren / achtung gefaehrlich darf nie unter 60fps sinken sonst shite
-    EnableVSync(TRUE);
-
- 	#endif
+ 
 	// create and compile shader programs
 	pidMain = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment_frag);
 	#if POST_PASS
 		pidPost = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &post_frag);
-	#endif
+	#endif 
 
-	
 	// initialize sound
 	#ifndef EDITOR_CONTROLS
 		#if USE_AUDIO
@@ -135,7 +110,7 @@ int __cdecl main(int argc, char* argv[])
 		Leviathan::Editor editor = Leviathan::Editor();
 		editor.updateShaders(&pidMain, &pidPost, true);
 		// sleep a bit to simulate productive code
-		Sleep(768);
+		//Sleep(768);
 
 		// absolute path always works here
 		// relative path works only when not ran from visual studio directly
@@ -147,8 +122,6 @@ int __cdecl main(int argc, char* argv[])
 		double position = 0.0;
 	#endif
 
-	 
-	bool playingxxx=false;
 	// main loop
 	do
 	{
@@ -177,7 +150,8 @@ int __cdecl main(int argc, char* argv[])
 				#else
 					// remember to divide your shader time variable with the SAMPLE_RATE (44100 with 4klang)
 					 
-					((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, MMTime.u.sample);
+//					((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, MMTime.u.sample);
+				((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, MMTime.u.sample);
 				#endif
 			#endif
 		#else
@@ -205,8 +179,7 @@ int __cdecl main(int argc, char* argv[])
 
 			#ifdef EDITOR_CONTROLS
 				// for editing position of time is provided in post pass
-
-				 
+			 
 				position = track.getTime(); 
 				((PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i"))(0, (static_cast<int>(position*44100.0)));
 			#else

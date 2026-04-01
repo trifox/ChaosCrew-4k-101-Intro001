@@ -11,7 +11,7 @@ const float PI2 = PI * 2;
 const float BAILOUT = 256;
 //const int SIXTEEN = 16;
 float MAX_ITER = 250;
-const float bpm = 127; // forcompletion beats per minute 
+bpm = 127; // forcompletion beats per minute 
 // returns vignette intensity at uv for a given rectangular area
 //vec2 vigCenter = vec2(.5, .5);
 //vec2 vigSize = vec2(1, 1);
@@ -21,9 +21,6 @@ const float bpm = 127; // forcompletion beats per minute
 float t;
 bool isMandel = true;
 
-
-// i use it wherever but dont use it in nested loops ;)
-int i; // the infamouzs loop variable i
 
 
 vec2 xy;
@@ -199,7 +196,7 @@ uint characterVertical(vec2 uv, uint c) {
 
 vec2 word2(int idx) { 
   int w = -1;
-  for(i = 0; i < 109; i++) {
+  for(int i = 0; i < 109; i++) {
     if(text[i] == _) {
       w++;
       if(w == idx) {
@@ -861,7 +858,7 @@ float[5] getSceneKeyframe(float t){
 
 int getSceneIndexFromTime(float t){
   // absolute convenience method, we need this for distinguishing between scenes rather than checking t with bpm count
-  for(i=8;i>=0;i--){
+  for(int i=8;i>=0;i--){
     if(scenes[i]<=t){
       return i;
     }
@@ -1239,7 +1236,7 @@ int  wordMap[3*4]={
 };
 int getWord(){
 
-for(i=0;i<3;i++){
+for(int i=0;i<3;i++){
 if(t>=wordMap[i*4] && t<wordMap[i*4+1])
   return     wordMap[i*4+2] + int((t - wordMap[i*4]) / 8)%wordMap[i*4+3];
 }
@@ -1247,8 +1244,13 @@ if(t>=wordMap[i*4] && t<wordMap[i*4+1])
   return 0;
 }
 void main() {
-  // t is timed to beat
-  t = (float(m) / 44100) / (60 / bpm);
+  // t is timed to beat 
+  //t = (float(m) / 44100) / (60 / 127);
+
+  // t is timed to beat lol hard code due to minimier 0s i
+  // production build  
+  t =float(m)*4.8e-5;
+
   xy = (2*gl_FragCoord.xy-iResolution.xy)/max(iResolution.x, iResolution.y);
   // debug offset
   //t-=0.5;
