@@ -10,8 +10,7 @@ const float PI2 = PI * 2;
 //const float HALF_PI = PI / 2;
 const float BAILOUT = 256;
 //const int SIXTEEN = 16;
-float MAX_ITER = 250;
-bpm = 127; // forcompletion beats per minute 
+float MAX_ITER = 250; 
 // returns vignette intensity at uv for a given rectangular area
 //vec2 vigCenter = vec2(.5, .5);
 //vec2 vigSize = vec2(1, 1);
@@ -56,7 +55,7 @@ const float beatTrack_4Achtel2[16]=float[16](
 vec2 cmul(vec2 a, vec2 b) {
   return vec2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
 }
-const int NLOCATIONS = 4;
+const int NLOCATIONS = 14;
 // vec4 real,imag,scale for locations  
 //const vec4 locations[NLOCATIONS] = vec4[NLOCATIONS](
 //vec4(-0.525971082531,-0.696943648552,0.0012521592421613436,-1.4127195914530066)
@@ -65,40 +64,33 @@ const int NLOCATIONS = 4;
 
 const vec3 locations[NLOCATIONS] = vec3[NLOCATIONS](
 
-// geiles alien 
-// ok 
-  vec3(-1.028,-.3617,.0097),
-vec3(.4129,.614,.00115),
-
-// super 
-vec3(.378,0.0985,0.0098),
+vec3(-0.52597,.696944,0.001252),
 // nice 
-vec3(-1.252,0.3424,0.0127)
-// nice 
-//vec4(-0.1565,1.0322,0.081886,0),
+vec3(-0.1565,1.0322,0.081886),
 // oker 
-//vec4(-1.408446,0.136171,0.005327,0)
+vec3(-1.408446,0.136171,0.005327),
 // line ok 
-//vec4(-1.625413,0,0.040293,0),
-// on the line, ok vec4(-1.754877666,0,0.18201981627989672,3.141592653589793)
+vec3(-1.625413,0,0.040293),
+// on the line, ok 
+vec3(-1.754877666,0,0.18201981627989672),
 
 
-//vec4(-0.596891,0.662980,0.021384,0)
+vec3(-0.596891,0.662980,0.021384),
 
-//vec4(-1.966773216393,0,0.00035591307491505736,3.141592653589793)
+vec3(-1.966773216393,0,0.00035591307491505736),
 
 
 /// alte coords
 
-/*
-vec4(0.3604,.61491,0.0116,2.47),
-vec4(-1.87,0.,.0002675,0),
-vec4(-0.52597,.696944,0.001252,-1.41),
-vec4(-0.528326,.704073,0.0001073,-2.04),
-vec4(-0.724136,.361574,0.000676,-0.35),
-vec4(-0.69094,.46535,0.00832,2.72),
-vec4(-0.7113,.473618,6.14e-05,-3.08)
-*/
+
+vec3(0.3604,.61491,0.0116),
+vec3(-1.87,0.,.0002675),
+vec3(-0.52597,.696944,0.001252),
+vec3(-0.528326,.704073,0.0001073),
+vec3(-0.724136,.361574,0.000676),
+vec3(-0.69094,.46535,0.00832),
+vec3(-0.7113,.473618,6.14e-05)
+
 );
 vec4 location = vec4(locations[0],0);
 
@@ -227,7 +219,8 @@ vec2 cardioid(vec2 r) {
 
 
 /////////////////
-
+// zeit performance im timelapse wir haben 18:55 die fraktal panel show angefangen aber erst 20:30 kommen wir angelaufen,
+// im video zeit 36:31 
 
 
 
@@ -852,7 +845,7 @@ float[5] getSceneKeyframe(float t){
  const int scenes[9]=int[9](
   // scene indexes, dies sind die takte  an welchen die wechsel stattfinden
     // intro,pretitle,title,posttitle,greetings,postgreetings,credits,postcredits,outro
-    0,20,40,48,76,120,160,190,200
+    0,20,40,48,76,120,160,190,294
     
 );
 
@@ -1244,12 +1237,15 @@ if(t>=wordMap[i*4] && t<wordMap[i*4+1])
   return 0;
 }
 void main() {
+  // so ultra hardcore release hack:
+  // this formula evaluates due to the optimizer to an error, it is best to manually calc the factor and just put it in like this for 26 revision release:   t =float(m)*4.8e-5;
   // t is timed to beat 
-  //t = (float(m) / 44100) / (60 / 127);
+  float bpm=147.;
+  t = (float(m) / 44100) / (60 / bpm);
 
   // t is timed to beat lol hard code due to minimier 0s i
   // production build  
-  t =float(m)*4.8e-5;
+//  t =float(m)*4.8e-5;
 
   xy = (2*gl_FragCoord.xy-iResolution.xy)/max(iResolution.x, iResolution.y);
   // debug offset
