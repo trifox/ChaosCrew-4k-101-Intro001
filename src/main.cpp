@@ -44,6 +44,8 @@ void entrypoint(void)
 int __cdecl main(int argc, char* argv[])
 #endif
 {
+	
+SetProcessDPIAware();
 	#ifdef EDITOR_CONTROLS
 	char *endptr;
     double wert = strtod(argv[1], &endptr);
@@ -64,13 +66,20 @@ int __cdecl main(int argc, char* argv[])
 	SONG_START=wert*(60./BPM);
 	#endif
 	// initialize window
-	#if FULLSCREEN
-	
-		// ... in WinMain oder main:
-		ChangeDisplaySettings(&screenSettings, CDS_FULLSCREEN);
-		ShowCursor(0);
-		const HDC hDC = GetDC(CreateWindow((LPCSTR)0xC018, 0, WS_POPUP | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0));
-	 	
+	#if FULLSCREEN  
+		   ChangeDisplaySettings(&screenSettings, CDS_FULLSCREEN);
+    ShowCursor(FALSE);
+
+    HWND window = CreateWindow(
+        (LPCSTR)0xC018,
+        0,
+        WS_POPUP | WS_VISIBLE| WS_MAXIMIZE,
+        0, 0,
+        0, 0,
+        0, 0, 0, 0
+    );
+
+    HDC hDC = GetDC(window);
 		#else
 		#ifdef EDITOR_CONTROLS
 			HWND window = CreateWindow("static", 0, WS_POPUP | WS_VISIBLE, 0, 0, XRES, YRES, 0, 0, 0, 0);
@@ -85,8 +94,9 @@ int __cdecl main(int argc, char* argv[])
 
 	// initalize opengl context
 	SetPixelFormat(hDC, ChoosePixelFormat(hDC, &pfd), &pfd);
-	wglMakeCurrent(hDC, wglCreateContext(hDC));
- 
+	wglMakeCurrent(hDC, wglCreateContext(hDC)); 
+
+	glViewport(0, 0, XRES, YRES);
 	// create and compile shader programs
 	pidMain = ((PFNGLCREATESHADERPROGRAMVPROC)wglGetProcAddress("glCreateShaderProgramv"))(GL_FRAGMENT_SHADER, 1, &fragment_frag);
 	#if POST_PASS

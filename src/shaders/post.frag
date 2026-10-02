@@ -18,11 +18,11 @@ i=texture(o,uv)*0.75;
 // BPM Raster Visualizer mit Pattern-Farben
 // Seltsamer Attraktor 🪩
 
-const float bpm = 127.0;   // Beats per Minute
+const float bpm = 138.0;   // Beats per Minute
 const int seq  = 4;        // Schritte pro Pattern
 const int pat  = 4;        // Patterns pro Reihe
-const int numpatterns =13; // Zeilen (Pattern Sets)
-
+const int numpatterns =14; // Zeilen (Pattern Sets)
+// chlumpie deadline hat total 196 beats letzte zeile nur ein takt
 const int NUM_MARKER=1;
 const int marker[NUM_MARKER]=int[NUM_MARKER](
 15 // start  
@@ -37,15 +37,15 @@ vec3 hsv(float h, float s, float v) {
 const int NUM_TRACKS=5;
 const vec4 tracks[NUM_TRACKS]=vec4[NUM_TRACKS](
     // intro
-    vec4(0,16,0.2,0.2),// credits
+    vec4(0,25,0.2,0.2),// credits
     // start beat, end beat, hsv index
-    vec4(40,48,0.5,0.4), // anfang, mandelbroetchen
+    vec4(41,49,0.5,0.4), // anfang, mandelbroetchen
     // greetings
-    vec4(16*4+12,16*4+6*8-4+12,0.8,0.5), // greetings am anfang findet dieser dopüpelschlag in der musik , zum ersten mal statt, ende ist wo dannping pong anfaengt
+    vec4(16*5+8+1,16*4+6*8-4+12,0.8,0.5), // greetings am anfang findet dieser dopüpelschlag in der musik , zum ersten mal statt, ende ist wo dannping pong anfaengt
     // credits
-    vec4(10*16,10*16+4*6+4,0.2,0.2), 
+    vec4(10*16-8,10*16+4*6+4-8,0.2,0.2), 
     // outro
-    vec4(12*16+8,13*16,0.2,0.2) 
+    vec4(12*16+8+16,13*16+16,0.2,0.2) 
     
 );
 
@@ -70,7 +70,7 @@ i=texture(o,uv);
     // Aktueller Beat
     float bps = bpm / 60.0; 
     float beat = iTime * bps;
-    float stepIndex = mod(floor(beat), cols);        // Spalte (aktueller Step)
+    float stepIndex = mod(floor(beat), cols)-1;        // Spalte (aktueller Step)
     float rowIndex  = mod(floor(beat / cols), rows); // Zeile (aktuelles Pattern)
     
     // Doppelt So Schnell achtel?
@@ -109,7 +109,7 @@ if(fract(beat)<0.5){
     int pos=cellX+(pat*seq)*cellY;
     for(int k =0;k<NUM_MARKER;k++){
     if(marker[k]==pos){  
-    col += vec3( .2, 1.0, 0.2); // Knallgruen
+    col += vec3( .0, 1.0, .0); // Knallgruen
     
     }
     }
@@ -132,7 +132,7 @@ if(fract(beat)<0.5){
         col=vec3(0);
     }
 
-    i =mix(i, vec4(col, 1.0),0.2);
+    i =mix(i, vec4(col, 1.0),0.25);
 
 
 

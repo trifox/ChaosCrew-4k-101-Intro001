@@ -55,7 +55,7 @@ const float beatTrack_4Achtel2[16]=float[16](
 vec2 cmul(vec2 a, vec2 b) {
   return vec2(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
 }
-const int NLOCATIONS = 14;
+const int NLOCATIONS = 10;
 // vec4 real,imag,scale for locations  
 //const vec4 locations[NLOCATIONS] = vec4[NLOCATIONS](
 //vec4(-0.525971082531,-0.696943648552,0.0012521592421613436,-1.4127195914530066)
@@ -63,34 +63,17 @@ const int NLOCATIONS = 14;
 
 
 const vec3 locations[NLOCATIONS] = vec3[NLOCATIONS](
+  vec3(-1.27514722138,-0.188174476623,0.002467273999882),
+  vec3(0.4149787847486,-0.6210078074038,0.0001568939813),
+  vec3(-0.2963503648637,-0.8451545288846,0.000979424168),
+vec3(-1.985424253054,0,0.0005808842114 ),
+  vec3(-1.242578028188,0.4132250097757,0.00023685250342),
+vec3(-0.51387363226,0.686697706361,0.001714440931894),
+  vec3(-0.2072838354557,1.1174807724,0.00021822643318),
+vec3(0.4468910033081,-0.23447582874,0.0005983131712386),
+vec3(0.403231457503,-0.1297517858,0.0012563187672508),
 
-vec3(-0.52597,.696944,0.001252),
-// nice 
-vec3(-0.1565,1.0322,0.081886),
-// oker 
-vec3(-1.408446,0.136171,0.005327),
-// line ok 
-vec3(-1.625413,0,0.040293),
-// on the line, ok 
-vec3(-1.754877666,0,0.18201981627989672),
-
-
-vec3(-0.596891,0.662980,0.021384),
-
-vec3(-1.966773216393,0,0.00035591307491505736),
-
-
-/// alte coords
-
-
-vec3(0.3604,.61491,0.0116),
-vec3(-1.87,0.,.0002675),
-vec3(-0.52597,.696944,0.001252),
-vec3(-0.528326,.704073,0.0001073),
-vec3(-0.724136,.361574,0.000676),
-vec3(-0.69094,.46535,0.00832),
-vec3(-0.7113,.473618,6.14e-05)
-
+vec3(0.426249162982,0.198357323419,0.0017263419041069)
 );
 vec4 location = vec4(locations[0],0);
 
@@ -126,14 +109,17 @@ const int SLASH = 12;
 const int _ = 30;
 
 //const int TEXT_LEN = 109;
-const int[109] text = int[109](
+const int[113] text = int[113](
   _,
    
   
    _, M, A, N, D, E, L, B, R, OE, T, C, H, E, N, _,
    G, R, E, E, T, I, N, G, S, COLON,_, 
-   N, U, A, N, C, E, _, R, E, B, E, L, S, _, F, R, A, C, T, A, L,SLASH,F, O, R, U, M, S,SLASH,C,H,A,T,S, _,
-    R, E, V, I, S, I, O, N,  _,
+   N, U, A, N, C, E, _,
+    R, E, B, E, L, S, _,
+     F, R, A, C, T, A, L,SLASH,F, O, R, U, M, S,SLASH,C,H,A,T,S, _,
+   V,I,P,_,
+    D, E, A, D, L, I, N, E,  _,
       C, O, D, E,COLON,_ , 
      T, R, I, F, O, X, SLASH, R, E, F, U, R, I, O, 
      _, M, U, S, I, C, COLON,_, C, H, L, U, M, P, I, E, _);
@@ -168,22 +154,40 @@ const int bitmap3x3verticalold[9] = int[](
 
 );
 */
-const int bitmap3x3vertical[9] = int[]( 
-                   //         2bdfghmpvxyö/:taclousinre
-    0x1BFE5E3, //  00000001101111111110010111100011  
-    0x1360F5F, //  00000001001101100000111101011111
-    0x16FF577, //  00000001011011111111010101110111
-    0xFF23F7, //  00000000111111110010001111110111
+const uint bitmap3x3vertical[12] = uint[]( 
+  
+  // Zeile 3: Zusätzliche 4. Zeile (13. Bit von rechts gesetzt)
+    0x00002000,
+    0x00000000,
+    0x00002000,
+               //         2bdfghmpvxyö/:taclousinre
+    0x01BFC5E3, // 00000001101111111100010111100011 (Zeile 1)
+    0x01360F5F, // 00000001001101100000111101011111 (Zeile 2 - unverändert)
+    0x016FD577, // 00000001011011111101010101110111 (Zeile 3)
+    0xFF23F7,  //  00000000111111110010001111110111
     0x1EEF61F, //  00000001111011101111011000011111
-    0xDF2274, //  00000000110111110010001001110100
-    0x01FEB3F7, //  00000001111111101011001111110111
+    0xDF2274,  //  00000000110111110010001001110100
+    0x01FEB3F7,//  00000001111111101011001111110111
     0x1D16DF9, //  00000001110100010110110111111001
     0x1DCA3E7  //  00000001110111001010001111100111
-);
+
+); 
+
+//uint characterVertical(vec2 uv, uint c) {
+//  uint b = uint(bitmap3x3vertical[int(uv.y * 3) * 3 + int(uv.x * 3)]);
+//  return (b >> c) & 1u;
+//}
+// 3x4
 
 uint characterVertical(vec2 uv, uint c) {
-  uint b = uint(bitmap3x3vertical[int(uv.y * 3) * 3 + int(uv.x * 3)]);
-  return (b >> c) & 1u;
+    // x bleibt bei 3 Spalten, y wird auf 4 Zeilen aufgeteilt
+    int px = int(uv.x * 3.0);
+    int py = int(uv.y * 4.0);
+
+    int bitOffset = py * 3 + px; // Wertebereich 0..11
+    uint b = uint(bitmap3x3vertical[bitOffset]);
+
+    return (b >> c) & 1u;
 }
 
 vec2 word2(int idx) { 
@@ -404,13 +408,33 @@ float smoothStepCounter(float t, float stepDuration, float rampFrac) {
 //
 //   https://iquilezles.org/articles/palettes for more information
 // its a and b control aplitude and offset, c and d control frequency and shidft
-
-
-vec3 makePal2(float i) {
-  return vec3(.2549, .8824, .4118) * i;
+vec3 palette( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d ) {
+    return a + b * cos(PI2 * (c * t + d));
 }
 
+vec3 makePal(float i) {
+return  palette(i, 
+    vec3(0.5, 0.5, 0.5), 
+    vec3(0.5 , 0.5, 0.5), 
+    vec3(2.0, 1.0, 0.1), 
+    vec3(0.5, 0.20, 0.25)
+);
+}
 
+vec3 makePal2(float i) {
+ return palette( i,
+    vec3(0.5, 0.5, 0.55),   // a: Zentrierte Basis-Helligkeit
+    vec3(0.51, 0.53, 0.54),   // b: Volle Schwingungsweite für knallige Farben
+    vec3(.33, .50, .750),   // c: Gleichmäßige 1er-Frequenz
+    vec3(0.16, 0.50, 0.83) // d: Phasenverschiebung erzeugt sauberes Cyan & Magenta
+);
+
+}
+vec3 makePal3(float i) {
+ return vec3(0,i,0);
+
+
+}
 /*
 vec3 pal(in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d) {
   return a + b * cos(PI2 * (c * t + d));
@@ -442,8 +466,13 @@ vec4 scene2Mandelbroetchen( ) {
 
   vec3 l = mandelbrotRender(xy);
   vec3 ljulia = mandelbrotRenderJulia(xy, vec4(location.xy, location.z *2, location.w));
+/*  vec4 result = brotVisibilities.x * vec4(hsv(0,1-l.z,l.z), 1) + 
 
-  vec4 result = brotVisibilities.x * vec4(hsv(0,1-l.z,l.z), 1) + brotVisibilities.y * vec4(hsv(ljulia.z+t,1-ljulia.z,ljulia.z), 1);
+                brotVisibilities.y * vec4(hsv(ljulia.z+t,1-ljulia.z,ljulia.z), 1);
+*/
+  vec4 result = brotVisibilities.x * vec4(makePal(l.z*10.+t/4) , 1) + 
+
+                brotVisibilities.y * vec4( makePal2(ljulia.z*2.+t/8) , 1) ;
 
   //    result.x+=beatTrack_1[index]*(1.0-interval);
   //    result.y+=beatTrack_2[index]*(1.0-interval);
@@ -766,7 +795,9 @@ vec3 scene_all(int which/* 0...3 3 is 2d*/,float t) {
          //   maxiter = 30.;
             z = cmul(ray.xy, r) + location.xy;
             f();
-            s = (k-kk)/(MAX_ITER-kk);
+           // s = (k-kk)/(MAX_ITER-kk);
+             s*=0.5;
+          //return vec3(1,1,1);
           }
           break;
         }
@@ -775,7 +806,14 @@ vec3 scene_all(int which/* 0...3 3 is 2d*/,float t) {
         break;
     }
   } 
-  return hsv(.6, s, 1-(length(ray)-cam_pos.y)/height);
+  if(which==1){
+  return hsv(t, s, 1-(length(ray)-cam_pos.y)/height) 
+  *makePal(t+ s+ 1-(length(ray)-cam_pos.y)/height);
+  }else{
+  return hsv(t, s, 1-(length(ray)-cam_pos.y)/height) 
+  *makePal2(t+ s+ 1-(length(ray)-cam_pos.y)/height);
+
+  }
 }
  
 ////////////////////////////////////////////////////////////////
@@ -845,7 +883,7 @@ float[5] getSceneKeyframe(float t){
  const int scenes[9]=int[9](
   // scene indexes, dies sind die takte  an welchen die wechsel stattfinden
     // intro,pretitle,title,posttitle,greetings,postgreetings,credits,postcredits,outro
-    0,20,40,48,76,120,160,190,294
+    0,20,40,48,72,136,153,180,218
     
 );
 
@@ -858,7 +896,7 @@ int getSceneIndexFromTime(float t){
   }
 }
 
-vec4 mainWrap(vec2 fragCoord) {
+vec4 mainWrap( ) {
 
 /// achtung hier die methode direkt zu returnen
 // unten werden aber alle 4 auch aufgerufen, man sollte also 
@@ -906,9 +944,12 @@ float mandelbrotVis=0;//keyframe[MANDELBROT_VISIBILITY_INDEX];
 //location=locations[int(t*keyframe[LOCATION_SPEED_KEY_INDEX])%NLOCATIONS];
 
 location.xyz=locations[int(beat3/16)%NLOCATIONS];
+//location.xyz=locations[7];
 
 // die locations anim soll lang kurz kurz sein
 //t*=4;
+
+
  if(mod(beat3,16)<8){
   location.z*=1+mod(t,8)/8;
   brotVisibilities=vec2(1,0);
@@ -930,15 +971,75 @@ location.xyz=locations[int(beat3/16)%NLOCATIONS];
 //isMandel=keyframe[JULIAMODE_KEY_INDEX]<.5; 
 //MAX_ITER=int(keyframe[MAX_ITER_KEY_INDEX]);
 
+    float animhead[4] = float[4](-.1, 0, .05, 0);
  man_Size=2.5;
+ 
+ // ein beat offset damits nicht so schnell anfaengt
+ beat1-=1;
+ 
 
-  if(beat1 >=0) {
-  // comming mode  
-    manPos = vec2(mix(4, 0, easeOutQuad(smoothstep(0, 1, beat1 / 4))), 
+ // edge looki mode
+float beatMod=mod(beat1,6.);
+// der 4erdiv gibt den takt an, ein takt besteht aus 4 beats, ein satz dann aus 4 takten
+float beatDiv6=int(floor(beat1/6));
+
+//beat1-=1;
+// unten oben
+if(beat1<0){
+
+man_Size=0;
+}else if(beat1>=0&&  beat1<22){
+// part1, oben
+// sin() wird leicht verstärkt und zwischen 0.0 und 1.0 festgenagelt
+float s = clamp(pow(sin(fract(beat1 / 6.0) * PI) * 1.5,2.0), 0.0, 1.0);
+if(beatDiv6<2){
+ manPos = vec2(0.0, mix(2.9, 1.8, s));
+}else{
+ manPos = vec2(0.0, mix(2.9, .5, s));
+
+}      
+
+if(beatMod>3&&beatMod<4.){
+    manEyesOpen = .8; 
+    manEyesOpenSymmetry = 1;
+    man_headPos.y += animhead[int(mod(beat1/12,4.))];
     
-    1 - (1 - smoothstep(0, 1, beat1 / 4)) * abs(sin(beat3) * .5) - .8);
+}
+if(beatDiv6==0){
+  xy.xy=xy.yx;
+  xy.x*=-1;
+}else if(beatDiv6==1){
+  xy.xy=xy.yx;
+  xy.y*=-1;
+}else if(beatDiv6==2){
+  xy.y*=-1;
+}else {
+// ende normal
+}
+
+
+
+    /*
+*/
+
+// oben unten
+ //  xy.y*=-1;
+
+// links rechts
+  
+
+//xy.xy=xy.yx;
+// rechts links
+//xy.xy=xy.yx;
+//xy.y*=-1;
+
+  } else{
+    
+ manPos = vec2(0.0, .5);
   }
-  if(beat1 > 4 && beat1 <= 8) {
+
+  /*
+  if(beat1 >118 && beat1 <= 12) {
 
   //gucki mode
 //  man_seedEyes+=cardioid(smoothstep(0,3,beat1-4)*PI2,1);
@@ -947,12 +1048,11 @@ location.xyz=locations[int(beat3/16)%NLOCATIONS];
     manEyesOpen = 0;
     manEyesOpenSymmetry = 1;
  
-    float animhead[4] = float[4](-.1, 0, .05, 0);
     man_headPos.y += animhead[int(beat1 - 4)];
     manEyesOpen = animhead[int(beat1 - 4)] == 0 ? 0 : .8; 
      man_seedMouth = vec2(animhead[int(beat1 - 4)]==0?-1:-1.25, .05);  
   }
-  if((beat1 > 8 && beat1 <= 12) || (beat1>204&&beat1<206)){ 
+  if((beat1 > 118 && beat1 <= 12) || (beat1>204&&beat1<206)){ 
     // dancie mode
     //man_seedBody +=spike(fract(beat1),100)* sin(beat3);  
     man_headPos.x += clamp(sin((beat2 - 16) * PI), 0, 1) * .2;
@@ -963,7 +1063,7 @@ location.xyz=locations[int(beat3/16)%NLOCATIONS];
 
   }
 
-  if((beat1 > 12 && beat1 < 14) || (beat1>206&&beat1<208)) {
+  if((beat1 > 1112 && beat1 < 14) || (beat1>206&&beat1<208)) {
     manEyesOpenSymmetry = .9;
  man_Size=2.5;
   // zwinker mode
@@ -973,26 +1073,34 @@ location.xyz=locations[int(beat3/16)%NLOCATIONS];
 //    man_scale=1;
   }
 // beat 12/14 or something then will become the beam into the eye
-
-  if(beat1 > 16 && beat1 <= 20) {
+*/
+  if(beat1 > 22 && beat1 <= 30) {
 
  
 
   // zoomie
-    man_scale = expInterp(1, .01, fract((beat1 - 16) / 4)); 
+    man_scale = expInterp(1, .01, fract((beat1 - 22) / 4)); 
 //    manPos.y+=1.5;
 //    manPos.x-= 1.75;
-    mandelbrotVis = smoothstep(15, 20, beat1);
+    mandelbrotVis = smoothstep(26, 30, beat1);
       
   }
   int whichEffect=0;
 // man verstecken 
-if(beat1>20&&beat1<200){
+if(beat1>25&&beat1<180){
   man_Size=0;
   mandelbrotVis=1;
 } 
 
 int indexscene=getSceneIndexFromTime(t);
+if(indexscene==1 ){
+   mandelbrotVis=smoothstep(scenes[1],scenes[2],beat1)*0.75;
+   brotVisibilities=vec2(1,0);
+}else
+if(indexscene==2 ){
+   brotVisibilities=vec2(1,0);
+   mandelbrotVis=.75;
+}else
 if(indexscene==3||indexscene==4 ){
 xxxVisibility=1;
   mandelbrotVis=0;
@@ -1009,7 +1117,20 @@ xxxVisibility=.5;
   mandelbrotVis=.5;
   whichEffect=int(t)%2;
   nbobs=sin(t)*50+50;
-} else{
+  man_Size=0;
+} else if(indexscene==8){
+  
+mandelbrotVis=0;
+xxxVisibility=0;
+  //  manEyesOpen =fract(beat1); 
+  //  manEyesOpenSymmetry = 1;
+    man_headPos.x+=sin(beat1*8)*0.05; 
+    manPos.y+=((beat1-218)/8);
+    
+  //whichEffect=int(t)%2;
+ // nbobs=sin(t)*50+50;
+}  
+else{
   xxxVisibility=0;
 }
 /*
@@ -1223,9 +1344,9 @@ float vignetteRect(vec2 uv) {
 // text engine keyframes
 // start, end, wordpos,words
 int  wordMap[3*4]={
-40,48,1,1,
-76,116,2,6,
-160,192,7,5
+41,48,1,1,
+89,136,2,6,
+153,181,8,5
 };
 int getWord(){
 
@@ -1240,7 +1361,7 @@ void main() {
   // so ultra hardcore release hack:
   // this formula evaluates due to the optimizer to an error, it is best to manually calc the factor and just put it in like this for 26 revision release:   t =float(m)*4.8e-5;
   // t is timed to beat 
-  float bpm=147.;
+  float bpm=138.;
   t = (float(m) / 44100) / (60 / bpm);
 
   // t is timed to beat lol hard code due to minimier 0s i
@@ -1252,8 +1373,8 @@ void main() {
   //t-=0.5;
   vec2 uv = gl_FragCoord.xy / iResolution.xy;
 
-  vec4 rz = mainWrap(xy);
-  vec4 mandelTriklops = vec4(makePal2(mandelMan((xy) * man_Size + manPos)), 1);   
+  vec4 rz = mainWrap();
+  vec4 mandelTriklops = vec4(makePal3(mandelMan((xy) * man_Size + manPos)), 1);   
  
   o=rz;
  // o = rz * vignetteRect(uv);
@@ -1265,11 +1386,12 @@ void main() {
 // text stuff
   uv.y = 1 - uv.y;
   uv.x *= 2;
+  uv.x+=0.075; 
 //    uv.x+=t*.1;
   uv *= 12; 
 int word=getWord();
   vec2 wordPos = word2(word);
-  if(word!=0 && uvOri.y < .54 && uvOri.y > .42 ) {
+  if(word!=0 && uvOri.y < .6 && uvOri.y > .51 ) {
 // black bg
     o *= .5;
     if(
