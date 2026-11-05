@@ -89,10 +89,16 @@ static DEVMODE screenSettings = {
 	};
 
 	#pragma data_seg(".wavehdr")
-	static WAVEHDR WaveHDR =
-	{
-		(LPSTR)lpSoundBuffer, MAX_SAMPLES * sizeof(SAMPLE_TYPE) * 2, 0, 0, 0, 0, 0, 0
-	};
+static WAVEHDR WaveHDR =
+{
+    (LPSTR)lpSoundBuffer, 
+    
+    // Gesamtlänge = (Musik-Samples + Pausen-Samples) * Kanäle * Sample-Größe
+    (MAX_SAMPLES + PAUSE_SAMPLES) * sizeof(SAMPLE_TYPE) * 2, 
+    
+    0, 0, 0, 0, 0, 0
+};
+
 
 	static MMTIME MMTime =
 	{

@@ -212,7 +212,7 @@ SetProcessDPIAware();
 
 	} while(!GetAsyncKeyState(VK_ESCAPE)
 		#if USE_AUDIO
-			&& MMTime.u.sample < MAX_SAMPLES
+			&& MMTime.u.sample < (MAX_SAMPLES + PAUSE_SAMPLES )
 		#endif
 	);
 
